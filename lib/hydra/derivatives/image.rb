@@ -9,7 +9,6 @@ module Hydra
             size = args[:size]
             output_datastream_name = args[:datastream] if args[:datastream]
           end
-          puts "Resizing #{name} to #{output_datastream_name} #{object.pid}"
           create_resized_image(output_datastream_name, size, new_mime_type)
         end
       end
