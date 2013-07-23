@@ -14,8 +14,8 @@ describe "Transcoder" do
       delegate :mime_type, :to => :characterization, :unique => true
       has_file_datastream 'content', type: ContentDatastream
 
-      makes_derivatives_of :content, based_on: :mime_type, when: 'text/pdf',
-            derivatives: { :text => { :quality => :better }}, processors: [:ocr]
+      makes_derivatives_of :content, based_on: :mime_type, when: 'application/pdf',
+            derivatives: { :thumb => "100x100>" }
 
       makes_derivatives_of :content, based_on: :mime_type, when: 'audio/wav',
             derivatives: { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processors: :audio
@@ -45,6 +45,18 @@ describe "Transcoder" do
       file.datastreams['content_thumb'].should have_content 
       file.datastreams['content_thumb'].mimeType.should == 'image/png'
       file.datastreams.key?('content_text').should be_false 
+    end
+  end
+
+  describe "with an attached pdf" do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/test.pdf', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'application/pdf').tap { |t| t.content.content = attachment; t.save } }
+
+    it "should transcode" do
+      file.datastreams.key?('content_thumb').should be_false
+      file.create_derivatives
+      file.datastreams['content_thumb'].should have_content 
+      file.datastreams['content_thumb'].mimeType.should == 'image/png'
     end
   end
 
