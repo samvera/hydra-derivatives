@@ -14,21 +14,6 @@ module Hydra
         'image/png'
       end
 
-      def output_datastream_id(name)
-        [source_name, name].join('_')
-      end
-
-      def output_datastream(dsid)
-        # first, check for a defined datastream
-        output_datastream = if object.datastreams[dsid]
-          object.datastreams[dsid]
-        else
-          ds = ActiveFedora::Datastream.new(object.inner_object, dsid)
-          object.add_datastream(ds)
-          ds
-        end
-      end
-
 
       def create_resized_image(output_dsid, long_edge_size, mime_type, quality=nil)
         create_image(output_dsid, mime_type, quality) do |xfrm|
@@ -54,7 +39,7 @@ module Hydra
       # raw image from a different source (e.g.  external datastream)
       def load_image_transformer
         Magick::ImageList.new.tap do |xformer|
-          xformer.from_blob(object.datastreams[source_name.to_s].content)
+          xformer.from_blob(source_datastream.content)
         end
       end
     end

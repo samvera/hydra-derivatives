@@ -7,6 +7,26 @@ module Hydra
 
     autoload :Processor
     autoload :Image
+    autoload :Ffmpeg
+    autoload :Video
+    autoload :Audio
+    autoload :ExtractMetadata
+
+    attr_writer :ffmpeg_path, :temp_file_base, :fits_path
+    def self.ffmpeg_path
+      #Sufia.config.ffmpeg_path
+      @ffmpeg_path ||= 'ffmpeg'
+    end
+
+    def self.temp_file_base
+      #Sufia.config.temp_file_base
+      @temp_file_base ||= '/tmp'
+    end
+
+    def self.fits_path
+      #Sufia.config.fits_path
+      @fits_path ||= 'fits.sh'
+    end
 
     included do
       class_attribute :transformation_scheme
@@ -22,9 +42,13 @@ module Hydra
     end
 
     # Transform a single datastream
-    def transform_datastream(datastream, directive)
-      processor = directive.processors ? directive.processors.first : :image
-      "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, datastream, directive.derivatives).process
+    def transform_datastream(datastream, directive_list)
+      directive_list.each do |directive|
+        if directive.applies?(self)
+          processor = directive.processors ? Array(directive.processors).first : :image
+          "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, datastream, directive.derivatives).process
+        end
+      end
 
     end
 
@@ -40,6 +64,10 @@ module Hydra
         self.selector = args[:when]
         self.derivatives = args[:derivatives]
         self.processors = args[:processors]
+      end
+
+      def applies?(object)
+        selector.include?(object.send(differentiator))
       end
     end
 
@@ -58,7 +86,8 @@ module Hydra
       #        derivatives: { :medium => "300x300>", :thumb => "100x100>" }
       def makes_derivatives_of(datastream, args = {})
         self.transformation_scheme ||= {}
-        self.transformation_scheme[datastream.to_sym] = TransformationDirective.new(args)
+        self.transformation_scheme[datastream.to_sym] ||= []
+        self.transformation_scheme[datastream.to_sym] << TransformationDirective.new(args)
       end
     end
   end
