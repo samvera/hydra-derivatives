@@ -12,20 +12,35 @@ module Hydra
     autoload :Audio
     autoload :ExtractMetadata
 
-    attr_writer :ffmpeg_path, :temp_file_base, :fits_path
+    def self.ffmpeg_path=(val)
+      @ffmpeg_path = val
+    end
     def self.ffmpeg_path
       #Sufia.config.ffmpeg_path
       @ffmpeg_path ||= 'ffmpeg'
     end
 
+    def self.temp_file_base=(val)
+      @temp_file_base = val
+    end
     def self.temp_file_base
       #Sufia.config.temp_file_base
       @temp_file_base ||= '/tmp'
     end
 
+    def self.fits_path=(val)
+      @fits_path = val
+    end
     def self.fits_path
       #Sufia.config.fits_path
       @fits_path ||= 'fits.sh'
+    end
+
+    def self.enable_ffmpeg=(val)
+      @enable_ffmpeg = val
+    end
+    def self.enable_ffmpeg
+      @enable_ffmpeg ||= true
     end
 
     included do
@@ -36,8 +51,12 @@ module Hydra
     # Runs all of the transformations immediately.
     # You may want to run this job in the background as it may take a long time.
     def create_derivatives 
-      transformation_scheme.each do |datastream, value|
-        transform_datastream(datastream, value) if self.datastreams[datastream.to_s].has_content?
+      if transformation_scheme.present?
+        transformation_scheme.each do |datastream, value|
+          transform_datastream(datastream, value) if self.datastreams[datastream.to_s].has_content?
+        end
+      else
+        logger.warn "`create_derivatives' was called on an instance of #{self.class}, but no derivatives have been requested"
       end
     end
 
