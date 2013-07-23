@@ -1,12 +1,12 @@
 module Hydra
   module Derivatives
     class Processor
-      attr_accessor :object, :source_name, :directive
+      attr_accessor :object, :source_name, :directives
 
-      def initialize(obj, source_name, directive)
+      def initialize(obj, source_name, directives)
         self.object = obj
         self.source_name = source_name
-        self.directive = directive
+        self.directives = directives
       end
 
       def process

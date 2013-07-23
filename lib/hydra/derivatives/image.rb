@@ -2,8 +2,14 @@ module Hydra
   module Derivatives
     class Image < Processor
       def process
-        directive.each do |name, size| 
-          create_resized_image(output_datastream_id(name), size, new_mime_type)
+        directives.each do |name, args| 
+          size = args
+          output_datastream_name = output_datastream_id(name)
+          if args.kind_of? Hash
+            size = args[:size]
+            output_datastream_name = args[:datastream] if args[:datastream]
+          end
+          create_resized_image(output_datastream_name, size, new_mime_type)
         end
       end
 
@@ -15,9 +21,9 @@ module Hydra
       end
 
 
-      def create_resized_image(output_dsid, long_edge_size, mime_type, quality=nil)
+      def create_resized_image(output_dsid, size, mime_type, quality=nil)
         create_image(output_dsid, mime_type, quality) do |xfrm|
-          xfrm.change_geometry!("#{long_edge_size}x#{long_edge_size}") do |cols, rows, img|
+          xfrm.change_geometry!(size) do |cols, rows, img|
            img.resize!(cols, rows)
           end
         end
