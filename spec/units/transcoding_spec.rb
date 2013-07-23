@@ -20,6 +20,14 @@ describe "Transcoder" do
       makes_derivatives_of :content, based_on: :mime_type, when: 'audio/wav',
             derivatives: { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processors: :audio
 
+      # -g 30 enforces keyframe generation every second (30fps)
+      # -b:v is the video bitrate
+      # -acodec is the audio codec
+      size_attributes = "-s 320x240"
+      audio_attributes = "-ac 2 -ab 96k -ar 44100"
+      makes_derivatives_of :content, based_on: :mime_type, when: 'video/avi',
+            derivatives: { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processors: :video
+
       makes_derivatives_of :content, based_on: :mime_type, when: ['image/png', 'image/jpg'],
              derivatives: { :medium => "300x300>", :thumb => "100x100>" }
       
@@ -53,4 +61,16 @@ describe "Transcoder" do
     end
   end
 
+  describe "with an attached video" do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/countdown.avi', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'video/avi').tap { |t| t.content.content = attachment; t.save } }
+
+    it "should transcode" do
+      file.create_derivatives
+      file.datastreams['content_mp4'].should have_content
+      file.datastreams['content_mp4'].mimeType.should == 'video/mp4'
+      file.datastreams['content_webm'].should have_content 
+      file.datastreams['content_webm'].mimeType.should == 'video/webm'
+    end
+  end
 end
