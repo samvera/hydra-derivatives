@@ -1,0 +1,17 @@
+language: ruby
+rvm:
+  - 1.9.3
+  - 2.0.0
+notifications:
+  email:
+    recipients:
+      - "ul-dlt-applications@lists.psu.edu"
+      - "michael@psu.edu"
+    on_success: "change"
+    on_failure: "always"
+  irc:
+    channels:
+      - "irc.freenode.org#scholarsphere"
+      - "irc.freenode.org#projecthydra"
+    template:
+      - "%{repository}//%{branch}@%{commit} by %{author}: %{message} - %{build_url}"
