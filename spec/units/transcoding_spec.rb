@@ -60,7 +60,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached audio" do
+  describe "with an attached audio", unless: ENV['TRAVIS'] == 'true' do
     let(:attachment) { File.open(File.expand_path('../../fixtures/piano_note.wav', __FILE__))}
     let(:file) { GenericFile.new(mime_type: 'audio/wav').tap { |t| t.content.content = attachment; t.save } }
 
@@ -73,7 +73,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached video" do
+  describe "with an attached video", unless: ENV['TRAVIS'] == 'true' do
     let(:attachment) { File.open(File.expand_path('../../fixtures/countdown.avi', __FILE__))}
     let(:file) { GenericFile.new(mime_type: 'video/avi').tap { |t| t.content.content = attachment; t.save } }
 
