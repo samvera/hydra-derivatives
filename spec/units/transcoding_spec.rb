@@ -24,6 +24,10 @@ describe "Transcoder" do
           obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
         when 'image/png', 'image/jpg'
           obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+        when 'application/vnd.ms-powerpoint'
+          obj.transform_datastream :content, { :access => { :format=>'pdf' } }, processor: 'document'
+        when 'text/rtf'
+          obj.transform_datastream :content, { :preservation=> {:format => 'odf' }, :access => { :format=>'pdf' } }, processor: 'document'
         end
       end
       
@@ -34,7 +38,7 @@ describe "Transcoder" do
           transform_datastream :content, { :medium => {size: "200x300>", datastream: 'special_ds'} }
         end
       end
-      
+
     end
   end
   
@@ -101,6 +105,30 @@ describe "Transcoder" do
       file.datastreams['special_ds'].should have_content      
       file.datastreams['special_ds'].mimeType.should == 'image/png'
       file.datastreams['special_ds'].should have_content 
+    end
+  end
+
+  describe "with an attached Powerpoint", unless: ENV['TRAVIS'] == 'true' do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/FlashPix.ppt', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'application/vnd.ms-powerpoint').tap { |t| t.content.content = attachment; t.save } }
+
+    it "should transcode" do
+      file.create_derivatives
+      file.datastreams['content_access'].should have_content
+      file.datastreams['content_access'].mimeType.should == 'application/pdf'
+    end
+  end
+
+  describe "with an attached rich text format", unless: ENV['TRAVIS'] == 'true' do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/sample.rtf', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'text/rtf').tap { |t| t.content.content = attachment; t.save } }
+
+    it "should transcode" do
+      file.create_derivatives
+      file.datastreams['content_access'].should have_content
+      file.datastreams['content_access'].mimeType.should == 'application/pdf'
+      file.datastreams['content_preservation'].should have_content
+      file.datastreams['content_preservation'].mimeType.should == 'application/vnd.oasis.opendocument.text'
     end
   end
 end

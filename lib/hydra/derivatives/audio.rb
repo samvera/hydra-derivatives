@@ -5,9 +5,6 @@ module Hydra
 
       protected
 
-      def options_for(format)
-      end
-
       def new_mime_type(format)
         case format
         when 'mp3'
