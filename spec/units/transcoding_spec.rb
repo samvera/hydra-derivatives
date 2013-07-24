@@ -15,8 +15,6 @@ describe "Transcoder" do
       has_file_datastream 'content', type: ContentDatastream
 
       makes_derivatives do |obj| 
-        size_attributes = "-s 320x240"
-        audio_attributes = "-ac 2 -ab 96k -ar 44100"
         case obj.mime_type
         when 'application/pdf'
           obj.transform_datastream :content, { :thumb => "100x100>" }
@@ -24,15 +22,16 @@ describe "Transcoder" do
           obj.transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
         when 'video/avi'
           obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+        when 'image/png', 'image/jpg'
+          obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
         end
       end
       
-      makes_derivatives :generate_image_derivatives
+      makes_derivatives :generate_special_derivatives
       
-      def generate_image_derivatives
-        case mime_type
-        when 'image/png', 'image/jpg'
-          transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+      def generate_special_derivatives
+        if label == "special" && mime_type == 'image/png'
+          transform_datastream :content, { :medium => {size: "200x300>", datastream: 'special_ds'} }
         end
       end
       
@@ -89,6 +88,19 @@ describe "Transcoder" do
       file.datastreams['content_mp4'].mimeType.should == 'video/mp4'
       file.datastreams['content_webm'].should have_content 
       file.datastreams['content_webm'].mimeType.should == 'video/webm'
+    end
+  end
+  
+  describe "using callback methods" do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/world.png', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'image/png', label: "special").tap { |t| t.content.content = attachment; t.save } }
+
+    it "should transcode" do
+      file.datastreams.key?('special_ds').should be_false
+      file.create_derivatives
+      file.datastreams['special_ds'].should have_content      
+      file.datastreams['special_ds'].mimeType.should == 'image/png'
+      file.datastreams['special_ds'].should have_content 
     end
   end
 end

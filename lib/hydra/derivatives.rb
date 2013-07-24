@@ -73,7 +73,7 @@ module Hydra
     #   transform_datastream :content, { :thumb => "100x100>" }
     #
     # @example Specify the dsid for the output datastream
-    #   transform_datastream :content, { :thumb => "100x100>", datastream: 'thumbnail' }
+    #   transform_datastream :content, { :thumb => {size: "200x300>", datastream: 'thumbnail'} }
     #
     # @example Create multiple derivatives with one set of directives.  This will create content_thumb and content_medium
     #   transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
