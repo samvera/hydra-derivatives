@@ -52,8 +52,11 @@ module Hydra
     # You may want to run this job in the background as it may take a long time.
     def create_derivatives 
       if transformation_scheme.present?
-        transformation_scheme.each do |datastream, value|
-          transform_datastream(datastream, value) if self.datastreams[datastream.to_s].has_content?
+        transformation_scheme.each do |datastream_name, transform_blocks|
+          datastream = self.datastreams[datastream_name.to_s]
+          transform_blocks.each do |block| 
+            block.call(self, datastream) if datastream.has_content? 
+          end
         end
       else
         logger.warn "`create_derivatives' was called on an instance of #{self.class}, but no derivatives have been requested"
@@ -61,14 +64,9 @@ module Hydra
     end
 
     # Transform a single datastream
-    def transform_datastream(datastream, directive_list)
-      directive_list.each do |directive|
-        if directive.applies?(self)
-          processor = directive.processors ? Array(directive.processors).first : :image
-          "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, datastream, directive.derivatives).process
-        end
-      end
-
+    def transform_datastream(datastream, transform_parameters, opts={})
+      processor = opts[:processor] ? opts[:processor] : :image
+      "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, datastream.dsid, transform_parameters).process
     end
 
     class TransformationDirective
@@ -105,10 +103,10 @@ module Hydra
       #
       #    makes_derivatives_of :content, when: :mime_type, is_one_of: ['image/png', 'image/jpg'],
       #        derivatives: { :medium => "300x300>", :thumb => "100x100>" }
-      def makes_derivatives_of(datastream, args = {})
+      def makes_derivatives_of(datastream, &transform_block)
         self.transformation_scheme ||= {}
         self.transformation_scheme[datastream.to_sym] ||= []
-        self.transformation_scheme[datastream.to_sym] << TransformationDirective.new(args)
+        self.transformation_scheme[datastream.to_sym] << transform_block
       end
     end
   end

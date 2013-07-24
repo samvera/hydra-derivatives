@@ -14,25 +14,24 @@ describe "Transcoder" do
       delegate :mime_type, :to => :characterization, :unique => true
       has_file_datastream 'content', type: ContentDatastream
 
-      makes_derivatives_of :content, when: :mime_type, is_one_of: 'application/pdf',
-            derivatives: { :thumb => "100x100>" }
-
-      makes_derivatives_of :content, when: :mime_type, is_one_of: 'audio/wav',
-            derivatives: { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processors: :audio
-
-      # -g 30 enforces keyframe generation every second (30fps)
-      # -b:v is the video bitrate
-      # -acodec is the audio codec
-      size_attributes = "-s 320x240"
-      audio_attributes = "-ac 2 -ab 96k -ar 44100"
-      makes_derivatives_of :content, when: :mime_type, is: 'video/avi',
-            derivatives: { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processors: :video
-
-      makes_derivatives_of :content, when: :mime_type, is_one_of: ['image/png', 'image/jpg'],
-             derivatives: { :medium => "300x300>", :thumb => "100x100>" }
+      makes_derivatives_of :content do |obj, ds| 
+        size_attributes = "-s 320x240"
+        audio_attributes = "-ac 2 -ab 96k -ar 44100"
+        case obj.mime_type
+        when 'application/pdf'
+          obj.transform_datastream ds, { :thumb => "100x100>" }
+        when 'audio/wav'
+          obj.transform_datastream ds, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+        when 'video/avi'
+          obj.transform_datastream ds, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+        when 'image/png', 'image/jpg'
+          obj.transform_datastream ds, { :medium => "300x300>", :thumb => "100x100>" }
+        end
+      end
       
     end
   end
+  
   describe "with an attached image" do
     let(:attachment) { File.open(File.expand_path('../../fixtures/world.png', __FILE__))}
     let(:file) { GenericFile.new(mime_type: 'image/png').tap { |t| t.content.content = attachment; t.save } }
