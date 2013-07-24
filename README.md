@@ -10,15 +10,47 @@ If you have an ActiveFedora class like this:
         
         has_file_datastream :content
         attr_accessor :mime_type
+        
+        # Use a block to declare which derivatives you want to generate
+        makes_derivatives do |obj| 
+          case obj.mime_type
+          when 'application/pdf'
+            obj.transform_datastream :content, { :thumb => "100x100>" }
+          when 'audio/wav'
+            obj.transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+          when 'video/avi'
+            obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+          when 'image/png', 'image/jpg'
+            obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+          end
+        end
+    end
+```
 
-        makes_derivatives_of :content, when: :mime_type, is_one_of: ['image/tiff', 'image/jpeg],
-             derivatives: { :thumbnail => {size: "200x150>", datastream: 'thumbnail'} }
-        makes_derivatives_of :content, when: :mime_type, is: 'application/pdf',
-             derivatives: { :thumbnail => {size: "338x493", datastream: 'thumbnail'} }
-        makes_derivatives_of :content, when: :mime_type, is_one_of: ['video/mpeg', 'video/avi'],
-             derivatives: { :webm => {format: "webm", datastream: 'webm'}, :mp4 => {format: "mp4", datastream: 'mp4'} }, processors: :video
-        makes_derivatives_of :content, when: :mime_type, is_one_of: ['audio/wav', 'audio/mpeg'],
-             derivatives: {  :mp3 => {format: 'mp3', datastream: 'mp3'}, :ogg => {format: 'ogg', datastream: 'ogg'} }, processors: :audio
+Or a class like this:
+
+```ruby
+    class GenericFile < ActiveFedora::Base
+        include Hydra::Derivatives
+    
+        has_file_datastream :content
+        attr_accessor :mime_type
+
+        # Use a callback method to declare which derivatives you want
+        makes_derivatives :generate_derivatives
+        
+        def generate_derivatives
+          case mime_type
+          when 'application/pdf'
+            transform_datastream :content, { :thumb => "100x100>" }
+          when 'audio/wav'
+            transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+          when 'video/avi'
+            transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+          when 'image/png', 'image/jpg'
+            transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+          end
+        end
     end
 ```
 
