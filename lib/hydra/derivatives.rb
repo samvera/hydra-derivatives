@@ -10,37 +10,26 @@ module Hydra
     autoload :Ffmpeg
     autoload :Video
     autoload :Audio
+    autoload :Config
     autoload :ExtractMetadata
 
-    def self.ffmpeg_path=(val)
-      @ffmpeg_path = val
-    end
-    def self.ffmpeg_path
-      #Sufia.config.ffmpeg_path
-      @ffmpeg_path ||= 'ffmpeg'
+    def self.config
+      @config ||= reset_config!
     end
 
-    def self.temp_file_base=(val)
-      @temp_file_base = val
-    end
-    def self.temp_file_base
-      #Sufia.config.temp_file_base
-      @temp_file_base ||= '/tmp'
+    def self.reset_config!
+      @config = Config.new
     end
 
-    def self.fits_path=(val)
-      @fits_path = val
-    end
-    def self.fits_path
-      #Sufia.config.fits_path
-      @fits_path ||= 'fits.sh'
-    end
-
-    def self.enable_ffmpeg=(val)
-      @enable_ffmpeg = val
-    end
-    def self.enable_ffmpeg
-      @enable_ffmpeg ||= true
+    [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :enable_ffmpeg].each do |method|
+      module_eval <<-RUBY
+        def self.#{method.to_s}
+          config.#{method.to_s}
+        end
+        def self.#{method.to_s}= val
+          config.#{method.to_s}= val
+        end
+      RUBY
     end
 
     included do
