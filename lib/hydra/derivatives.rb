@@ -44,18 +44,19 @@ module Hydra
     end
 
     included do
-      class_attribute :transformation_scheme
+      class_attribute :transformation_schemes
     end
 
 
     # Runs all of the transformations immediately.
     # You may want to run this job in the background as it may take a long time.
     def create_derivatives 
-      if transformation_scheme.present?
-        transformation_scheme.each do |datastream_name, transform_blocks|
-          datastream = self.datastreams[datastream_name.to_s]
-          transform_blocks.each do |block| 
-            block.call(self, datastream) if datastream.has_content? 
+      if transformation_schemes.present?
+        transformation_schemes.each do |transform_scheme|
+          if transform_scheme.instance_of?(Proc)
+            transform_scheme.call(self) 
+          else
+            send(transform_scheme)
           end
         end
       else
@@ -63,50 +64,59 @@ module Hydra
       end
     end
 
-    # Transform a single datastream
-    def transform_datastream(datastream, transform_parameters, opts={})
+    # Create derivatives from a datastream according to transformation directives
+    # @param datastream_name 
+    # @param [Hash] transform_directives - each key corresponds to a desired derivative.  Associated values vary according to processor being used.
+    # @param [Hash] opts for specifying things like choice of :processor (processor defaults to :image)
+    # 
+    # @example This will create content_thumb
+    #   transform_datastream :content, { :thumb => "100x100>" }
+    #
+    # @example Specify the dsid for the output datastream
+    #   transform_datastream :content, { :thumb => "100x100>", datastream: 'thumbnail' }
+    #
+    # @example Create multiple derivatives with one set of directives.  This will create content_thumb and content_medium
+    #   transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+    #
+    # @example Specify which processor you want to use (defaults to :image)
+    #   transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+    #   transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+    #
+    def transform_datastream(datastream_name, transform_directives, opts={})
       processor = opts[:processor] ? opts[:processor] : :image
-      "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, datastream.dsid, transform_parameters).process
+      "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, datastream_name, transform_directives).process
     end
 
-    class TransformationDirective
-      attr_accessor :differentiator, :selector, :derivatives, :processors
-      # @param [Hash] args the options 
-      # @option args [Symbol] :when the method that holds the differentiator column
-      # @option args [String, Array] :is_one_of activates this set of derivatives when the the differentiator column is includes one of these. 
-      # @option args [String, Array] :is alias for :is_one_of 
-      # @option args [Hash] :derivatives the derivatives to be produced
-      # @option args [Symbol, Array] :processors the processors to run to produce the derivatives 
-      def initialize(args)
-        self.differentiator = args[:when]
-        self.selector = args[:is_one_of] || args[:is]
-        self.derivatives = args[:derivatives]
-        self.processors = args[:processors]
-      end
-
-      def applies?(object)
-        selector.include?(object.send(differentiator))
-      end
-    end
 
     module ClassMethods
-      # @param [Symbol, String] datastream the datastream to operate on
-      # @param [Hash] args the options 
-      # @option args [Symbol] :when the method that holds the differentiator column
-      # @option args [String, Array] :is_one_of activates this set of derivatives when the the differentiator column is includes one of these. 
-      # @option args [String, Array] :is alias for :is_one_of 
-      # @option args [Hash] :derivatives the derivatives to be produced
-      # @option args [Symbol, Array] :processors the processors to run to produce the derivatives 
-      # @example
-      #    makes_derivatives_of :content, when: :mime_type, is: 'text/pdf',
-      #        derivatives: { :text => { :quality => :better }, processors: [:ocr]}
+      # Register transformation schemes for generating derivatives.  
+      # You can do this using a block or by defining a callback method.
       #
-      #    makes_derivatives_of :content, when: :mime_type, is_one_of: ['image/png', 'image/jpg'],
-      #        derivatives: { :medium => "300x300>", :thumb => "100x100>" }
-      def makes_derivatives_of(datastream, &transform_block)
-        self.transformation_scheme ||= {}
-        self.transformation_scheme[datastream.to_sym] ||= []
-        self.transformation_scheme[datastream.to_sym] << transform_block
+      # @example Define transformation scheme using a block
+      #    makes_derivatives do |obj| 
+      #      case obj.mime_type
+      #      when 'application/pdf'
+      #        obj.transform_datastream :content, { :thumb => "100x100>" }
+      #      when 'audio/wav'
+      #        obj.transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+      #
+      # @example Define transformation scheme using a callback method
+      #      makes_derivatives :generate_image_derivatives
+      #
+      #      def generate_image_derivatives
+      #        case mime_type
+      #        when 'image/png', 'image/jpg'
+      #          transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+      #        end
+      #      end
+      def makes_derivatives(*callback_method_names, &block)
+        self.transformation_schemes ||= []
+        if block_given?
+          self.transformation_schemes << block
+        end
+        callback_method_names.each do |callback_name|
+          self.transformation_schemes << callback_name
+        end
       end
     end
   end

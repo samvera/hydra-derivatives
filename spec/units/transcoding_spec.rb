@@ -14,18 +14,25 @@ describe "Transcoder" do
       delegate :mime_type, :to => :characterization, :unique => true
       has_file_datastream 'content', type: ContentDatastream
 
-      makes_derivatives_of :content do |obj, ds| 
+      makes_derivatives do |obj| 
         size_attributes = "-s 320x240"
         audio_attributes = "-ac 2 -ab 96k -ar 44100"
         case obj.mime_type
         when 'application/pdf'
-          obj.transform_datastream ds, { :thumb => "100x100>" }
+          obj.transform_datastream :content, { :thumb => "100x100>" }
         when 'audio/wav'
-          obj.transform_datastream ds, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+          obj.transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
         when 'video/avi'
-          obj.transform_datastream ds, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+          obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+        end
+      end
+      
+      makes_derivatives :generate_image_derivatives
+      
+      def generate_image_derivatives
+        case mime_type
         when 'image/png', 'image/jpg'
-          obj.transform_datastream ds, { :medium => "300x300>", :thumb => "100x100>" }
+          transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
         end
       end
       
