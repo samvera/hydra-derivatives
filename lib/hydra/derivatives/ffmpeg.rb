@@ -14,9 +14,11 @@ module Hydra
 
       def process
         directives.each do |name, args| 
-          raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{args}" unless args[:format]
+          format = args[:format]
+          raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{args}" unless format
           # TODO if the source is in the correct format, we could just copy it and skip transcoding.
-          encode_datastream(output_datastream_id(name), args[:format], new_mime_type(args[:format]), options_for(args[:format]))
+          output_datastream_name = args[:datastream] || output_datastream_id(name)
+          encode_datastream(output_datastream_name, format, new_mime_type(format), options_for(format))
         end
       end
 
