@@ -67,7 +67,15 @@ Then when you call `obj.create_derivatives` a new datastream, called 'thumbnail'
 
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
-You may want to adjust your path to add LibreOffice and Fits.sh support:
+# Installation 
+
+## Dependencies
+
+* [Fits](https://code.google.com/p/fits/)
+* [LibreOffice](https://www.libreoffice.org/)
+
+To enable LibreOffice and Fits.sh support, you must make sure they are on your path.  Most people will put that in their .bash_profile or somewhere similar.  For example:
+
 ```bash
 # in .bash_profile
 export PATH=${PATH}:/Users/justin/workspace/fits-0.6.2:/Applications/LibreOffice.app/Contents/MacOS
