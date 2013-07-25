@@ -23,7 +23,7 @@ describe "Transcoder" do
         when 'video/avi'
           obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
         when 'image/png', 'image/jpg'
-          obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+          obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>", :access => {format: 'jpg', datastream: 'access'} }
         when 'application/vnd.ms-powerpoint'
           obj.transform_datastream :content, { :access => { :format=>'pdf' } }, processor: 'document'
         when 'text/rtf'
@@ -53,6 +53,8 @@ describe "Transcoder" do
       file.datastreams['content_medium'].mimeType.should == 'image/png'
       file.datastreams['content_thumb'].should have_content 
       file.datastreams['content_thumb'].mimeType.should == 'image/png'
+      file.datastreams['access'].should have_content 
+      file.datastreams['access'].mimeType.should == 'image/jpeg'
       file.datastreams.key?('content_text').should be_false 
     end
   end
@@ -87,7 +89,7 @@ describe "Transcoder" do
     let(:file) { GenericFile.new(mime_type: 'audio/wav').tap { |t| t.content.content = attachment; t.content.mimeType = 'audio/vnd.wav'; t.save } }
 
     it "should transcode" do
-      expect(logger).to receive(:warn).with("Unable to find a registered mime type for \"audio/vnd.wav\" on #{file.pid}").twice
+      expect(logger).to receive(:warn).with("Unable to find a registered mime type for \"audio/vnd.wav\" on #{file.pid}").at_least(1).times
       file.create_derivatives
       file.datastreams['content_mp3'].should have_content
       file.datastreams['content_mp3'].mimeType.should == 'audio/mpeg'
