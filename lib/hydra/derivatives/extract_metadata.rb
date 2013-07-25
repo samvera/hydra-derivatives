@@ -14,8 +14,9 @@ module Hydra
 
       def to_tempfile &block
         return unless has_content?
-        list_of_extensions = MIME::Types[mimeType].first.extensions
-        extension = ".#{list_of_extensions.first}" if list_of_extensions
+        type = MIME::Types[mimeType].first
+        logger.warn "Unable to find a registered mime type for #{mimeType.inspect} on #{pid}" unless type
+        extension = type ? ".#{type.extensions.first}" : ''
 
         f = Tempfile.new(["#{pid}-#{dsVersionID}", extension])
         f.binmode

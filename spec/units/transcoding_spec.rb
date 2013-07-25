@@ -82,6 +82,18 @@ describe "Transcoder" do
     end
   end
 
+  describe "when the source datastrem has an unknown mime_type" do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/piano_note.wav', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'audio/wav').tap { |t| t.content.content = attachment; t.content.mimeType = 'audio/vnd.wav'; t.save } }
+
+    it "should transcode" do
+      expect(logger).to receive(:warn).with("Unable to find a registered mime type for \"audio/vnd.wav\" on #{file.pid}").twice
+      file.create_derivatives
+      file.datastreams['content_mp3'].should have_content
+      file.datastreams['content_mp3'].mimeType.should == 'audio/mpeg'
+    end
+  end
+
   describe "with an attached video", unless: ENV['TRAVIS'] == 'true' do
     let(:attachment) { File.open(File.expand_path('../../fixtures/countdown.avi', __FILE__))}
     let(:file) { GenericFile.new(mime_type: 'video/avi').tap { |t| t.content.content = attachment; t.save } }
@@ -107,6 +119,7 @@ describe "Transcoder" do
       file.datastreams['special_ds'].should have_content 
     end
   end
+
 
   describe "with an attached Powerpoint", unless: ENV['TRAVIS'] == 'true' do
     let(:attachment) { File.open(File.expand_path('../../fixtures/FlashPix.ppt', __FILE__))}
