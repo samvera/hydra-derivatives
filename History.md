@@ -1,3 +1,6 @@
+## 0.0.4 (2013-07-25)
+- Handle invalid mime-type on the datastream [Justin Coyne]
+
 ## 0.0.3 (2013-07-25)
 - Added LibreOffice support [Justin Coyne]
 - Updating README [Matt Zumwalt]
