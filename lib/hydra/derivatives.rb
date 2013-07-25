@@ -11,7 +11,9 @@ module Hydra
     autoload :Video
     autoload :Audio
     autoload :Config
+    autoload :Document
     autoload :ExtractMetadata
+    autoload :ShellBasedProcessor
 
     def self.config
       @config ||= reset_config!

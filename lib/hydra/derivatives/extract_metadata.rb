@@ -14,8 +14,10 @@ module Hydra
 
       def to_tempfile &block
         return unless has_content?
-        tmp_base = Hydra::Derivatives.temp_file_base
-        f = Tempfile.new("#{pid}-#{dsVersionID}")
+        list_of_extensions = MIME::Types[mimeType].first.extensions
+        extension = ".#{list_of_extensions.first}" if list_of_extensions
+
+        f = Tempfile.new(["#{pid}-#{dsVersionID}", extension])
         f.binmode
         if content.respond_to? :read
           f.write(content.read)
