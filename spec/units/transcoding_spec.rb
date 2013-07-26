@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Transcoder" do
-  before do
+  before(:all) do
     class ContentDatastream < ActiveFedora::Datastream
       include Hydra::Derivatives::ExtractMetadata
     end
@@ -40,6 +40,11 @@ describe "Transcoder" do
       end
 
     end
+  end
+
+  after(:all) do
+    Object.send(:remove_const, :GenericFile);
+    Object.send(:remove_const, :ContentDatastream);
   end
   
   describe "with an attached image" do
@@ -89,7 +94,7 @@ describe "Transcoder" do
     let(:file) { GenericFile.new(mime_type: 'audio/wav').tap { |t| t.content.content = attachment; t.content.mimeType = 'audio/vnd.wav'; t.save } }
 
     it "should transcode" do
-      expect(logger).to receive(:warn).with("Unable to find a registered mime type for \"audio/vnd.wav\" on #{file.pid}").at_least(1).times
+      expect(logger).to receive(:warn).with("Unable to find a registered mime type for \"audio/vnd.wav\" on #{file.pid}").twice
       file.create_derivatives
       file.datastreams['content_mp3'].should have_content
       file.datastreams['content_mp3'].mimeType.should == 'audio/mpeg'
