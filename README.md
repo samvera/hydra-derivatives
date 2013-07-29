@@ -69,14 +69,25 @@ We recommend you run `obj.create_derivatives` in a background worker, because so
 
 # Installation 
 
+Just add `gem 'hydra-derivatives'` to your Gemfile.
+
 ## Dependencies
 
 * [Fits](https://code.google.com/p/fits/)
+* [FFMpeg](http://www.ffmpeg.org/)
 * [LibreOffice](https://www.libreoffice.org/)
 
-To enable LibreOffice and Fits.sh support, you must make sure they are on your path.  Most people will put that in their .bash_profile or somewhere similar.  For example:
+To enable LibreOffice, FFMpeg and Fits.sh support, you make sure they are on your path.  Most people will put that in their .bash_profile or somewhere similar.  For example:
 
 ```bash
 # in .bash_profile
 export PATH=${PATH}:/Users/justin/workspace/fits-0.6.2:/Applications/LibreOffice.app/Contents/MacOS
+```
+
+Alternatively, you can configure their paths:
+```ruby
+Hydra::Derivatives.ffmpeg_path = '/opt/local/ffmpeg/bin/ffmpeg'
+Hydra::Derivatives.fits_path = '/opt/local/fits/bin/fits.sh'
+Hydra::Derivatives.libreoffice_path = '/opt/local/libreoffice_path/bin/soffice'
+
 ```
