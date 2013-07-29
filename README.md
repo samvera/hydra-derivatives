@@ -47,8 +47,8 @@ Or a class like this:
             transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
           when 'video/avi'
             transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
-          when 'image/png', 'image/jpg'
-            transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
+          when 'image/png', 'image/jpg', 'image/tiff'
+            transform_datastream :content, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
           end
         end
     end
@@ -63,7 +63,7 @@ And you add some content to it:
    obj.save
 ```
 
-Then when you call `obj.create_derivatives` a new datastream, called 'thumbnail' will have been created, with a downsized image in it.
+Then when you call `obj.create_derivatives` two new datastreams, 'thumbnail' and 'content_medium', will have been created with downsized images in them.
 
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
