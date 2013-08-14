@@ -28,7 +28,7 @@ module Hydra
       def codecs(format)
         case format
         when 'mp4'
-          "-vcodec libx264 -acodec libfaac"
+          "-vcodec libx264 -acodec libfdk_aac"
         when 'webm'
           "-acodec libvorbis"
         else
