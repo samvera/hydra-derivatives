@@ -1,5 +1,4 @@
 require 'active_fedora'
-require 'RMagick'
 module Hydra
   module Derivatives
     extend ActiveSupport::Concern
