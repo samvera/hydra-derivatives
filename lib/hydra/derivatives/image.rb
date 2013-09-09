@@ -1,3 +1,4 @@
+require 'mini_magick'
 module Hydra
   module Derivatives
     class Image < Processor
@@ -16,33 +17,32 @@ module Hydra
         MIME::Types.type_for(format).first.to_s
       end
 
-      def create_resized_image(output_ds, size, format, quality=nil)
-        create_image(output_ds, format, quality) do |xfrm|
-          if size
-            xfrm.change_geometry!(size) do |cols, rows, img|
-             img.resize!(cols, rows)
-            end
-          end
+      def create_resized_image(output_datastream, size, format, quality=nil)
+        create_image(output_datastream, format, quality) do |xfrm|
+          xfrm.resize(size) if size.present?
         end
-        output_ds.mimeType = new_mime_type(format)
+        output_datastream.mimeType = new_mime_type(format)
       end
 
       def create_image(output_datastream, format, quality=nil)
         xfrm = load_image_transformer
         yield(xfrm) if block_given?
-        output_datastream.content = if quality
-          xfrm.to_blob { self.quality = quality; self.format = format.upcase }
-        else
-          xfrm.to_blob { self.format = format.upcase }
-        end
+        xfrm.format(format)
+        xfrm.quality(quality.to_s) if quality
+        write_image(output_datastream, xfrm)
+      end
+
+      def write_image(output_datastream, xfrm)
+        stream = StringIO.new
+        xfrm.write(stream)
+        stream.rewind
+        output_datastream.content = stream
       end
 
       # Override this method if you want a different transformer, or need to load the 
       # raw image from a different source (e.g.  external datastream)
       def load_image_transformer
-        Magick::ImageList.new.tap do |xformer|
-          xformer.from_blob(source_datastream.content)
-        end
+        MiniMagick::Image.read(source_datastream.content)
       end
     end
   end
