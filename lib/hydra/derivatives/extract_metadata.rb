@@ -12,23 +12,22 @@ module Hydra
         out
       end
 
-      def to_tempfile &block
+      def to_tempfile(&block)
         return unless has_content?
         type = MIME::Types[mimeType].first
         logger.warn "Unable to find a registered mime type for #{mimeType.inspect} on #{pid}" unless type
         extension = type ? ".#{type.extensions.first}" : ''
 
-        f = Tempfile.new(["#{pid}-#{dsVersionID}", extension])
-        f.binmode
-        if content.respond_to? :read
-          f.write(content.read)
-        else
-          f.write(content)
+        Tempfile.open(["#{pid}-#{dsVersionID}", extension]) do |f|
+          f.binmode
+          if content.respond_to? :read
+            f.write(content.read)
+          else
+            f.write(content)
+          end
+          content.rewind if content.respond_to? :rewind
+          yield(f)
         end
-        f.close
-        content.rewind if content.respond_to? :rewind
-        yield(f)
-        f.unlink
       end
 
       private 
