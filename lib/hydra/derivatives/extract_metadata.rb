@@ -26,6 +26,7 @@ module Hydra
             f.write(content)
           end
           content.rewind if content.respond_to? :rewind
+          f.rewind
           yield(f)
         end
       end
