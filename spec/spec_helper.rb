@@ -7,3 +7,4 @@ require 'hydra/derivatives'
 RSpec.configure do |config|
 end
 
+$in_travis = !ENV['TRAVIS'].nil? && ENV['TRAVIS'] == 'true'
