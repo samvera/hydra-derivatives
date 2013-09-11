@@ -14,7 +14,7 @@ describe "Transcoder" do
       delegate :mime_type, :to => :characterization, :unique => true
       has_file_datastream 'content', type: ContentDatastream
 
-      makes_derivatives do |obj| 
+      makes_derivatives do |obj|
         case obj.mime_type
         when 'application/pdf'
           obj.transform_datastream :content, { :thumb => "100x100>" }
@@ -25,10 +25,15 @@ describe "Transcoder" do
         when 'image/png', 'image/jpg'
           obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>", :access => {format: 'jpg', datastream: 'access'} }
         when 'application/vnd.ms-powerpoint'
-          obj.transform_datastream :content, { :access => { :format=>'pdf' } }, processor: 'document'
+          obj.transform_datastream :content, { :preservation=> {:format => 'pptx'}, :access => { :format=>'pdf' } }, processor: 'document'
         when 'text/rtf'
           obj.transform_datastream :content, { :preservation=> {:format => 'odf' }, :access => { :format=>'pdf' } }, processor: 'document'
+        when 'application/msword'
+          obj.transform_datastream :content, { :access => { :format=>'pdf' }, :preservation=> {:format => 'docx' } }, processor: 'document'
+        when 'application/vnd.ms-excel'
+          obj.transform_datastream :content, { :access => { :format=>'pdf' }, :preservation=> {:format => 'xslx' } }, processor: 'document'
         end
+
       end
       
       makes_derivatives :generate_special_derivatives
@@ -43,6 +48,7 @@ describe "Transcoder" do
   end
 
   after(:all) do
+    GenericFile.all.each(&:destroy)
     Object.send(:remove_const, :GenericFile);
     Object.send(:remove_const, :ContentDatastream);
   end
@@ -136,6 +142,8 @@ describe "Transcoder" do
       file.create_derivatives
       file.datastreams['content_access'].should have_content
       file.datastreams['content_access'].mimeType.should == 'application/pdf'
+      file.datastreams['content_preservation'].should have_content
+      file.datastreams['content_preservation'].mimeType.should == 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
     end
   end
 
@@ -151,4 +159,32 @@ describe "Transcoder" do
       file.datastreams['content_preservation'].mimeType.should == 'application/vnd.oasis.opendocument.text'
     end
   end
+
+  describe "with an attached word doc format", unless: ENV['TRAVIS'] == 'true' do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/test.doc', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'application/msword').tap { |t| t.content.content = attachment; t.save } }
+
+    it "should transcode" do
+      file.create_derivatives
+      file.datastreams['content_access'].should have_content
+      file.datastreams['content_access'].mimeType.should == 'application/pdf'
+      file.datastreams['content_preservation'].should have_content
+      file.datastreams['content_preservation'].mimeType.should == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    end
+  end
+
+  describe "with an attached excel format", unless: ENV['TRAVIS'] == 'true' do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/test.xls', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'application/vnd.ms-excel').tap { |t| t.content.content = attachment; t.save } }
+
+    it "should transcode" do
+      file.create_derivatives
+      puts file.datastreams.inspect
+      file.datastreams['content_access'].should have_content
+      file.datastreams['content_access'].mimeType.should == 'application/pdf'
+      file.datastreams['content_preservation'].should have_content
+      file.datastreams['content_preservation'].mimeType.should == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    end
+  end
+
 end
