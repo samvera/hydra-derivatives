@@ -27,6 +27,12 @@ module Hydra
           'application/pdf'
         when 'odf'
           'application/vnd.oasis.opendocument.text'
+        when 'docx'
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        when 'xslx'
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        when 'pptx'
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation'
         else
           raise "I don't know about the format '#{format}'"
         end
