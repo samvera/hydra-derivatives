@@ -1,5 +1,6 @@
 hydra-derivatives
 =================
+[![Gem Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives)
 
 Derivative generation for hydra
 
