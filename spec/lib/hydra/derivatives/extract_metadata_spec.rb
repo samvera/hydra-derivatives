@@ -24,7 +24,7 @@ module Hydra::Derivatives
         its(:extract_metadata) { should be_nil}
       end
 
-      context 'with content' do
+      context 'with content', unless: ENV['TRAVIS'] == 'true' do
         let(:mime_type) { 'image/jpeg' }
         its(:extract_metadata) { should match("<identity format=\"Plain text\" mimetype=\"text/plain\"")}
       end
