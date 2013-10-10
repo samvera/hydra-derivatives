@@ -1,58 +1,24 @@
-require 'open3'
+require 'hydra-file_characterization'
 module Hydra
   module Derivatives
     module ExtractMetadata
-      include Open3
 
       def extract_metadata
-        out = nil
-        to_tempfile do |f|
-          out = run_fits!(f.path)
-        end
-        out
-      end
-
-      def to_tempfile(&block)
         return unless has_content?
-        type = MIME::Types[mimeType].first
-        logger.warn "Unable to find a registered mime type for #{mimeType.inspect} on #{pid}" unless type
-        extension = type ? ".#{type.extensions.first}" : ''
-
-        Tempfile.open(["#{pid}-#{dsVersionID}", extension]) do |f|
-          f.binmode
-          if content.respond_to? :read
-            f.write(content.read)
-          else
-            f.write(content)
-          end
-          content.rewind if content.respond_to? :rewind
-          f.rewind
-          yield(f)
+        Hydra::FileCharacterization.characterize(content, filename_for_characterization, :fits) do |config|
+          config[:fits] = Hydra::Derivatives.fits_path
         end
       end
 
-      private 
+      protected
 
-
-        def run_fits!(file_path)
-            command = "#{fits_path} -i \"#{file_path}\""
-            stdin, stdout, stderr, wait_thr = popen3(command)
-            stdin.close
-            out = stdout.read
-            stdout.close
-            err = stderr.read
-            stderr.close
-            exit_status = wait_thr.value
-            raise "Unable to execute command \"#{command}\"\n#{err}" unless exit_status.success?
-            out
-        end
-
-
-        def fits_path
-          Hydra::Derivatives.fits_path
-        end
-
+      def filename_for_characterization
+        mime_type = MIME::Types[mimeType].first
+        logger.warn "Unable to find a registered mime type for #{mimeType.inspect} on #{pid}" unless mime_type
+        extension = mime_type ? ".#{mime_type.extensions.first}" : ''
+        "#{pid}-#{dsVersionID}#{extension}"
       end
+
     end
+  end
 end
-
