@@ -25,6 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'active-fedora'
   spec.add_dependency 'hydra-file_characterization'
   spec.add_dependency 'mini_magick'
+  spec.add_dependency 'streamio-ffmpeg'
   spec.add_dependency 'activesupport', '>= 3.2.13', '< 5.0'
 end
 
