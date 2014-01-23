@@ -19,6 +19,7 @@ If you have an ActiveFedora class like this:
             obj.transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
           when 'video/avi'
             obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+            obj.transform_datastream :content, { :thumb => {format: 'jpeg'} }, processor: :video_still
           when 'image/png', 'image/jpg'
             obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>" }
           end
@@ -46,6 +47,7 @@ Or a class like this:
             transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
           when 'video/avi'
             transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+            transform_datastream :content, { :thumb => {format: 'jpeg'} }, processor: :video_still
           when 'image/png', 'image/jpg', 'image/tiff'
             transform_datastream :content, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
           end

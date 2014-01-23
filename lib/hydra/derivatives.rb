@@ -10,6 +10,7 @@ module Hydra
     autoload :Image
     autoload :Ffmpeg
     autoload :Video
+    autoload :VideoStill
     autoload :Audio
     autoload :Config
     autoload :Document

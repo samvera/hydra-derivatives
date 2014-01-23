@@ -24,6 +24,7 @@ describe "Transcoder" do
           obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
         when 'image/png', 'image/jpg'
           obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>", :access => {format: 'jpg', datastream: 'access'} }
+          obj.transform_datastream :content, { :thumb => {format: 'jpeg'} }, processor: :video_still
         when 'application/vnd.ms-powerpoint'
           obj.transform_datastream :content, { :preservation=> {:format => 'pptx'}, :access => { :format=>'pdf' } }, processor: 'document'
         when 'text/rtf'
@@ -117,6 +118,8 @@ describe "Transcoder" do
       file.datastreams['content_mp4'].mimeType.should == 'video/mp4'
       file.datastreams['content_webm'].should have_content 
       file.datastreams['content_webm'].mimeType.should == 'video/webm'
+      file.datastreams['content_thumb'].should have_content 
+      file.datastreams['content_thumb'].mimeType.should == 'image/jpeg'
     end
   end
   
