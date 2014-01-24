@@ -6,7 +6,17 @@ module Hydra
       protected
 
       def options_for(format)
-        "-s #{size_attributes} #{video_attributes} #{codecs(format)} #{audio_attributes}"
+        input_options=""
+        output_options = "-s #{size_attributes} #{codecs(format)}"
+
+        if (format == "jpg")
+          input_options +=" -itsoffset -2"
+          output_options+= " -vframes 1 -an -f rawvideo"
+        else
+          output_options +=" #{video_attributes} #{audio_attributes}"
+        end
+
+        { Ffmpeg::OUTPUT_OPTIONS => output_options, Ffmpeg::INPUT_OPTIONS => input_options}
       end
 
       def video_bitrate
@@ -30,14 +40,18 @@ module Hydra
         when 'mp4'
           "-vcodec libx264 -acodec libfdk_aac"
         when 'webm'
-          "-acodec libvorbis"
+          "-vcodec libvpx -acodec libvorbis"
+        when "mkv"
+          "-vcodec ffv1"
+        when "jpg"
+          "-vcodec mjpeg"
         else
           raise ArgumentError, "Unknown format `#{format}'"
         end
       end
 
       def new_mime_type(format)
-        "video/#{format}"
+        format == "jpg" ? "image/jpeg" : "video/#{format}"
       end
     end
   end
