@@ -33,6 +33,14 @@ describe "Transcoder" do
           obj.transform_datastream :content, { :access => { :format=>'pdf' }, :preservation=> {:format => 'docx' } }, processor: 'document'
         when 'application/vnd.ms-excel'
           obj.transform_datastream :content, { :access => { :format=>'pdf' }, :preservation=> {:format => 'xslx' } }, processor: 'document'
+        when 'image/tiff'
+          obj.transform_datastream :content, { 
+            resized: { recipe: :default, resize: "600x600>", datastream: 'resized' },
+            config_lookup: { recipe: :default, datastream: 'config_lookup' },
+            string_recipe: { recipe: '-quiet', datastream: 'string_recipe' },
+            diy: { }
+          }, processor: 'jpeg2k_image'
+
         end
 
       end
@@ -187,6 +195,23 @@ describe "Transcoder" do
       file.datastreams['content_access'].mimeType.should == 'application/pdf'
       file.datastreams['content_preservation'].should have_content
       file.datastreams['content_preservation'].mimeType.should == 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    end
+  end
+
+  describe "with an attached tiff", unless: ENV['TRAVIS'] == 'true' do
+
+    let(:attachment) { File.open(File.expand_path('../../fixtures/test.tif', __FILE__))}
+    let(:file) { GenericFile.new(mime_type: 'image/tiff').tap { |t| t.content.content = attachment; t.save } }
+    it "should transcode" do
+      file.create_derivatives
+      file.datastreams['content_diy'].should have_content
+      file.datastreams['content_diy'].mimeType.should == 'image/jp2'
+      file.datastreams['config_lookup'].should have_content
+      file.datastreams['config_lookup'].mimeType.should == 'image/jp2'
+      file.datastreams['resized'].should have_content
+      file.datastreams['resized'].mimeType.should == 'image/jp2'
+      file.datastreams['string_recipe'].should have_content
+      file.datastreams['string_recipe'].mimeType.should == 'image/jp2'
     end
   end
 
