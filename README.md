@@ -72,11 +72,12 @@ Just add `gem 'hydra-derivatives'` to your Gemfile.
 
 ## Dependencies
 
-* [Fits](https://code.google.com/p/fits/)
+* [FITS](http://fitstool.org/)
 * [FFMpeg](http://www.ffmpeg.org/)
 * [LibreOffice](https://www.libreoffice.org/)
+* [ImageMagick](http://www.imagemagick.org/)
 
-To enable LibreOffice, FFMpeg and Fits.sh support, you make sure they are on your path.  Most people will put that in their .bash_profile or somewhere similar.  For example:
+To enable LibreOffice, FFMpeg, ImageMagick and FITS support, you make sure they are on your path.  Most people will put that in their .bash_profile or somewhere similar.  For example:
 
 ```bash
 # in .bash_profile
@@ -88,5 +89,4 @@ Alternatively, you can configure their paths:
 Hydra::Derivatives.ffmpeg_path = '/opt/local/ffmpeg/bin/ffmpeg'
 Hydra::Derivatives.fits_path = '/opt/local/fits/bin/fits.sh'
 Hydra::Derivatives.libreoffice_path = '/opt/local/libreoffice_path/bin/soffice'
-
 ```
