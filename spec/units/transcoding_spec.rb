@@ -21,7 +21,8 @@ describe "Transcoder" do
         when 'audio/wav'
           obj.transform_datastream :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
         when 'video/avi'
-          obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+          obj.transform_datastream :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'},
+                                   :thumbnail=> {:format => 'jpg' , datastream: 'thumbnail'}  }, processor: :video
         when 'image/png', 'image/jpg'
           obj.transform_datastream :content, { :medium => "300x300>", :thumb => "100x100>", :access => {format: 'jpg', datastream: 'access'} }
         when 'application/vnd.ms-powerpoint'
@@ -117,6 +118,8 @@ describe "Transcoder" do
       file.datastreams['content_mp4'].mimeType.should == 'video/mp4'
       file.datastreams['content_webm'].should have_content 
       file.datastreams['content_webm'].mimeType.should == 'video/webm'
+      file.datastreams['thumbnail'].should have_content
+      file.datastreams['thumbnail'].mimeType.should == 'image/jpeg'
     end
   end
   
