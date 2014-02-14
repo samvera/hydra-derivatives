@@ -24,10 +24,12 @@ module Hydra
       end
 
       # override this method in subclass if you want to provide specific options.
+      # returns a hash of options that the specific processors use
       def options_for(format)
+        {}
       end
 
-      def encode_file(dest_path, file_suffix, mime_type, options = '')
+      def encode_file(dest_path, file_suffix, mime_type, options)
         out_file = nil
         output_file = Dir::Tmpname.create(['sufia', ".#{file_suffix}"], Hydra::Derivatives.temp_file_base){}
         source_file.to_tempfile do |f|
