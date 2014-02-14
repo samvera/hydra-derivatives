@@ -35,6 +35,15 @@ module Hydra
       RUBY
     end
 
+    def self.video_codec
+      config.video_codec
+    end
+
+    # merge in new items so we do not need to replace the entire hash
+    def self.video_codec= val
+      config.video_codec = config.video_codec.merge(val)
+    end
+
     included do
       class_attribute :transformation_schemes
     end

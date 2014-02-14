@@ -8,7 +8,6 @@ describe Hydra::Derivatives::Video do
       it "should create a datastream with the specified name" do
         subject.should_receive(:encode_datastream).with("thumbnail", "webm", 'video/webm', {Hydra::Derivatives::Ffmpeg::OUTPUT_OPTIONS =>"-s 320x240 -vcodec libvpx -acodec libvorbis -g 30 -b:v 345k -ac 2 -ab 96k -ar 44100", Hydra::Derivatives::Ffmpeg::INPUT_OPTIONS=>""})
         subject.process
-
       end
     end
 
@@ -28,7 +27,11 @@ describe Hydra::Derivatives::Video do
       it "should create a datastream and infer the name" do
         subject.should_receive(:encode_datastream).with("thumbnail", "jpg", "image/jpeg", {:output_options=>"-s 320x240 -vcodec mjpeg -vframes 1 -an -f rawvideo", :input_options=>" -itsoffset -2"})
         subject.process
-
+      end
+      it "accepts a configured codec" do
+        Hydra::Derivatives.video_codec={jpg:"-vcodec abc123"}
+        subject.should_receive(:encode_datastream).with("thumbnail", "jpg", "image/jpeg", {:output_options=>"-s 320x240 -vcodec abc123 -vframes 1 -an -f rawvideo", :input_options=>" -itsoffset -2"})
+        subject.process
       end
     end
   end
