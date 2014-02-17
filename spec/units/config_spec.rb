@@ -22,4 +22,26 @@ describe "the configuration" do
     subject.ffmpeg_path.should == 'ffmpeg'
   end
 
+  describe "video codecs" do
+    let(:default_codec) {Hydra::Derivatives::Config.new.video_codec}
+
+    before do
+      subject.reset_config!
+    end
+    it "lets you set one video codec without changing the others" do
+      subject.video_codec = {jpg:"-vcodec abc123"}
+      subject.video_codec[:jpg].should == "-vcodec abc123"
+      subject.video_codec[:mp4].should == default_codec[:mp4]
+      subject.video_codec[:webm].should == default_codec[:webm]
+      subject.video_codec[:mvk].should == default_codec[:mvk]
+    end
+    it "lets you set a new video codec without changing the existing ones" do
+      subject.video_codec = {abc:"-vcodec abc123"}
+      subject.video_codec[:abc].should == "-vcodec abc123"
+      subject.video_codec[:jpg].should == default_codec[:jpg]
+      subject.video_codec[:mp4].should == default_codec[:mp4]
+      subject.video_codec[:webm].should == default_codec[:webm]
+      subject.video_codec[:mvk].should == default_codec[:mvk]
+    end
+  end
 end

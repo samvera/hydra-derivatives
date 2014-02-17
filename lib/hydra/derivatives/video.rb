@@ -36,18 +36,9 @@ module Hydra
       end
 
       def codecs(format)
-        case format
-        when 'mp4'
-          "-vcodec libx264 -acodec libfdk_aac"
-        when 'webm'
-          "-vcodec libvpx -acodec libvorbis"
-        when "mkv"
-          "-vcodec ffv1"
-        when "jpg"
-          "-vcodec mjpeg"
-        else
-          raise ArgumentError, "Unknown format `#{format}'"
-        end
+        code = Hydra::Derivatives.video_codec[format.to_sym]
+        raise ArgumentError, "Unknown format `#{format}'" if code.blank?
+        code
       end
 
       def new_mime_type(format)
