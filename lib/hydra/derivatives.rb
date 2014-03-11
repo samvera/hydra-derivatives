@@ -15,6 +15,7 @@ module Hydra
     autoload :Document
     autoload :ExtractMetadata
     autoload :ShellBasedProcessor
+    autoload :Jpeg2kImage
 
     def self.config
       @config ||= reset_config!
@@ -24,7 +25,9 @@ module Hydra
       @config = Config.new
     end
 
-    [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :enable_ffmpeg].each do |method|
+
+    [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path, 
+      :kdu_compress_recipes, :enable_ffmpeg].each do |method|
       module_eval <<-RUBY
         def self.#{method.to_s}
           config.#{method.to_s}
