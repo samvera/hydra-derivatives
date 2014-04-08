@@ -11,7 +11,7 @@ describe "Transcoder" do
           m.field "mime_type", :string
       end
 
-      delegate :mime_type, :to => :characterization, :unique => true
+      has_attributes :mime_type, datastream: :characterization, multiple: false
       has_file_datastream 'content', type: ContentDatastream
 
       makes_derivatives do |obj|
