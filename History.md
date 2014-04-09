@@ -1,3 +1,26 @@
+ ## 0.0.8 (2013-04-09)
+ - Add support for JPEG2000 Derivatives
+ - Correcting Railtie initializer
+ - Added ImageMagick dependency 
+ - Updated FITS URL
+ - Adding input and output options to ffmpeg and video processor
+ - Revert "Switch to streamio_ffmpeg for easier handling of ffmpeg arguments"
+ - Switch to streamio_ffmpeg for easier handling of ffmpeg arguments
+ - Adding Railtie for initialization
+
+## 0.0.7 (2013-10-11)
+ - Restore `Hydra::Derivatives::ExtractMetadata#to_tempfile`
+
+## 0.0.6 (2013-10-10)
+ - Added version badge 
+ - Adding Hydra::FileCharacterization
+ - Updating CONTRIBUTING.md as per Hydra v6.0.0
+ - Adding microsoft openxmlformats as output formats
+ - Adding rewind to allow image data to be extracted properly
+ - Replacing rmagick with mini_magick
+ - Refactoring extraction to implicitly close
+ - Changes audio encoding to libfdk_aac for video derivatives
+
 ## 0.0.5 (2013-07-25)
 - Allow images to change format without being resize [Justin Coyne]
 
