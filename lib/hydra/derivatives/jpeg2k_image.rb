@@ -1,5 +1,7 @@
 require 'mini_magick'
 require 'nokogiri'
+
+
 module Hydra
   module Derivatives
     class Jpeg2kImage < Processor 
@@ -83,23 +85,23 @@ module Hydra
 
       def self.kdu_compress_recipe(args, quality, long_dim)
         if args[:recipe].is_a? Symbol
-          recipe = [args[:recipe].to_s, quality].join('_').to_sym
+          recipe = [args[:recipe].to_s, quality].join('_')
           if Hydra::Derivatives.kdu_compress_recipes.has_key? recipe
             return Hydra::Derivatives.kdu_compress_recipes[recipe]
           else
-            logger.warn "No JP2 recipe for #{args[:recipe].to_s} found in configuration. Using best guess."
-            return calcuate_recipe(args,quality,long_dim)
+            logger.warn "No JP2 recipe for :#{args[:recipe].to_s} ('#{recipe}') found in configuration. Using best guess."
+            return Hydra::Derivatives::Jpeg2kImage.calculate_recipe(args,quality,long_dim)
           end
         elsif args[:recipe].is_a? String
           return args[:recipe]
         else
-          return calculate_recipe(args,quality,long_dim)
+          return Hydra::Derivatives::Jpeg2kImage.calculate_recipe(args, quality, long_dim)
         end
       end
 
       def self.calculate_recipe(args, quality, long_dim)
-        levels_arg = args.fetch(:levels, level_count_for_size(long_dim))
-        rates_arg = layer_rates(args.fetch(:layers, 8), args.fetch(:compression, 10))
+        levels_arg = args.fetch(:levels, Hydra::Derivatives::Jpeg2kImage.level_count_for_size(long_dim))
+        rates_arg = Hydra::Derivatives::Jpeg2kImage.layer_rates(args.fetch(:layers, 8), args.fetch(:compression, 10))
         tile_size = args.fetch(:tile_size, 1024)
         tiles_arg = "\{#{tile_size},#{tile_size}\}"
         jp2_space_arg = quality == 'grey' ? 'sLUM' : 'sRGB'

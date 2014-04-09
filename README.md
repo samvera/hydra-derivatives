@@ -51,7 +51,7 @@ Or a class like this:
           when 'image/png', 'image/jpg'
             transform_datastream :content, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
           when 'image/tiff'
-            obj.transform_datastream :content, { :service => { recipe: :default } }, processor: 'jpeg2k_image'
+            transform_datastream :content, { :service => { recipe: :default } }, processor: 'jpeg2k_image'
           end
         end
     end
