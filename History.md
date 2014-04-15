@@ -1,4 +1,4 @@
- ## 0.0.8 (2013-04-09)
+## 0.0.8 (2014-04-09)
  - Add support for JPEG2000 Derivatives
  - Correcting Railtie initializer
  - Added ImageMagick dependency 
