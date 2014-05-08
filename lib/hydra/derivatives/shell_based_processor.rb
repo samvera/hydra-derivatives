@@ -5,7 +5,7 @@ require 'open3'
 
 module Hydra
   module Derivatives
-    module ShellBasedProcessor 
+    module ShellBasedProcessor
       extend ActiveSupport::Concern
 
       included do
@@ -13,7 +13,7 @@ module Hydra
       end
 
       def process
-        directives.each do |name, args| 
+        directives.each do |name, args|
           format = args[:format]
           raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{args}" unless format
           # TODO if the source is in the correct format, we could just copy it and skip transcoding.
@@ -38,7 +38,6 @@ module Hydra
       end
 
       module ClassMethods
-
         def execute(command)
           stdin, stdout, stderr, wait_thr = popen3(command)
           stdin.close
@@ -48,11 +47,7 @@ module Hydra
           stderr.close
           raise "Unable to execute command \"#{command}\"\n#{err}" unless wait_thr.value.success?
         end
-
       end
-
     end
   end
 end
-
-

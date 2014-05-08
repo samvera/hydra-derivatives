@@ -1,4 +1,4 @@
-# hydra-derivatives [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives) [![Build Status](https://travis-ci.org/projecthydra/hydra-derivatives.png?branch=master)](https://travis-ci.org/projecthydra/hydra-derivatives) [![Dependency Status](https://gemnasium.com/projecthydra/hydra-derivatives.png)](https://gemnasium.com/projecthydra/hydra-derivatives)
+# hydra-derivatives [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives) [![Build Status](https://travis-ci.org/projecthydra-labs/hydra-derivatives.png?branch=master)](https://travis-ci.org/projecthydra-labs/hydra-derivatives) [![Dependency Status](https://gemnasium.com/projecthydra-labs/hydra-derivatives.png)](https://gemnasium.com/projecthydra-labs/hydra-derivatives)
 
 Derivative generation for hydra
 
@@ -6,12 +6,12 @@ If you have an ActiveFedora class like this:
 ```ruby
     class GenericFile < ActiveFedora::Base
         include Hydra::Derivatives
-        
+
         has_file_datastream :content
         attr_accessor :mime_type
-        
+
         # Use a block to declare which derivatives you want to generate
-        makes_derivatives do |obj| 
+        makes_derivatives do |obj|
           case obj.mime_type
           when 'application/pdf'
             obj.transform_datastream :content, { :thumb => "100x100>" }
@@ -33,13 +33,13 @@ Or a class like this:
 ```ruby
     class GenericFile < ActiveFedora::Base
         include Hydra::Derivatives
-    
+
         has_file_datastream :content
         attr_accessor :mime_type
 
         # Use a callback method to declare which derivatives you want
         makes_derivatives :generate_derivatives
-        
+
         def generate_derivatives
           case mime_type
           when 'application/pdf'
@@ -70,7 +70,7 @@ Then when you call `obj.create_derivatives` two new datastreams, 'thumbnail' and
 
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
-# Installation 
+# Installation
 
 Just add `gem 'hydra-derivatives'` to your Gemfile.
 
@@ -101,7 +101,7 @@ Hydra::Derivatives.kdu_compress_path = '/usr/local/bin/kdu_compress'
 
 ## JPEG2k Directives
 
-Unlike the other processors, the `Jpeg2kImage` processor does not generally accept arguments that directly (or nearly so) translate to the arguments you would give to the corresponding command line utility. 
+Unlike the other processors, the `Jpeg2kImage` processor does not generally accept arguments that directly (or nearly so) translate to the arguments you would give to the corresponding command line utility.
 
 Instead, each directive may contain these arguments:
 

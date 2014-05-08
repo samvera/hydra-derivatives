@@ -25,8 +25,7 @@ module Hydra
       @config = Config.new
     end
 
-
-    [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path, 
+    [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path,
       :kdu_compress_recipes, :enable_ffmpeg].each do |method|
       module_eval <<-RUBY
         def self.#{method.to_s}
@@ -42,14 +41,13 @@ module Hydra
       class_attribute :transformation_schemes
     end
 
-
     # Runs all of the transformations immediately.
     # You may want to run this job in the background as it may take a long time.
-    def create_derivatives 
+    def create_derivatives
       if transformation_schemes.present?
         transformation_schemes.each do |transform_scheme|
           if transform_scheme.instance_of?(Proc)
-            transform_scheme.call(self) 
+            transform_scheme.call(self)
           else
             send(transform_scheme)
           end
@@ -60,10 +58,10 @@ module Hydra
     end
 
     # Create derivatives from a datastream according to transformation directives
-    # @param datastream_name 
+    # @param datastream_name
     # @param [Hash] transform_directives - each key corresponds to a desired derivative.  Associated values vary according to processor being used.
     # @param [Hash] opts for specifying things like choice of :processor (processor defaults to :image)
-    # 
+    #
     # @example This will create content_thumb
     #   transform_datastream :content, { :thumb => "100x100>" }
     #
@@ -82,13 +80,12 @@ module Hydra
       "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, datastream_name, transform_directives).process
     end
 
-
     module ClassMethods
-      # Register transformation schemes for generating derivatives.  
+      # Register transformation schemes for generating derivatives.
       # You can do this using a block or by defining a callback method.
       #
       # @example Define transformation scheme using a block
-      #    makes_derivatives do |obj| 
+      #    makes_derivatives do |obj|
       #      case obj.mime_type
       #      when 'application/pdf'
       #        obj.transform_datastream :content, { :thumb => "100x100>" }
