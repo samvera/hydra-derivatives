@@ -15,9 +15,10 @@ module Hydra
         source_datastream.to_tempfile do |f|
           if mime_type == 'image/jpeg'
             temp_file = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(f.path), ''), 'pdf'].join('.'))
+            new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(temp_file).sub(File.extname(temp_file), ''), file_suffix].join('.'))
             self.class.encode(f.path, options, temp_file)
             self.class.encode(temp_file, options, output_file)
-            new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(temp_file).sub(File.extname(temp_file), ''), file_suffix].join('.'))
+            File.unlink(temp_file)
           else
             self.class.encode(f.path, options, output_file)
             new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(f.path), ''), file_suffix].join('.'))
