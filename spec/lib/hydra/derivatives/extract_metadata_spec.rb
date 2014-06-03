@@ -21,12 +21,16 @@ module Hydra::Derivatives
     context '#extract_metadata' do
       context 'without content' do
         let(:initialization_options) { {content: '', mime_type: 'text/plain'} }
-        its(:extract_metadata) { should be_nil}
+        it 'should be nil' do
+          expect(subject.extract_metadata).to be_nil
+        end
       end
 
       context 'with content', unless: ENV['TRAVIS'] == 'true' do
         let(:mime_type) { 'image/jpeg' }
-        its(:extract_metadata) { should match("<identity format=\"Plain text\" mimetype=\"text/plain\"")}
+        it 'should get some XML' do
+          expect(subject.extract_metadata).to match "<identity format=\"Plain text\" mimetype=\"text/plain\""
+        end
       end
     end
 
