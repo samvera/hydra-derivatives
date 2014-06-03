@@ -70,15 +70,15 @@ describe "Transcoder" do
     end
 
     it "should transcode" do
-      file.datastreams.key?('content_medium').should be_false
+      expect(file.datastreams.key?('content_medium')).to be_falsey
       file.create_derivatives
-      file.datastreams['content_medium'].should have_content
-      file.datastreams['content_medium'].mimeType.should == 'image/png'
-      file.datastreams['content_thumb'].should have_content
-      file.datastreams['content_thumb'].mimeType.should == 'image/png'
-      file.datastreams['access'].should have_content
-      file.datastreams['access'].mimeType.should == 'image/jpeg'
-      file.datastreams.key?('content_text').should be_false
+      expect(file.datastreams['content_medium']).to have_content
+      expect(file.datastreams['content_medium'].mimeType).to eq('image/png')
+      expect(file.datastreams['content_thumb']).to have_content
+      expect(file.datastreams['content_thumb'].mimeType).to eq('image/png')
+      expect(file.datastreams['access']).to have_content
+      expect(file.datastreams['access'].mimeType).to eq('image/jpeg')
+      expect(file.datastreams.key?('content_text')).to be_falsey
     end
   end
 
@@ -87,10 +87,10 @@ describe "Transcoder" do
     let(:file) { GenericFile.new(mime_type: 'application/pdf').tap { |t| t.content.content = attachment; t.save } }
 
     it "should transcode" do
-      file.datastreams.key?('content_thumb').should be_false
+      expect(file.datastreams.key?('content_thumb')).to be_falsey
       file.create_derivatives
-      file.datastreams['content_thumb'].should have_content
-      file.datastreams['content_thumb'].mimeType.should == 'image/png'
+      expect(file.datastreams['content_thumb']).to have_content
+      expect(file.datastreams['content_thumb'].mimeType).to eq('image/png')
     end
   end
 
@@ -100,10 +100,10 @@ describe "Transcoder" do
 
     it "should transcode" do
       file.create_derivatives
-      file.datastreams['content_mp3'].should have_content
-      file.datastreams['content_mp3'].mimeType.should == 'audio/mpeg'
-      file.datastreams['content_ogg'].should have_content
-      file.datastreams['content_ogg'].mimeType.should == 'audio/ogg'
+      expect(file.datastreams['content_mp3']).to have_content
+      expect(file.datastreams['content_mp3'].mimeType).to eq('audio/mpeg')
+      expect(file.datastreams['content_ogg']).to have_content
+      expect(file.datastreams['content_ogg'].mimeType).to eq('audio/ogg')
     end
   end
 
@@ -114,8 +114,8 @@ describe "Transcoder" do
     it "should transcode" do
       expect(logger).to receive(:warn).with("Unable to find a registered mime type for \"audio/vnd.wav\" on #{file.pid}").twice
       file.create_derivatives
-      file.datastreams['content_mp3'].should have_content
-      file.datastreams['content_mp3'].mimeType.should == 'audio/mpeg'
+      expect(file.datastreams['content_mp3']).to have_content
+      expect(file.datastreams['content_mp3'].mimeType).to eq('audio/mpeg')
     end
   end
 
@@ -125,12 +125,12 @@ describe "Transcoder" do
 
     it "should transcode" do
       file.create_derivatives
-      file.datastreams['content_mp4'].should have_content
-      file.datastreams['content_mp4'].mimeType.should == 'video/mp4'
-      file.datastreams['content_webm'].should have_content
-      file.datastreams['content_webm'].mimeType.should == 'video/webm'
-      file.datastreams['thumbnail'].should have_content
-      file.datastreams['thumbnail'].mimeType.should == 'image/jpeg'
+      expect(file.datastreams['content_mp4']).to have_content
+      expect(file.datastreams['content_mp4'].mimeType).to eq('video/mp4')
+      expect(file.datastreams['content_webm']).to have_content
+      expect(file.datastreams['content_webm'].mimeType).to eq('video/webm')
+      expect(file.datastreams['thumbnail']).to have_content
+      expect(file.datastreams['thumbnail'].mimeType).to eq('image/jpeg')
     end
   end
 
@@ -139,11 +139,11 @@ describe "Transcoder" do
     let(:file) { GenericFile.new(mime_type: 'image/png', label: "special").tap { |t| t.content.content = attachment; t.save } }
 
     it "should transcode" do
-      file.datastreams.key?('special_ds').should be_false
+      expect(file.datastreams.key?('special_ds')).to be_falsey
       file.create_derivatives
-      file.datastreams['special_ds'].should have_content
-      file.datastreams['special_ds'].mimeType.should == 'image/png'
-      file.datastreams['special_ds'].should have_content
+      expect(file.datastreams['special_ds']).to have_content
+      expect(file.datastreams['special_ds'].mimeType).to eq('image/png')
+      expect(file.datastreams['special_ds']).to have_content
     end
   end
 
@@ -212,14 +212,14 @@ describe "Transcoder" do
     let(:file) { GenericFile.new(mime_type: 'image/tiff').tap { |t| t.content.content = attachment; t.save } }
     it "should transcode" do
       file.create_derivatives
-      file.datastreams['content_diy'].should have_content
-      file.datastreams['content_diy'].mimeType.should == 'image/jp2'
-      file.datastreams['config_lookup'].should have_content
-      file.datastreams['config_lookup'].mimeType.should == 'image/jp2'
-      file.datastreams['resized'].should have_content
-      file.datastreams['resized'].mimeType.should == 'image/jp2'
-      file.datastreams['string_recipe'].should have_content
-      file.datastreams['string_recipe'].mimeType.should == 'image/jp2'
+      expect(file.datastreams['content_diy']).to have_content
+      expect(file.datastreams['content_diy'].mimeType).to eq('image/jp2')
+      expect(file.datastreams['config_lookup']).to have_content
+      expect(file.datastreams['config_lookup'].mimeType).to eq('image/jp2')
+      expect(file.datastreams['resized']).to have_content
+      expect(file.datastreams['resized'].mimeType).to eq('image/jp2')
+      expect(file.datastreams['string_recipe']).to have_content
+      expect(file.datastreams['string_recipe'].mimeType).to eq('image/jp2')
     end
   end
 end

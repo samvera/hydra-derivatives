@@ -16,7 +16,7 @@ describe Hydra::Derivatives::ExtractMetadata, :unless => $in_travis do
       xml = subject.extract_metadata
       doc = Nokogiri::HTML(xml)
       identity = doc.xpath('//identity').first
-      identity.attr('mimetype').should == 'image/png'
+      expect(identity.attr('mimetype')).to eq('image/png')
     end
   end
 end
