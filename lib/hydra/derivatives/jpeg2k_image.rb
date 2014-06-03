@@ -8,19 +8,16 @@ module Hydra
       include ShellBasedProcessor
 
       def process
-        quality, colorspace = extract_quality_and_colorspace
+        image = MiniMagick::Image.read(source_datastream.content)
+        quality = image['%[channels]'] == 'gray' ? 'gray' : 'color'
         directives.each do |name, args|
-          file_path = nil
-          long_dim = nil
+          long_dim = self.class.long_dim(image)
+          file_path = self.class.tmp_file('.tif')
           to_srgb = args.fetch(:to_srgb, true)
           if args[:resize] || to_srgb
-            image = preprocess(resize: args[:resize], to_srgb: to_srgb, src_quality: quality)
-            long_dim = self.class.long_dim(image)
-            file_path = self.class.tmp_file('.tif')
-            image.write file_path
-          else
-            long_dim = self.class.long_dim(MiniMagick::Image.read(source_datastream.content))
+            preprocess(image, resize: args[:resize], to_srgb: to_srgb, src_quality: quality)
           end
+          image.write file_path
           recipe = self.class.kdu_compress_recipe(args, quality, long_dim)
           output_datastream_name = args[:datastream] || output_datastream_id(name)
           encode_datastream(output_datastream_name, recipe, file_path: file_path)
@@ -43,23 +40,13 @@ module Hydra
       end
       
       protected
-      def preprocess(opts={})
-        # resize: <geometry>, to_srgb: <bool>,src_quality: 'color'|'grey'
-        image = MiniMagick::Image.read(source_datastream.content)
+      def preprocess(image, opts={})
+        # resize: <geometry>, to_srgb: <bool>, src_quality: 'color'|'gray'
         image.combine_options do |c|
           c.resize(opts[:resize]) if opts[:resize]
           c.profile self.class.srgb_profile_path if opts[:src_quality] == 'color' && opts[:to_srgb]
         end
         image
-      end
-
-      def extract_quality_and_colorspace
-        xml = source_datastream.extract_metadata
-        doc = Nokogiri::XML(xml).remove_namespaces!
-        bps = doc.xpath('//bitsPerSample').first.content
-        quality = bps == '8 8 8' ? 'color' : 'grey'
-        colorspace = doc.xpath('.//colorSpace').first.content
-        [quality, colorspace]
       end
 
       def self.encode(path, recipe, output_file)
@@ -104,7 +91,7 @@ module Hydra
         rates_arg = Hydra::Derivatives::Jpeg2kImage.layer_rates(args.fetch(:layers, 8), args.fetch(:compression, 10))
         tile_size = args.fetch(:tile_size, 1024)
         tiles_arg = "\{#{tile_size},#{tile_size}\}"
-        jp2_space_arg = quality == 'grey' ? 'sLUM' : 'sRGB'
+        jp2_space_arg = quality == 'gray' ? 'sLUM' : 'sRGB'
 
         %Q{-rate #{rates_arg} 
             -jp2_space #{jp2_space_arg}
