@@ -112,7 +112,6 @@ describe "Transcoder" do
     let(:file) { GenericFile.new(mime_type: 'audio/wav').tap { |t| t.content.content = attachment; t.content.mimeType = 'audio/vnd.wav'; t.save } }
 
     it "should transcode" do
-      expect(logger).to receive(:warn).with("Unable to find a registered mime type for \"audio/vnd.wav\" on #{file.pid}").twice
       file.create_derivatives
       expect(file.datastreams['content_mp3']).to have_content
       expect(file.datastreams['content_mp3'].mimeType).to eq('audio/mpeg')
