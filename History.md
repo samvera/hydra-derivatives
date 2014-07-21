@@ -1,3 +1,6 @@
+## 0.1.1 (2014-07-21)
+ - Define a logger
+
 ## 0.1.0 (2014-05-09)
  - Add support for thumbnailing documents
 
