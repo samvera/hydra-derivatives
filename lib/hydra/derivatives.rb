@@ -16,6 +16,7 @@ module Hydra
     autoload :ExtractMetadata
     autoload :ShellBasedProcessor
     autoload :Jpeg2kImage
+    autoload :Logger
 
     def self.config
       @config ||= reset_config!

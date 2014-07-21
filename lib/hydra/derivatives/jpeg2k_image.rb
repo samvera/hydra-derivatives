@@ -76,7 +76,7 @@ module Hydra
           if Hydra::Derivatives.kdu_compress_recipes.has_key? recipe
             return Hydra::Derivatives.kdu_compress_recipes[recipe]
           else
-            logger.warn "No JP2 recipe for :#{args[:recipe].to_s} ('#{recipe}') found in configuration. Using best guess."
+            Logger.warn "No JP2 recipe for :#{args[:recipe].to_s} ('#{recipe}') found in configuration. Using best guess."
             return Hydra::Derivatives::Jpeg2kImage.calculate_recipe(args,quality,long_dim)
           end
         elsif args[:recipe].is_a? String
