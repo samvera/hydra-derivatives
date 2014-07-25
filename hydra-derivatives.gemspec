@@ -22,9 +22,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "jettywrapper"
   spec.add_development_dependency "rspec"
 
-  spec.add_dependency 'active-fedora'
+  spec.add_dependency 'active-fedora', '~> 8.0.0.alpha'
   spec.add_dependency 'hydra-file_characterization'
   spec.add_dependency 'mini_magick'
   spec.add_dependency 'activesupport', '>= 3.2.13', '< 5.0'
+  spec.add_dependency 'mime-types'
 end
 

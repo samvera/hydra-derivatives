@@ -21,7 +21,7 @@ module Hydra
         create_image(output_datastream, format, quality) do |xfrm|
           xfrm.resize(size) if size.present?
         end
-        output_datastream.mimeType = new_mime_type(format)
+        output_datastream.mime_type = new_mime_type(format)
       end
 
       def create_image(output_datastream, format, quality=nil)

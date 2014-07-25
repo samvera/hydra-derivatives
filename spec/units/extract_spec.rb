@@ -6,7 +6,7 @@ class ExtractThing < ActiveFedora::Datastream
 end
 
 describe Hydra::Derivatives::ExtractMetadata, :unless => $in_travis do
-  let(:subject) { ExtractThing.new }
+  let(:subject) { ExtractThing.new(double(uri: '/testobj', new_record?: true), 'test_dsid') }
   let(:attachment) { File.open(File.expand_path('../../fixtures/world.png', __FILE__))}
 
   describe "Image Content" do

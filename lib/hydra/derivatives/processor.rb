@@ -22,7 +22,7 @@ module Hydra
         output_datastream = if object.datastreams[dsid]
           object.datastreams[dsid]
         else
-          ds = ActiveFedora::Datastream.new(object.inner_object, dsid)
+          ds = ActiveFedora::Datastream.new(object, dsid)
           object.add_datastream(ds)
           ds
         end

@@ -1,4 +1,6 @@
 require 'hydra-file_characterization'
+require 'mime/types'
+
 module Hydra
   module Derivatives
     module ExtractMetadata
@@ -29,10 +31,11 @@ module Hydra
       protected
 
       def filename_for_characterization
-        mime_type = MIME::Types[mimeType].first
-        Logger.warn "Unable to find a registered mime type for #{mimeType.inspect} on #{pid}" unless mime_type
+        mime_type = MIME::Types[mime_type].first
+        Logger.warn "Unable to find a registered mime type for #{mime_type.inspect} on #{pid}" unless mime_type
         extension = mime_type ? ".#{mime_type.extensions.first}" : ''
-        ["#{pid}-#{dsVersionID}", "#{extension}"]
+        version_id = 1 # TODO fixme
+        ["#{pid}-#{version_id}", "#{extension}"]
       end
 
     end
