@@ -32,10 +32,10 @@ module Hydra
 
       def filename_for_characterization
         mime_type = MIME::Types[mime_type].first
-        Logger.warn "Unable to find a registered mime type for #{mime_type.inspect} on #{pid}" unless mime_type
+        Logger.warn "Unable to find a registered mime type for #{mime_type.inspect} on #{uri}" unless mime_type
         extension = mime_type ? ".#{mime_type.extensions.first}" : ''
         version_id = 1 # TODO fixme
-        ["#{pid}-#{version_id}", "#{extension}"]
+        ["#{uri.gsub('/', '_')}-#{version_id}", "#{extension}"]
       end
 
     end

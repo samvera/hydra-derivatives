@@ -2,19 +2,18 @@ require 'spec_helper'
 
 module Hydra::Derivatives
   describe ExtractMetadata do
-    let(:class_with_metadata_extraction) {
+    let(:class_with_metadata_extraction) do
       Class.new do
-        attr_reader :content, :mimeType, :pid, :dsVersionID
+        attr_reader :content, :mime_type, :uri
         def initialize(options = {})
           @content = options.fetch(:content, '')
-          @mimeType = options.fetch(:mime_type, nil)
-          @pid = options.fetch(:pid, 'pid-123')
-          @dsVersionID = options.fetch(:dsVersionID, 'version-id-1')
+          @mime_uype = options.fetch(:mime_type, nil)
+          @uri = options.fetch(:uri, '/pid/123')
         end
         include Hydra::Derivatives::ExtractMetadata
         def has_content?; content.present?; end
       end
-    }
+    end 
     let(:initialization_options) { {content: 'abc', mime_type: 'text/plain'} }
     subject { class_with_metadata_extraction.new(initialization_options) }
 
