@@ -35,7 +35,7 @@ module Hydra
           end
         end
         out_file = File.open(output_file, "rb")
-        object.add_file_datastream(out_file.read, dsid: dest_dsid, mimeType: 'image/jp2')
+        object.add_file_datastream(out_file.read, dsid: dest_dsid, mime_type: 'image/jp2')
         File.unlink(output_file)
       end
 

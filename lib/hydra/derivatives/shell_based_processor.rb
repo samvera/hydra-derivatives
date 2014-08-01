@@ -33,7 +33,7 @@ module Hydra
           self.class.encode(f.path, options, output_file)
         end
         out_file = File.open(output_file, "rb")
-        object.add_file_datastream(out_file.read, :dsid=>dest_dsid, :mimeType=>mime_type)
+        object.add_file_datastream(out_file.read, dsid: dest_dsid, mime_type: mime_type)
         File.unlink(output_file)
       end
 
