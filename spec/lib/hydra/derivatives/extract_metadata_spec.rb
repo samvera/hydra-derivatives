@@ -4,11 +4,11 @@ module Hydra::Derivatives
   describe ExtractMetadata do
     let(:class_with_metadata_extraction) do
       Class.new do
-        attr_reader :content, :mime_type, :uri
+        attr_reader :content, :mime_type, :id
         def initialize(options = {})
           @content = options.fetch(:content, '')
           @mime_uype = options.fetch(:mime_type, nil)
-          @uri = options.fetch(:uri, '/pid/123')
+          @id = options.fetch(:id, '/pid/123')
         end
         include Hydra::Derivatives::ExtractMetadata
         def has_content?; content.present?; end
