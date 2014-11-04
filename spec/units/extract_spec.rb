@@ -1,6 +1,6 @@
 require "spec_helper"
 
-class ExtractThing < ActiveFedora::Datastream
+class ExtractThing < ActiveFedora::File
   include Hydra::Derivatives::ExtractMetadata
   attr_accessor :pid
 end

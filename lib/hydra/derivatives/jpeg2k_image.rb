@@ -8,7 +8,7 @@ module Hydra
       include ShellBasedProcessor
 
       def process
-        image = MiniMagick::Image.read(source_datastream.content)
+        image = MiniMagick::Image.read(source_file.content)
         quality = image['%[channels]'] == 'gray' ? 'gray' : 'color'
         directives.each do |name, args|
           long_dim = self.class.long_dim(image)
@@ -19,18 +19,18 @@ module Hydra
           end
           image.write file_path
           recipe = self.class.kdu_compress_recipe(args, quality, long_dim)
-          output_datastream_name = args[:datastream] || output_datastream_id(name)
-          encode_datastream(output_datastream_name, recipe, file_path: file_path)
+          output_file_name = args[:datastream] || output_file_id(name)
+          encode_file(output_file_name, recipe, file_path: file_path)
           File.unlink(file_path) unless file_path.nil?
         end
       end
 
-      def encode_datastream(dest_dsid, recipe, opts={})
+      def encode_file(dest_dsid, recipe, opts={})
         output_file = self.class.tmp_file('.jp2')
         if opts[:file_path]
           self.class.encode(opts[:file_path], recipe, output_file)
         else
-          source_datastream.to_tempfile do |f|
+          source_file.to_tempfile do |f|
             self.class.encode(f.path, recipe, output_file)
           end
         end

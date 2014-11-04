@@ -17,8 +17,8 @@ module Hydra
           format = args[:format]
           raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{args}" unless format
           # TODO if the source is in the correct format, we could just copy it and skip transcoding.
-          output_datastream_name = args[:datastream] || output_datastream_id(name)
-          encode_datastream(output_datastream_name, format, new_mime_type(format), options_for(format))
+          output_file_name = args[:datastream] || output_file_id(name)
+          encode_file(output_file_name, format, new_mime_type(format), options_for(format))
         end
       end
 
@@ -26,10 +26,10 @@ module Hydra
       def options_for(format)
       end
 
-      def encode_datastream(dest_dsid, file_suffix, mime_type, options = '')
+      def encode_file(dest_dsid, file_suffix, mime_type, options = '')
         out_file = nil
         output_file = Dir::Tmpname.create(['sufia', ".#{file_suffix}"], Hydra::Derivatives.temp_file_base){}
-        source_datastream.to_tempfile do |f|
+        source_file.to_tempfile do |f|
           self.class.encode(f.path, options, output_file)
         end
         out_file = File.open(output_file, "rb")

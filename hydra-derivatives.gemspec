@@ -27,5 +27,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'mini_magick'
   spec.add_dependency 'activesupport', '>= 3.2.13', '< 5.0'
   spec.add_dependency 'mime-types'
+  spec.add_dependency 'deprecation'
 end
 

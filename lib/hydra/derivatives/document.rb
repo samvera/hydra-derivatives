@@ -9,9 +9,9 @@ module Hydra
         execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{path}"
       end
 
-      def encode_datastream(dest_dsid, file_suffix, mime_type, options = '')
+      def encode_file(dest_dsid, file_suffix, mime_type, options = '')
         new_output = ''
-        source_datastream.to_tempfile do |f|
+        source_file.to_tempfile do |f|
           if mime_type == 'image/jpeg'
             temp_file = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(f.path), ''), 'pdf'].join('.'))
             new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(temp_file).sub(File.extname(temp_file), ''), file_suffix].join('.'))

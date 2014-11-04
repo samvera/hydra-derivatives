@@ -13,23 +13,23 @@ module Hydra
         raise "Processor is an abstract class. Implement `process' on #{self.class.name}"
       end
 
-      def output_datastream_id(name)
+      def output_file_id(name)
         [source_name, name].join('_')
       end
 
-      def output_datastream(dsid)
-        # first, check for a defined datastream
-        output_datastream = if object.datastreams[dsid]
-          object.datastreams[dsid]
+      def output_file(dsid)
+        # first, check for a defined file
+        output_file = if object.attached_files[dsid]
+          object.attached_files[dsid]
         else
           ds = ActiveFedora::Datastream.new(object, dsid)
-          object.add_datastream(ds)
+          object.attach_file(ds)
           ds
         end
       end
 
-      def source_datastream
-        object.datastreams[source_name.to_s]
+      def source_file
+        object.attached_files[source_name.to_s]
       end
 
     end
