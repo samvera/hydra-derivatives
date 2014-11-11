@@ -5,6 +5,7 @@ require 'hydra/derivatives'
 require 'byebug' unless ENV['TRAVIS']
 
 require 'active_fedora/cleaner'
+ActiveFedora::Base.logger = Logger.new(STDOUT)
 RSpec.configure do |config|
   config.before(:each) do
     ActiveFedora::Cleaner.clean!
