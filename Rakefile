@@ -4,6 +4,9 @@ require "bundler/gem_tasks"
 
 APP_ROOT="." # for jettywrapper
 require 'jettywrapper'
+JETTY_ZIP_BASENAME = 'fedora-4/b4'
+Jettywrapper.url = "https://github.com/projecthydra/hydra-jetty/archive/#{JETTY_ZIP_BASENAME}.zip"
+
 # Dir.glob('tasks/*.rake').each { |r| import r }
 
 require 'rspec/core/rake_task'
