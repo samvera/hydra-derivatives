@@ -4,19 +4,12 @@ module Hydra::Derivatives
   describe ExtractMetadata do
     let(:class_with_metadata_extraction) do
       Class.new do
-        attr_reader :content, :mime_type, :digital_object
+        attr_reader :content, :mime_type, :uri
 
         def initialize(options = {})
           @content = options.fetch(:content, '')
           @mime_uype = options.fetch(:mime_type, nil)
-          @digital_object = DigitalObject.new options.fetch(:id, '/pid/123')
-        end
-
-        class DigitalObject
-          attr_reader :id
-          def initialize(id)
-            @id = id
-          end
+          @uri = 'http://example.com/pid/123'
         end
 
         include Hydra::Derivatives::ExtractMetadata

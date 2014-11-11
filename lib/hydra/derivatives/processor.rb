@@ -23,7 +23,7 @@ module Hydra
           object.attached_files[dsid]
         else
           ds = ActiveFedora::Datastream.new(object, dsid)
-          object.attach_file(ds)
+          object.attach_file(ds, dsid)
           ds
         end
       end

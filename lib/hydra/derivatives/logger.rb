@@ -5,7 +5,7 @@ module Hydra::Derivatives
 
       def method_missing method_name, *arguments, &block
         logger.send(method_name, *arguments, &block)
-      rescue  
+      rescue
         super
       end
 

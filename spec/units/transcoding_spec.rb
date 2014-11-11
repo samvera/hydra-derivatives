@@ -118,6 +118,7 @@ describe "Transcoder" do
     end
 
     it "should transcode" do
+      allow_any_instance_of(::Logger).to receive(:warn)
       file.create_derivatives
       expect(file.attached_files['content_mp3']).to have_content
       expect(file.attached_files['content_mp3'].mime_type).to eq('audio/mpeg')
@@ -208,7 +209,7 @@ describe "Transcoder" do
       expect(file.attached_files['content_access']).to have_content
       expect(file.attached_files['content_access'].mime_type).to eq('application/pdf')
       expect(file.attached_files['content_preservation']).to have_content
-      expect(file.datastreams['content_preservation'].mime_type).to eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+      expect(file.attached_files['content_preservation'].mime_type).to eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     end
   end
 
