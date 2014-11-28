@@ -4,7 +4,7 @@ require 'nokogiri'
 
 module Hydra
   module Derivatives
-    class Jpeg2kImage < Processor 
+    class Jpeg2kImage < Processor
       include ShellBasedProcessor
 
       def process
@@ -38,7 +38,7 @@ module Hydra
         object.add_file_datastream(out_file.read, dsid: dest_dsid, mimeType: 'image/jp2')
         File.unlink(output_file)
       end
-      
+
       protected
       def preprocess(image, opts={})
         # resize: <geometry>, to_srgb: <bool>, src_quality: 'color'|'gray'
@@ -57,7 +57,7 @@ module Hydra
       def self.srgb_profile_path
         File.join [
           File.expand_path('../../../', __FILE__),
-          'color_profiles', 
+          'color_profiles',
           'sRGB_IEC61966-2-1_no_black_scaling.icc'
         ]
       end
@@ -90,21 +90,21 @@ module Hydra
         levels_arg = args.fetch(:levels, Hydra::Derivatives::Jpeg2kImage.level_count_for_size(long_dim))
         rates_arg = Hydra::Derivatives::Jpeg2kImage.layer_rates(args.fetch(:layers, 8), args.fetch(:compression, 10))
         tile_size = args.fetch(:tile_size, 1024)
-        tiles_arg = "\{#{tile_size},#{tile_size}\}"
+        tiles_arg = "#{tile_size},#{tile_size}"
         jp2_space_arg = quality == 'gray' ? 'sLUM' : 'sRGB'
 
-        %Q{-rate #{rates_arg} 
+        %Q{-rate #{rates_arg}
             -jp2_space #{jp2_space_arg}
-            -double_buffering 10 
-            -num_threads 4 
-            -no_weights 
-            Clevels=#{levels_arg} 
-            Stiles=#{tiles_arg}
-            Cblk=\{64,64\} 
-            Cuse_sop=yes 
-            Cuse_eph=yes  
-            Corder=RPCL 
-            ORGgen_plt=yes 
+            -double_buffering 10
+            -num_threads 4
+            -no_weights
+            Clevels=#{levels_arg}
+            "Stiles={#{tiles_arg}}"
+            "Cblk={64,64}"
+            Cuse_sop=yes
+            Cuse_eph=yes
+            Corder=RPCL
+            ORGgen_plt=yes
             ORGtparts=R  }.gsub(/\s+/, " ").strip
       end
 
