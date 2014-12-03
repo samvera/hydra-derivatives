@@ -17,14 +17,14 @@ module Hydra
         [source_name, name].join('_')
       end
 
-      def output_file(dsid)
+      def output_file(path)
         # first, check for a defined file
-        output_file = if object.attached_files[dsid]
-          object.attached_files[dsid]
+        output_file = if object.attached_files[path]
+          object.attached_files[path]
         else
-          ds = ActiveFedora::Datastream.new(object, dsid)
-          object.attach_file(ds, dsid)
-          ds
+          ActiveFedora::File.new("#{object.uri}/#{path}").tap do |file|
+            object.attach_file(file, path)
+          end
         end
       end
 
