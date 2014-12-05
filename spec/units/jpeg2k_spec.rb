@@ -13,7 +13,7 @@ describe Hydra::Derivatives::Jpeg2kImage do
     it "calculates the compression rates for each quality layer" do
       compression_num = 10
       layers = 8
-      calc = Hydra::Derivatives::Jpeg2kImage.layer_rates(layers, compression_num) 
+      calc = Hydra::Derivatives::Jpeg2kImage.layer_rates(layers, compression_num)
       expect(calc).to eq("2.4,1.48331273,0.91675694,0.56659885,0.3501847,0.21643059,0.13376427,0.0826726")
     end
 
@@ -28,7 +28,7 @@ describe Hydra::Derivatives::Jpeg2kImage do
     it "can get the recipe from a config file" do
       args = { recipe: :myrecipe }
       r = Hydra::Derivatives::Jpeg2kImage.kdu_compress_recipe(args, 'grey', 7200)
-      expect(r).to eq(@sample_cfg['jp2_recipes']['myrecipe_grey'])
+      expect(r).to eq(@sample_cfg['jp2_recipes'][:myrecipe_grey])
     end
 
     it "can take a recipe as a string" do
