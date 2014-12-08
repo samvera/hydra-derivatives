@@ -72,7 +72,7 @@ module Hydra
 
       def self.kdu_compress_recipe(args, quality, long_dim)
         if args[:recipe].is_a? Symbol
-          recipe = [args[:recipe].to_s, quality].join('_')
+          recipe = [args[:recipe].to_s, quality].join('_').to_sym
           if Hydra::Derivatives.kdu_compress_recipes.has_key? recipe
             return Hydra::Derivatives.kdu_compress_recipes[recipe]
           else

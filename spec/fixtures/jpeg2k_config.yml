@@ -1,13 +1,13 @@
 defaults: &defaults
   jp2_recipes:
     # note that these aren't real recipes, just enough to test configuration options
-    myrecipe_color: >
+    :myrecipe_color: >
       -rate 2.4
-      -jp2_space sRGB 
+      -jp2_space sRGB
       Stiles=\{1024,1024\}
-    myrecipe_grey: >
+    :myrecipe_grey: >
       -rate 2.4
-      -jp2_space sLUM 
+      -jp2_space sLUM
       Stiles=\{1024,1024\}
 
 development:
