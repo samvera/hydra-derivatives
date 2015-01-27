@@ -138,6 +138,19 @@ describe "Transcoder" do
       expect(file.attached_files['thumbnail']).to have_content
       expect(file.attached_files['thumbnail'].mime_type).to eq('image/jpeg')
     end
+
+    context "and the timeout is set" do
+      before do
+        Hydra::Derivatives::Video::Processor.timeout = 1 # one second
+      end
+      after do
+        Hydra::Derivatives::Video::Processor.timeout = nil # clear timeout
+      end
+
+      it "should raise a timeout" do
+        expect { file.create_derivatives }.to raise_error Hydra::Derivatives::TimeoutError
+      end
+    end
   end
 
   describe "using callback methods" do

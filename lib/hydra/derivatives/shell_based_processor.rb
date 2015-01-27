@@ -9,6 +9,7 @@ module Hydra
       extend ActiveSupport::Concern
 
       included do
+        class_attribute :timeout
         extend Open3
       end
 
@@ -38,8 +39,32 @@ module Hydra
       end
 
       module ClassMethods
+
         def execute(command)
+          context = {}
+          if timeout
+            execute_with_timeout(timeout, command, context)
+          else
+            execute_without_timeout(command, context)
+          end
+        end
+
+        def execute_with_timeout(timeout, command, context)
+          begin
+            status = Timeout::timeout(timeout) do
+              execute_without_timeout(command, context)
+            end
+          rescue Timeout::Error => ex
+            pid = context[:pid]
+            Process.kill("KILL", pid)
+            raise Hydra::Derivatives::TimeoutError, "Unable to execute command \"#{command}\"\nThe command took longer than #{timeout} seconds to execute"
+          end
+
+        end
+
+        def execute_without_timeout(command, context)
           stdin, stdout, stderr, wait_thr = popen3(command)
+          context[:pid] = wait_thr[:pid]
           stdin.close
           out = stdout.read
           stdout.close
