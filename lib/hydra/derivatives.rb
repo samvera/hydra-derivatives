@@ -79,8 +79,17 @@ module Hydra
     #   transform_file :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
     #
     def transform_file(file_name, transform_directives, opts={})
-      processor = opts[:processor] ? opts[:processor] : :image
-      "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, file_name, transform_directives).process
+      processor = processor_class(opts[:processor] || :image)
+      processor.new(self, file_name, transform_directives).process
+    end
+
+    def processor_class(processor)
+      case processor
+        when :video
+          Hydra::Derivatives::Video::Processor
+        else
+          "Hydra::Derivatives::#{processor.to_s.classify}".constantize
+        end
     end
 
     def transform_datastream(file_name, transform_directives, opts={})
