@@ -20,6 +20,9 @@ module Hydra
     autoload :Jpeg2kImage
     autoload :Logger
 
+    # Raised if the timout elapses
+    class TimeoutError < ::Timeout::Error; end
+
     def self.config
       @config ||= reset_config!
     end
