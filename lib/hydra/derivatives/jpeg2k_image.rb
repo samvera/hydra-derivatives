@@ -25,7 +25,7 @@ module Hydra
         end
       end
 
-      def encode_file(dest_dsid, recipe, opts={})
+      def encode_file(dest_path, recipe, opts={})
         output_file = self.class.tmp_file('.jp2')
         if opts[:file_path]
           self.class.encode(opts[:file_path], recipe, output_file)
@@ -35,7 +35,7 @@ module Hydra
           end
         end
         out_file = File.open(output_file, "rb")
-        object.add_file_datastream(out_file.read, dsid: dest_dsid, mime_type: 'image/jp2')
+        object.add_file(out_file.read, path: dest_path, mime_type: 'image/jp2')
         File.unlink(output_file)
       end
 

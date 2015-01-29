@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 
+gem 'active-fedora', github: 'projecthydra/active_fedora'
 # Please see hydra-derivatives.gemspec for dependency information.
 gemspec
 
