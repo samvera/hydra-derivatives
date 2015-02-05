@@ -19,10 +19,8 @@ module Hydra
       module ClassMethods
 
         def encode(path, options, output_file)
-          inopts = options[INPUT_OPTIONS]  if options
-          inopts ||= "-y"
-          outopts = options[OUTPUT_OPTIONS]  if options
-          outopts ||= options
+          inopts = options[INPUT_OPTIONS] ||= "-y"
+          outopts = options[OUTPUT_OPTIONS] ||= ""
           execute "#{Hydra::Derivatives.ffmpeg_path} #{inopts} -i \"#{path}\" #{outopts} #{output_file}"
         end
       end
