@@ -2,7 +2,21 @@ require 'mini_magick'
 module Hydra
   module Derivatives
     class Image < Processor
+      class_attribute :timeout
+
       def process
+        timeout ? process_with_timeout : process_without_timeout
+      end
+
+      def process_with_timeout
+        status = Timeout::timeout(timeout) do
+          process_without_timeout
+        end
+      rescue Timeout::Error => ex
+        raise Hydra::Derivatives::TimeoutError, "Unable to process image derivative\nThe command took longer than #{timeout} seconds to execute"
+      end
+
+      def process_without_timeout
         directives.each do |name, args|
           opts = args.kind_of?(Hash) ? args : {size: args}
           format = opts.fetch(:format, 'png')

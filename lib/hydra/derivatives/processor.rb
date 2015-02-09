@@ -35,4 +35,3 @@ module Hydra
     end
   end
 end
-
