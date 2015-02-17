@@ -70,6 +70,34 @@ Then when you call `obj.create_derivatives` two new files, 'thumbnail' and 'cont
 
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
+## Configuration
+
+### Processing Timeouts
+
+hydra-derivatives can be configured to timeout derivatives processes.  Each process type has a separate timeout.
+If no timeout is set the system will process until complete (possibly indefinitely).
+
+```
+require 'hydra/derivatives'
+
+Hydra::Derivatives::Video::Processor.timeout  = 10.minutes
+Hydra::Derivatives::Document.timeout = 5.minutes
+Hydra::Derivatives::Audio.timeout = 10.minutes
+Hydra::Derivatives::Image.timeout = 5.minutes
+
+```
+
+### Video Processing configuration
+
+Flags can be set for using different video codes.  Default codecs are shown below
+
+```
+Hydra::Derivatives::Video::Processor.config.mpeg4.codec = '-vcodec libx264 -acodec libfdk_aac'
+Hydra::Derivatives::Video::Processor.config.webm.codec = '-vcodec libvpx -acodec libvorbis'
+Hydra::Derivatives::Video::Processor.config.mkv.codec = '-vcodec ffv1'
+Hydra::Derivatives::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
+```
+
 # Installation
 
 Just add `gem 'hydra-derivatives'` to your Gemfile.
