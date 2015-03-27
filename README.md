@@ -1,4 +1,4 @@
-# hydra-derivatives [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives) [![Build Status](https://travis-ci.org/projecthydra-labs/hydra-derivatives.png?branch=master)](https://travis-ci.org/projecthydra-labs/hydra-derivatives) [![Dependency Status](https://gemnasium.com/projecthydra-labs/hydra-derivatives.png)](https://gemnasium.com/projecthydra-labs/hydra-derivatives)
+# hydra-derivatives [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives) [![Build Status](https://travis-ci.org/projecthydra/hydra-derivatives.png?branch=master)](https://travis-ci.org/projecthydra/hydra-derivatives) [![Dependency Status](https://gemnasium.com/projecthydra/hydra-derivatives.png)](https://gemnasium.com/projecthydra/hydra-derivatives)
 
 Derivative generation for hydra
 
