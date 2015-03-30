@@ -18,6 +18,7 @@ module Hydra
     autoload :ExtractMetadata
     autoload :ShellBasedProcessor
     autoload :Jpeg2kImage
+    autoload :RawImage
     autoload :Logger
     autoload :MimeTypes
     autoload :TempfileService
