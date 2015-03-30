@@ -22,7 +22,6 @@ module Hydra
         m = /\/([^\/]*)$/.match(uri)
         ["#{m[1]}-#{version_id}", "#{extension}"]
       end
-
     end
   end
 end
