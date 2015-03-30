@@ -18,6 +18,7 @@ module Hydra
     autoload :ExtractMetadata
     autoload :ShellBasedProcessor
     autoload :Jpeg2kImage
+    autoload :RawImage
     autoload :Logger
     autoload :TempfileService
 
@@ -26,7 +27,6 @@ module Hydra
     autoload :PersistOutputFileService,          'hydra/derivatives/services/persist_output_file_service'
     autoload :PersistBasicContainedOutputFileService, 'hydra/derivatives/services/persist_basic_contained_output_file_service'
     autoload :TempfileService,                   'hydra/derivatives/services/tempfile_service'
-
 
     # Raised if the timout elapses
     class TimeoutError < ::Timeout::Error; end

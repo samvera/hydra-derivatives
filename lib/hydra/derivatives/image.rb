@@ -1,4 +1,5 @@
 require 'mini_magick'
+
 module Hydra
   module Derivatives
     class Image < Processor

@@ -52,5 +52,4 @@ describe Hydra::Derivatives::Processor do
       expect{ subject.output_file }.to raise_error(NotImplementedError)
     end
   end
-
 end
