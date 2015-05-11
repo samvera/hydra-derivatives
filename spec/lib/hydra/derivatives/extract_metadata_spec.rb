@@ -35,11 +35,5 @@ module Hydra::Derivatives
         end
       end
     end
-
-    context '#to_tempfile' do
-      it 'has a method called to_tempfile' do
-        expect { |b| subject.to_tempfile(&b) }.to yield_with_args(Tempfile)
-      end
-    end
   end
 end
