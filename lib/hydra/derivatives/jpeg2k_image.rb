@@ -30,7 +30,7 @@ module Hydra
         if opts[:file_path]
           self.class.encode(opts[:file_path], recipe, output_file)
         else
-          source_file.to_tempfile do |f|
+          Hydra::Derivatives::TempfileService.create(source_file) do |f|
             self.class.encode(f.path, recipe, output_file)
           end
         end

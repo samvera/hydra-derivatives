@@ -12,22 +12,6 @@ module Hydra
         end
       end
 
-      # Restored method. It was required by other creatures
-      def to_tempfile(&block)
-        return unless has_content?
-        Tempfile.open(filename_for_characterization) do |f|
-          f.binmode
-          if content.respond_to? :read
-            f.write(content.read)
-          else
-            f.write(content)
-          end
-          content.rewind if content.respond_to? :rewind
-          f.rewind
-          yield(f)
-        end
-      end
-
       protected
 
       def filename_for_characterization
