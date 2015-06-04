@@ -92,8 +92,14 @@ module Hydra
         when :video
           Hydra::Derivatives::Video::Processor
         else
-          "Hydra::Derivatives::#{processor.to_s.classify}".constantize
+          constantize_processor(processor.to_s)
         end
+    end
+
+    def constantize_processor(processor)
+      "Hydra::Derivatives::#{processor.classify}".constantize
+    rescue NameError
+      processor.classify.constantize
     end
 
     def transform_datastream(file_name, transform_directives, opts={})
