@@ -13,3 +13,7 @@ RSpec.configure do |config|
 end
 
 $in_travis = !ENV['TRAVIS'].nil? && ENV['TRAVIS'] == 'true'
+
+def fixture_path
+  File.expand_path("../fixtures", __FILE__)
+end
