@@ -102,10 +102,6 @@ module Hydra
       initialize_processor(file_name, transform_directives, opts).process
     end
 
-    def initialize_processor(file_name, transform_directives, opts={})
-      processor_class(opts[:processor] || :image).new(self, file_name, transform_directives, opts)
-    end
-
     def processor_class(processor)
       case processor
         when :video
@@ -158,5 +154,11 @@ module Hydra
         end
       end
     end
+
+    private
+    def initialize_processor(file_name, transform_directives, opts={})
+      processor_class(opts[:processor] || :image).new(self, file_name, transform_directives, opts)
+    end
+
   end
 end
