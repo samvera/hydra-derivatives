@@ -29,7 +29,13 @@ module Hydra
       #     end
       #   end
       # end
-      #
+
+      # @deprecated Please use a PersistOutputFileService class to save an object
+      def output_file
+        raise NotImplementedError, "Processor is an abstract class. Utilize an implementation of a PersistOutputFileService class in #{self.class.name}"
+        #@output_file ||= output_file_service(object, file, destination_name, mime_type: :mime_type)
+      end
+      
       def source_file
         @source_file ||= source_file_service.call(object, source_name)
       end

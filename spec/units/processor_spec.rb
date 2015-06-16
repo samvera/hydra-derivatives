@@ -48,7 +48,7 @@ describe Hydra::Derivatives::Processor do
     end
     it "is able to find source_file and output_file" do
       expect(subject.source_file).to eq(object.original_file)
-      expect(subject.output_file).to eq(object.thumbnail)
+      expect{ subject.output_file }.to raise_error(NotImplementedError)
     end
   end
 

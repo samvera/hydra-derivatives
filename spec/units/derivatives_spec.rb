@@ -22,7 +22,7 @@ describe Hydra::Derivatives do
   end
 
   describe "initialize_processor" do
-    subject{ CustomFile.new.initialize_processor(:content, { thumb: '100x100>' }, processor: Hydra::Derivatives::Video::Processor, source_file_service: CustomSourceFileService, output_file_service: CustomOutputFileService) }
+    subject{ CustomFile.new.send(:initialize_processor, :content, { thumb: '100x100>' }, processor: Hydra::Derivatives::Video::Processor, source_file_service: CustomSourceFileService, output_file_service: CustomOutputFileService) }
     it "passes source_file_service and output_file_service options to the processor" do
       expect(subject.class).to eq(Hydra::Derivatives::Video::Processor)
       expect(subject.source_file_service).to eq(CustomSourceFileService)
