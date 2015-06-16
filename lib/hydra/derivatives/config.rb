@@ -15,6 +15,14 @@ module Hydra
         @temp_file_base ||= '/tmp'
       end
 
+      def source_file_service
+        @source_file_service ||= Hydra::Derivatives::RetrieveSourceFileService
+      end
+
+      def output_file_service
+        @output_file_service ||= Hydra::Derivatives::PersistIndirectlyContainedOutputFile
+      end
+
       def fits_path
         @fits_path ||= 'fits.sh'
       end
