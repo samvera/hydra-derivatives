@@ -20,7 +20,6 @@ module Hydra
         directives.each do |name, args|
           opts = args.kind_of?(Hash) ? args : {size: args}
           format = opts.fetch(:format, 'png')
-          output_file_name = opts.fetch(:datastream, output_file_id(name))
           create_resized_image(output_file(output_file_name), opts[:size], format)
         end
       end
@@ -50,7 +49,9 @@ module Hydra
         stream = StringIO.new
         xfrm.write(stream)
         stream.rewind
-        output_file.content = stream
+        # output_file.content = stream
+        output_file_service.call(object, stream, destination_name, mime_type: mime_type)
+
       end
 
       # Override this method if you want a different transformer, or need to load the

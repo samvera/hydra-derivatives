@@ -40,12 +40,6 @@ describe Hydra::Derivatives::Processor do
     end
   end
 
-  describe "output_file" do
-    it "retrieves the correct output file" do
-      expect(subject.output_file('thumbnail')).to eq(object.thumbnail)
-    end
-  end
-
   describe "when files are directly contained by object (like files in a PCDM::Object)" do
     let(:object)        { DirectContainerObject.new }
     let(:source_name)   { 'original_file' }
@@ -57,4 +51,12 @@ describe Hydra::Derivatives::Processor do
       expect(subject.output_file).to eq(object.thumbnail)
     end
   end
+
+  # context "when file is directly contained" do  # direct containers are more efficient, but most legacy code will have indirect containers
+  #   let(:object)          { DirectContainerObject.create }
+  #   it "persists the file to the specified destination on the given object" do
+  #     described_class.call(object, file, 'extracted_text', containment_type: :direct)
+  #     expect(object.file_of_type(:extracted_text).content).to start_with("%PDF-1.4")
+  #   end
+  # end
 end
