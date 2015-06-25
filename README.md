@@ -14,15 +14,15 @@ If you have an ActiveFedora class like this:
         makes_derivatives do |obj|
           case obj.mime_type
           when 'application/pdf'
-            obj.transform_file :content, { :thumb => "100x100>" }
+            obj.transform_file :original_file, { :thumb => "100x100>" }
           when 'audio/wav'
-            obj.transform_file :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+            obj.transform_file :original_file, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
           when 'video/avi'
-            obj.transform_file :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+            obj.transform_file :original_file, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
           when 'image/png', 'image/jpg'
-            obj.transform_file :content, { :medium => "300x300>", :thumb => "100x100>" }
+            obj.transform_file :original_file, { :medium => "300x300>", :thumb => "100x100>" }
           when 'image/tiff'
-            obj.transform_file :content, { :service => { resize: "3600x3600>" } }, processor: 'jpeg2k_image'
+            obj.transform_file :original_file, { :service => { resize: "3600x3600>" } }, processor: 'jpeg2k_image'
           end
         end
     end
@@ -34,7 +34,7 @@ Or a class like this:
     class GenericFile < ActiveFedora::Base
         include Hydra::Derivatives
 
-        contains 'content'
+        contains 'original_file'
         attr_accessor :mime_type
 
         # Use a callback method to declare which derivatives you want
@@ -43,15 +43,15 @@ Or a class like this:
         def generate_derivatives
           case mime_type
           when 'application/pdf'
-            transform_file :content, { :thumb => "100x100>" }
+            transform_file :original_file, { :thumb => "100x100>" }
           when 'audio/wav'
-            transform_file :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+            transform_file :original_file, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
           when 'video/avi'
-            transform_file :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+            transform_file :original_file, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
           when 'image/png', 'image/jpg'
-            transform_file :content, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
+            transform_file :original_file, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
           when 'image/tiff'
-            transform_file :content, { :service => { recipe: :default } }, processor: 'jpeg2k_image'
+            transform_file :original_file, { :service => { recipe: :default } }, processor: 'jpeg2k_image'
           end
         end
     end
@@ -61,7 +61,7 @@ And you add some content to it:
 
 ```ruby
    obj = GenericFile.new
-   obj.content.content = File.open(...)
+   obj.original_file.content = File.open(...)
    obj.mime_type = 'image/jpg'
    obj.save
 ```

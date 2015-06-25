@@ -19,21 +19,9 @@ module Hydra
         [source_name, name].join('_')
       end
 
-      # def output_file(path)
-      #   # first, check for a defined file
-      #   output_file = if object.attached_files[path]
-      #     object.attached_files[path]
-      #   else
-      #     ActiveFedora::File.new("#{object.uri}/#{path}").tap do |file|
-      #       object.attach_file(file, path)
-      #     end
-      #   end
-      # end
-
       # @deprecated Please use a PersistOutputFileService class to save an object
       def output_file
         raise NotImplementedError, "Processor is an abstract class. Utilize an implementation of a PersistOutputFileService class in #{self.class.name}"
-        #@output_file ||= output_file_service(object, file, destination_name, mime_type: :mime_type)
       end
       
       def source_file

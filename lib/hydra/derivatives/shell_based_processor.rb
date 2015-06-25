@@ -36,7 +36,6 @@ module Hydra
           self.class.encode(f.path, options, output_file)
         end
         out_file = File.open(output_file, "rb")
-        # object.add_file(out_file.read, path: dest_path, mime_type: mime_type)
         output_file_service.call(object, out_file.read, destination_name, mime_type: mime_type)
         File.unlink(output_file)
       end

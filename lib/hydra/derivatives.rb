@@ -24,7 +24,7 @@ module Hydra
     # services
     autoload :RetrieveSourceFileService,         'hydra/derivatives/services/retrieve_source_file_service'
     autoload :PersistOutputFileService,          'hydra/derivatives/services/persist_output_file_service'
-    autoload :PersistIndirectlyContainedOutputFile, 'hydra/derivatives/services/persist_indirectly_contained_file'
+    autoload :PersistBasicContainedOutputFileService, 'hydra/derivatives/services/persist_basic_contained_output_file_service'
     autoload :TempfileService,                   'hydra/derivatives/services/tempfile_service'
 
 
