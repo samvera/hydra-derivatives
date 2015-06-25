@@ -10,8 +10,6 @@ describe Hydra::Derivatives::Processor do
     end
 
     # This uses directly_contains (inherited from Hydra::PCDM::ObjectBehavior)
-    class DirectContainerObject < Hydra::Works::GenericFile::Base
-    end
     # If you manually built DirectContainerObject, it would look like this:
     # class DirectContainerObject < ActiveFedora::Base
     #
@@ -26,6 +24,9 @@ describe Hydra::Derivatives::Processor do
     #     file_of_type(::RDF::URI("http://pcdm.org/ThumbnailImage"))
     #   end
     # end
+    class DirectContainerObject < Hydra::Works::GenericFile::Base
+    end
+    
   end
 
   let(:object)        { IndirectContainerObject.new  }
@@ -52,11 +53,4 @@ describe Hydra::Derivatives::Processor do
     end
   end
 
-  # context "when file is directly contained" do  # direct containers are more efficient, but most legacy code will have indirect containers
-  #   let(:object)          { DirectContainerObject.create }
-  #   it "persists the file to the specified destination on the given object" do
-  #     described_class.call(object, file, 'extracted_text', containment_type: :direct)
-  #     expect(object.file_of_type(:extracted_text).content).to start_with("%PDF-1.4")
-  #   end
-  # end
 end

@@ -22,7 +22,7 @@ module Hydra
       end
 
       def output_file_service
-        @output_file_service ||= Hydra::Derivatives::PersistIndirectlyContainedOutputFile
+        @output_file_service ||= Hydra::Derivatives::PersistBasicContainedOutputFileService
       end
 
       def fits_path

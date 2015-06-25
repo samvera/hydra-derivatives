@@ -9,8 +9,6 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
     end
 
     # This uses directly_contains (inherited from Hydra::PCDM::ObjectBehavior)
-    class DirectContainerObject < Hydra::Works::GenericFile::Base
-    end
     # If you manually built DirectContainerObject, it would look like this:
     # class DirectContainerObject < ActiveFedora::Base
     #
@@ -25,13 +23,15 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
     #     file_of_type(::RDF::URI("http://pcdm.org/ThumbnailImage"))
     #   end
     # end
+    class DirectContainerObject < Hydra::Works::GenericFile::Base
+    end
+    
   end
 
   let(:object)            { IndirectContainerObject.new  }
   let(:file_path)         { File.join(fixture_path, 'test.pdf') }
   let(:file)              { File.new(file_path)}
   let(:type_uri)          { ::RDF::URI("http://sample.org/SourceFile") }
-
   let(:source_name)       { 'the_source_name' }
 
   context "when file is indirectly contained (default assumption)" do  # alas, we have to support this as the default because all legacy code (and fedora 3 systems) created indirectly contained files
@@ -52,10 +52,8 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
       Hydra::Works::AddFileToGenericFile.call(object, file_path, type_uri) # attaches the file as a directly contained object
     end
     it "retrieves the file from the specified location on the given object" do
-      expect(object.file_of_type(type_uri).content).to start_with("%PDF-1.4")
+      expect(object.filter_files_by_type(type_uri).first.content).to start_with("%PDF-1.4")
     end
   end
-
-
-
+  
 end

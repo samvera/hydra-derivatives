@@ -24,7 +24,6 @@ module Hydra
           end
         end
         out_file = File.open(new_output, "rb")
-        # object.add_file(out_file.read, path: destination_name, mime_type: mime_type)
         output_file_service.call(object, out_file.read, destination_name, mime_type: mime_type)
         File.unlink(out_file)
       end
