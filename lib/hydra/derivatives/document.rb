@@ -9,7 +9,7 @@ module Hydra
         execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{path}"
       end
 
-      def encode_file(dest_path, file_suffix, mime_type, options = { })
+      def encode_file(destination_name, file_suffix, mime_type, options = { })
         new_output = ''
         Hydra::Derivatives::TempfileService.create(source_file) do |f|
           if mime_type == 'image/jpeg'
@@ -24,7 +24,7 @@ module Hydra
           end
         end
         out_file = File.open(new_output, "rb")
-        object.add_file(out_file.read, path: dest_path, mime_type: mime_type)
+        output_file_service.call(object, out_file.read, destination_name, mime_type: mime_type)
         File.unlink(out_file)
       end
 

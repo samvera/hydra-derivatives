@@ -29,14 +29,14 @@ module Hydra
         {}
       end
 
-      def encode_file(dest_path, file_suffix, mime_type, options)
+      def encode_file(destination_name, file_suffix, mime_type, options)
         out_file = nil
         output_file = Dir::Tmpname.create(['sufia', ".#{file_suffix}"], Hydra::Derivatives.temp_file_base){}
         Hydra::Derivatives::TempfileService.create(source_file) do |f|
           self.class.encode(f.path, options, output_file)
         end
         out_file = File.open(output_file, "rb")
-        object.add_file(out_file.read, path: dest_path, mime_type: mime_type)
+        output_file_service.call(object, out_file.read, destination_name, mime_type: mime_type)
         File.unlink(output_file)
       end
 
