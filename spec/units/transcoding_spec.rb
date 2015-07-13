@@ -41,8 +41,13 @@ describe "Transcoder" do
             string_recipe: { recipe: '-quiet', datastream: 'string_recipe' },
             diy: { }
           }, processor: 'jpeg2k_image'
-        end
-
+        when 'image/x-adobe-dng'
+          obj.transform_file :original_file, 
+		 	{
+				access: { size: "300x300>", format: "jpg", datastream: "access" },
+				thumb: { size: "100x100>", format: "jpg", datastream: "thumb" }
+		  	}, processor: :raw_image
+         end
       end
 
       makes_derivatives :generate_special_derivatives
@@ -79,6 +84,28 @@ describe "Transcoder" do
       expect(file.attached_files['access']).to have_content
       expect(file.attached_files['access'].mime_type).to eq('image/jpeg')
       expect(file.attached_files.key?('original_file_text')).to be_falsey
+    end
+  end
+
+  describe "with an attached RAW image", unless: $in_travis do
+    let(:attachment) { File.open(File.expand_path('../../fixtures/test.dng', __FILE__))}
+    let(:file) do
+      GenericFile.new(mime_type_from_fits: 'image/x-adobe-dng') do |f|
+        f.original_file.content = attachment
+        f.original_file.mime_type = 'image/x-adobe-dng'
+        f.save!
+      end
+    end
+
+    it "should transcode" do
+     expect(file.attached_files.key?('access')).to be_falsey
+      expect(file.attached_files.key?('thumb')).to be_falsey
+
+      file.create_derivatives
+      expect(file.attached_files['access']).to have_content
+      expect(file.attached_files['access'].mime_type).to eq('image/jpeg')
+      expect(file.attached_files['thumb']).to have_content
+      expect(file.attached_files['thumb'].mime_type).to eq('image/jpeg')
     end
   end
 
