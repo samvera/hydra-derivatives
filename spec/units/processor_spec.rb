@@ -1,55 +1,61 @@
 require 'spec_helper'
-require 'hydra/works'
 
 describe Hydra::Derivatives::Processor do
 
-  before(:all) do
-    class IndirectContainerObject < ActiveFedora::Base
-      contains "content"
-      contains "thumbnail"
-    end
-
-    # This uses directly_contains (inherited from Hydra::PCDM::ObjectBehavior)
-    # If you manually built DirectContainerObject, it would look like this:
-    # class DirectContainerObject < ActiveFedora::Base
-    #
-    #   directly_contains :files, has_member_relation: RDFVocabularies::PCDMTerms.hasFile,
-    #     class_name: "Hydra::PCDM::File"
-    #
-    #   def original_file
-    #     file_of_type(::RDF::URI("http://pcdm.org/OriginalFile"))
-    #   end
-    #
-    #   def thumbnail
-    #     file_of_type(::RDF::URI("http://pcdm.org/ThumbnailImage"))
-    #   end
-    # end
-    class DirectContainerObject < Hydra::Works::GenericFile::Base
-    end
-    
-  end
-
-  let(:object)        { IndirectContainerObject.new  }
+  let(:object)        { "Fake Object"  }
   let(:source_name)   { 'content' }
   let(:directives)    { { thumb: "100x100>" } }
 
   subject { Hydra::Derivatives::Processor.new(object, source_name, directives)}
 
   describe "source_file" do
-    it "retrieves the specified source" do
-      expect(subject.source_file).to eq(object.content)
+    it "relies on the source_file_service" do
+      expect(subject.source_file_service).to receive(:call).with(object, source_name)
+      subject.source_file
     end
   end
 
-  describe "when files are directly contained by object (like files in a PCDM::Object)" do
-    let(:object)        { DirectContainerObject.new }
-    let(:source_name)   { 'original_file' }
-    before do
-      object.save
+  describe "output_file_service" do
+    let(:custom_output_file_service) { "fake service" }
+    let(:another_custom_output_file_service) { "another fake service" }
+
+    context "as a global configuration setting" do
+      before do
+        allow(Hydra::Derivatives).to receive(:output_file_service).and_return(custom_output_file_service)
+      end
+      it "utilizes the default output file service" do
+        expect(subject.output_file_service).to eq(custom_output_file_service)
+      end
     end
-    it "is able to find source_file and output_file" do
-      expect(subject.source_file).to eq(object.original_file)
-      expect{ subject.output_file }.to raise_error(NotImplementedError)
+
+    context "as an instance level configuration setting" do
+      subject { Hydra::Derivatives::Processor.new(object, source_name, directives, output_file_service: another_custom_output_file_service)}
+      it "accepts a custom output file service as an option" do
+        expect(subject.output_file_service).to eq(another_custom_output_file_service)
+      end
     end
   end
+
+  describe "source_file_service" do
+
+    let(:custom_source_file_service) { "fake service" }
+    let(:another_custom_source_file_service) { "another fake service" }
+
+    context "as a global configuration setting" do
+      before do
+        allow(Hydra::Derivatives).to receive(:source_file_service).and_return(custom_source_file_service)
+      end
+      it "utilizes the default source file service" do
+        expect(subject.source_file_service).to eq(custom_source_file_service)
+      end
+    end
+
+    context "as an instance level configuration setting" do
+      subject { Hydra::Derivatives::Processor.new(object, source_name, directives, source_file_service: another_custom_source_file_service)}
+      it "accepts a custom source file service as an option" do
+        expect(subject.source_file_service).to eq(another_custom_source_file_service)
+      end
+    end
+  end
+
 end

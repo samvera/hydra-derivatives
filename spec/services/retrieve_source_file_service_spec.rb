@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'hydra/works'
 
 describe Hydra::Derivatives::RetrieveSourceFileService do
 
@@ -8,24 +7,13 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
       contains "the_source_name"
     end
 
-    # This uses directly_contains (inherited from Hydra::PCDM::ObjectBehavior)
-    # If you manually built DirectContainerObject, it would look like this:
-    # class DirectContainerObject < ActiveFedora::Base
-    #
-    #   directly_contains :files, has_member_relation: RDFVocabularies::PCDMTerms.hasFile,
-    #     class_name: "Hydra::PCDM::File"
-    #
-    #   def original_file
-    #     file_of_type(::RDF::URI("http://pcdm.org/OriginalFile"))
-    #   end
-    #
-    #   def thumbnail
-    #     file_of_type(::RDF::URI("http://pcdm.org/ThumbnailImage"))
-    #   end
-    # end
-    class DirectContainerObject < Hydra::Works::GenericFile::Base
+    class DirectContainerObject < ActiveFedora::Base
+      directly_contains :files, has_member_relation: ::RDF::URI("http://pcdm.org/use#hasFile"),
+        class_name: "ActiveFedora::Base"
+      directly_contains_one :original_file, through: :files, type: ::RDF::URI("http://pcdm.org/use#OriginalFile")
+      directly_contains_one :thumbnail, through: :files, type: ::RDF::URI("http://pcdm.org/use#ThumbnailImage")
+      directly_contains_one :extracted_text, through: :files, type: ::RDF::URI("http://pcdm.org/use#ExtractedText")
     end
-    
   end
 
   let(:object)            { IndirectContainerObject.new  }
@@ -49,10 +37,11 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
   context "when file is directly contained" do  # direct containers are more efficient, but most legacy code will have indirect containers
     let(:object)          { DirectContainerObject.create }
     before do
-      Hydra::Works::AddFileToGenericFile.call(object, file_path, type_uri) # attaches the file as a directly contained object
+      object.build_original_file
+      object.original_file.content = "fake file content"
     end
     it "retrieves the file from the specified location on the given object" do
-      expect(object.filter_files_by_type(type_uri).first.content).to start_with("%PDF-1.4")
+      expect(object.original_file.content).to eq("fake file content")
     end
   end
   
