@@ -1,58 +1,55 @@
 require 'spec_helper'
-require 'hydra/works'
 
 describe Hydra::Derivatives::RetrieveSourceFileService do
 
   before(:all) do
-    class IndirectContainerObject < ActiveFedora::Base
-      contains "the_source_name"
-    end
-
-    # This uses directly_contains (inherited from Hydra::PCDM::ObjectBehavior)
-    # If you manually built DirectContainerObject, it would look like this:
-    # class DirectContainerObject < ActiveFedora::Base
-    #
-    #   directly_contains :files, has_member_relation: RDFVocabularies::PCDMTerms.hasFile,
-    #     class_name: "Hydra::PCDM::File"
-    #
-    #   def original_file
-    #     file_of_type(::RDF::URI("http://pcdm.org/OriginalFile"))
-    #   end
-    #
-    #   def thumbnail
-    #     file_of_type(::RDF::URI("http://pcdm.org/ThumbnailImage"))
-    #   end
-    # end
-    class DirectContainerObject < Hydra::Works::GenericFile::Base
+    
+    # Need a class that: 
+    #  1) Allows you to set .uri= (to work with directly_contains)
+    #  2) has a metadata_node (to work with directly_contains_one)
+    class FileWithMetadata < ActiveFedora::File
+      include ActiveFedora::WithMetadata
     end
     
+    class ObjectWithBasicContainer < ActiveFedora::Base
+      contains "contained_file"
+    end
+
+    class DirectContainerObject < ActiveFedora::Base
+      directly_contains :files, has_member_relation: ::RDF::URI("http://pcdm.org/use#hasFile"),
+        class_name: "FileWithMetadata"
+      directly_contains_one :directly_contained_file, through: :files, type: ::RDF::URI("http://pcdm.org/use#OriginalFile")
+    end
   end
 
-  let(:object)            { IndirectContainerObject.new  }
-  let(:file_path)         { File.join(fixture_path, 'test.pdf') }
-  let(:file)              { File.new(file_path)}
-  let(:type_uri)          { ::RDF::URI("http://sample.org/SourceFile") }
-  let(:source_name)       { 'the_source_name' }
-
-  context "when file is indirectly contained (default assumption)" do  # alas, we have to support this as the default because all legacy code (and fedora 3 systems) created indirectly contained files
-    let(:object)            { IndirectContainerObject.new  }
+  subject { described_class.call(object, source_name) }
+  
+  context "when file is in basic container (default assumption)" do  # alas, we have to support this as the default because all legacy code (and fedora 3 systems) created indirectly contained files
+    let(:object)            { ObjectWithBasicContainer.new  }
+    let(:content)           { "fake file content (basic container)" }
+    let(:source_name)       { 'contained_file' }
+    
     before do
       # attaches the file as an indirectly contained object
-      object.the_source_name.content = "fake file content"
+      object.contained_file.content = content
     end
     it "persists the file to the specified destination on the given object" do
-      described_class.call(object, source_name)
-      expect(object.send(source_name).content).to eq("fake file content")
+      expect(subject).to eq(object.contained_file)
     end
   end
 
   context "when file is directly contained" do  # direct containers are more efficient, but most legacy code will have indirect containers
-    let(:object)          { DirectContainerObject.create }
+    let(:object)            { DirectContainerObject.new }
+    let(:content)           { "fake file content (direct container)" }
+    let(:source_name)       { 'directly_contained_file' }
+    
     before do
-      Hydra::Works::AddFileToGenericFile.call(object, file_path, type_uri) # attaches the file as a directly contained object
+      object.save  # can't build directly contained objects without saving the parent first
+      object.build_directly_contained_file
+      object.directly_contained_file.content = content
     end
     it "retrieves the file from the specified location on the given object" do
-      expect(object.filter_files_by_type(type_uri).first.content).to start_with("%PDF-1.4")
+      expect(subject).to eq(object.directly_contained_file)
     end
   end
   
