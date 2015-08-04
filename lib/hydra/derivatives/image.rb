@@ -54,11 +54,14 @@ module Hydra
       end
 
       def write_image(destination_name, format, xfrm)
-        stream = StringIO.new
-        xfrm.write(stream)
-        stream.rewind
+        output_io = Hydra::Derivatives::IoDecorator.new(StringIO.new) 
+        output_io.mime_type = new_mime_type(format)
+        output_io.original_name = destination_name
+
+        xfrm.write(output_io)
+        output_io.rewind
         mime_type = new_mime_type(format)
-        output_file_service.call(object, stream, destination_name, mime_type: mime_type)
+        output_file_service.call(object, output_io, destination_name, mime_type: mime_type)
 
       end
 
