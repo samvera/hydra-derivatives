@@ -11,13 +11,15 @@ module Hydra::Derivatives
     # NOTE: Uses basic containment. If you want to use direct containment (ie. with PCDM) you must use a different service (ie. Hydra::Works::AddFileToGenericFile Service)
     #
     # @param [ActiveFedora::Base] object file is be persisted to
-    # @param [File] filestream to be added
-    # @param [String] destination_name path to file
-    # @option opts [String] mime_type mime type of derivative
+    # @param [File] filestream to be added, should respond to :mime_type and :original_name
+    #   original_name will get used as the path for a chile resource in fedora, it is not a path to a file on disk.
 
-    def self.call(object, file, destination_name, opts={})
-      object.add_file(file, path: destination_name, mime_type: opts[:mime_type])
+    def self.call(object, file, destination_path)
+      o_name = determine_original_name(file)
+      m_type = determine_mime_type(file)
+      object.add_file(file, path: destination_path, mime_type: m_type, original_name: o_name)
       object.save
     end
+
   end
 end

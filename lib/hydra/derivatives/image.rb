@@ -56,13 +56,11 @@ module Hydra
       def write_image(destination_name, format, xfrm)
         output_io = Hydra::Derivatives::IoDecorator.new(StringIO.new) 
         output_io.mime_type = new_mime_type(format)
-        output_io.original_name = destination_name
 
         xfrm.write(output_io)
         output_io.rewind
-        mime_type = new_mime_type(format)
-        output_file_service.call(object, output_io, destination_name, mime_type: mime_type)
 
+        output_file_service.call(object, output_io, destination_name)
       end
 
       # Override this method if you want a different transformer, or need to load the

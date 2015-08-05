@@ -37,8 +37,7 @@ module Hydra
         end
         out_file = Hydra::Derivatives::IoDecorator.new(File.open(output_file, "rb"))
         out_file.mime_type = mime_type
-        out_file.original_name = destination_name
-        output_file_service.call(object, out_file.read, destination_name, mime_type: mime_type)
+        output_file_service.call(object, out_file, destination_name)
         File.unlink(output_file)
       end
 
