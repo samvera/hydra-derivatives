@@ -1,6 +1,7 @@
 require 'active_fedora'
 require 'hydra/derivatives/railtie' if defined?(Rails)
 require 'deprecation'
+
 module Hydra
   module Derivatives
     extend ActiveSupport::Concern
@@ -21,6 +22,7 @@ module Hydra
     autoload :RawImage
     autoload :Logger
     autoload :TempfileService
+    autoload :IoDecorator
 
     # services
     autoload :RetrieveSourceFileService,         'hydra/derivatives/services/retrieve_source_file_service'

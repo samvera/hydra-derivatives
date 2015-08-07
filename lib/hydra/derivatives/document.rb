@@ -23,8 +23,9 @@ module Hydra
             new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(f.path), ''), file_suffix].join('.'))
           end
         end
-        out_file = File.open(new_output, "rb")
-        output_file_service.call(object, out_file.read, destination_name, mime_type: mime_type)
+        out_file = Hydra::Derivatives::IoDecorator.new(File.open(new_output, "rb"))
+        out_file.mime_type = mime_type
+        output_file_service.call(object, out_file, destination_name)
         File.unlink(out_file)
       end
 

@@ -13,7 +13,10 @@ describe Hydra::Derivatives::PersistBasicContainedOutputFileService do
   let(:file)              { File.new(file_path)}
   let(:destination_name)  { 'the_derivative_name' }
 
-  context "when file is basic contained (default assumption)" do  # alas, we have to support this as the default because all legacy code (and fedora 3 systems) created basic contained files
+  # alas, we have to support this as the default because all legacy code (and fedora 3 systems) created basic contained files
+  # The new signature does not have a destination_name option.  There is a default string that will get applied, but his might
+  # not be sufficient.
+  context "when file is basic contained (default assumption)" do  
     let(:object)          { BasicContainerObject.new  }
     it "persists the file to the specified destination on the given object" do
       described_class.call(object, "fake file content", destination_name)

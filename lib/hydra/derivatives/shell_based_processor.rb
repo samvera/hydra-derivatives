@@ -35,8 +35,9 @@ module Hydra
         Hydra::Derivatives::TempfileService.create(source_file) do |f|
           self.class.encode(f.path, options, output_file)
         end
-        out_file = File.open(output_file, "rb")
-        output_file_service.call(object, out_file.read, destination_name, mime_type: mime_type)
+        out_file = Hydra::Derivatives::IoDecorator.new(File.open(output_file, "rb"))
+        out_file.mime_type = mime_type
+        output_file_service.call(object, out_file, destination_name)
         File.unlink(output_file)
       end
 
