@@ -120,7 +120,7 @@ module Hydra
     end
 
     def transform_datastream(file_name, transform_directives, opts={})
-      transform_file(file_name, transform_directives, opts={})
+      transform_file(file_name, transform_directives, opts)
     end
     deprecation_deprecate :transform_datastream
 
