@@ -28,7 +28,7 @@ module Hydra
 
       def output_filename_for(name, opts = {})
         if opts.has_key? :datastream
-          Deprecation.warn Hydra::Derivatives::Image, 'The :datastream option is deprecated and will be removed in a future release.' 
+          Deprecation.warn Hydra::Derivatives::Image, 'The :datastream option is deprecated and will be removed in hydra-derivatives 3.0.0.'
         end
         opts.fetch(:datastream, output_file_id(name))
       end
