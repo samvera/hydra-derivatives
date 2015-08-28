@@ -106,7 +106,7 @@ Just add `gem 'hydra-derivatives'` to your Gemfile.
 
 * [FITS](http://fitstool.org/)
 * [FFMpeg](http://www.ffmpeg.org/)
-* [LibreOffice](https://www.libreoffice.org/)
+* [LibreOffice](https://www.libreoffice.org/) (version 4.2.8.2 is known to work, 4.2.6.3 is known to not work)
 * [ImageMagick](http://www.imagemagick.org/)
 * Kakadu's [kdu_compress](http://www.kakadusoftware.com/)
 
