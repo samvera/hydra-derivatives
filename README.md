@@ -104,7 +104,7 @@ Just add `gem 'hydra-derivatives'` to your Gemfile.
 
 ## Dependencies
 
-* [FITS](http://fitstool.org/)
+* [FITS](http://fitstool.org/) - version 0.6.2
 * [FFMpeg](http://www.ffmpeg.org/)
 * [LibreOffice](https://www.libreoffice.org/) (openoffice.org-headless on Ubuntu/Debian to avoid "_X11 error: Can't open display:_")
 * [ImageMagick](http://www.imagemagick.org/)
