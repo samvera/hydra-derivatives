@@ -108,7 +108,7 @@ Just add `gem 'hydra-derivatives'` to your Gemfile.
 * [FFMpeg](http://www.ffmpeg.org/)
 * [LibreOffice](https://www.libreoffice.org/) (openoffice.org-headless on Ubuntu/Debian to avoid "_X11 error: Can't open display:_")
 * [ImageMagick](http://www.imagemagick.org/)
-* Kakadu's [kdu_compress](http://www.kakadusoftware.com/)
+* Kakadu's [kdu_compress](http://www.kakadusoftware.com/) (optional)
 
 To enable LibreOffice, FFMpeg, ImageMagick, FITS support, and kdu_compress support, make sure they are on your path. Most people will put that in their .bash_profile or somewhere similar.
 
