@@ -73,7 +73,7 @@ module Hydra
           stdout.close
           err = stderr.read
           stderr.close
-          raise "Unable to execute command \"#{command}\"\n#{err}" unless wait_thr.value.success?
+          raise "Unable to execute command \"#{command}\". Exit code: #{wait_thr.value}\nError message: #{err}" unless wait_thr.value.success?
         end
       end
     end
