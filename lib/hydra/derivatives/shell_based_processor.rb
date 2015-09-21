@@ -8,6 +8,8 @@ module Hydra
     module ShellBasedProcessor
       extend ActiveSupport::Concern
 
+      BLOCK_SIZE = 1024
+
       included do
         class_attribute :timeout
         extend Open3
@@ -66,14 +68,43 @@ module Hydra
         end
 
         def execute_without_timeout(command, context)
+          exit_status = nil
+          err_str = ''
           stdin, stdout, stderr, wait_thr = popen3(command)
           context[:pid] = wait_thr[:pid]
           stdin.close
-          out = stdout.read
           stdout.close
-          err = stderr.read
-          stderr.close
-          raise "Unable to execute command \"#{command}\". Exit code: #{wait_thr.value}\nError message: #{err}" unless wait_thr.value.success?
+          files = [stderr]
+
+          until all_eof?(files) do
+            ready = IO.select(files, nil, nil, 60)
+
+            if ready
+              readable = ready[0]
+              readable.each do |f|
+                fileno = f.fileno
+
+                begin
+                  data = f.read_nonblock(BLOCK_SIZE)
+
+                  case fileno
+                    when stderr.fileno
+                      err_str << data
+                  end
+                rescue EOFError
+                  Rails.logger "Caught an eof error in ShellBasedProcessor"
+                  # No big deal.
+                end
+              end
+            end
+          end
+          exit_status = wait_thr.value
+
+          raise "Unable to execute command \"#{command}\". Exit code: #{exit_status}\nError message: #{err_str}" unless exit_status.success?
+        end
+
+        def all_eof?(files)
+          files.find { |f| !f.eof }.nil?
         end
       end
     end
