@@ -21,8 +21,9 @@ module Hydra
         directives.each do |name, args|
           opts = args.kind_of?(Hash) ? args : {size: args}
           format = opts.fetch(:format, 'png')
+          quality = opts.fetch(:quality, nil)
           destination_name = output_filename_for(name, opts)
-          create_resized_image(destination_name, opts[:size], format)
+          create_resized_image(destination_name, opts[:size], format, quality)
         end
       end
 
@@ -54,7 +55,7 @@ module Hydra
       end
 
       def write_image(destination_name, format, xfrm)
-        output_io = Hydra::Derivatives::IoDecorator.new(StringIO.new) 
+        output_io = Hydra::Derivatives::IoDecorator.new(StringIO.new)
         output_io.mime_type = new_mime_type(format)
 
         xfrm.write(output_io)
