@@ -1,4 +1,4 @@
-# hydra-derivatives [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives) [![Build Status](https://travis-ci.org/projecthydra-labs/hydra-derivatives.png?branch=master)](https://travis-ci.org/projecthydra-labs/hydra-derivatives) [![Dependency Status](https://gemnasium.com/projecthydra-labs/hydra-derivatives.png)](https://gemnasium.com/projecthydra-labs/hydra-derivatives)
+# hydra-derivatives [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives) [![Build Status](https://travis-ci.org/projecthydra/hydra-derivatives.png?branch=master)](https://travis-ci.org/projecthydra/hydra-derivatives) [![Dependency Status](https://gemnasium.com/projecthydra/hydra-derivatives.png)](https://gemnasium.com/projecthydra/hydra-derivatives)
 
 Derivative generation for hydra
 
@@ -14,15 +14,15 @@ If you have an ActiveFedora class like this:
         makes_derivatives do |obj|
           case obj.mime_type
           when 'application/pdf'
-            obj.transform_file :content, { :thumb => "100x100>" }
+            obj.transform_file :original_file, { :thumb => "100x100>" }
           when 'audio/wav'
-            obj.transform_file :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+            obj.transform_file :original_file, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
           when 'video/avi'
-            obj.transform_file :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+            obj.transform_file :original_file, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
           when 'image/png', 'image/jpg'
-            obj.transform_file :content, { :medium => "300x300>", :thumb => "100x100>" }
+            obj.transform_file :original_file, { :medium => "300x300>", :thumb => "100x100>" }
           when 'image/tiff'
-            obj.transform_file :content, { :service => { resize: "3600x3600>" } }, processor: 'jpeg2k_image'
+            obj.transform_file :original_file, { :service => { resize: "3600x3600>" } }, processor: 'jpeg2k_image'
           end
         end
     end
@@ -34,7 +34,7 @@ Or a class like this:
     class GenericFile < ActiveFedora::Base
         include Hydra::Derivatives
 
-        contains 'content'
+        contains 'original_file'
         attr_accessor :mime_type
 
         # Use a callback method to declare which derivatives you want
@@ -43,15 +43,15 @@ Or a class like this:
         def generate_derivatives
           case mime_type
           when 'application/pdf'
-            transform_file :content, { :thumb => "100x100>" }
+            transform_file :original_file, { :thumb => "100x100>" }
           when 'audio/wav'
-            transform_file :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+            transform_file :original_file, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
           when 'video/avi'
-            transform_file :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+            transform_file :original_file, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
           when 'image/png', 'image/jpg'
-            transform_file :content, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
+            transform_file :original_file, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
           when 'image/tiff'
-            transform_file :content, { :service => { recipe: :default } }, processor: 'jpeg2k_image'
+            transform_file :original_file, { :service => { recipe: :default } }, processor: 'jpeg2k_image'
           end
         end
     end
@@ -61,7 +61,7 @@ And you add some content to it:
 
 ```ruby
    obj = GenericFile.new
-   obj.content.content = File.open(...)
+   obj.original_file.content = File.open(...)
    obj.mime_type = 'image/jpg'
    obj.save
 ```
@@ -70,17 +70,45 @@ Then when you call `obj.create_derivatives` two new files, 'thumbnail' and 'cont
 
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
+## Configuration
+
+### Processing Timeouts
+
+hydra-derivatives can be configured to timeout derivatives processes.  Each process type has a separate timeout.
+If no timeout is set the system will process until complete (possibly indefinitely).
+
+```
+require 'hydra/derivatives'
+
+Hydra::Derivatives::Video::Processor.timeout  = 10.minutes
+Hydra::Derivatives::Document.timeout = 5.minutes
+Hydra::Derivatives::Audio.timeout = 10.minutes
+Hydra::Derivatives::Image.timeout = 5.minutes
+
+```
+
+### Video Processing configuration
+
+Flags can be set for using different video codes.  Default codecs are shown below
+
+```
+Hydra::Derivatives::Video::Processor.config.mpeg4.codec = '-vcodec libx264 -acodec libfdk_aac'
+Hydra::Derivatives::Video::Processor.config.webm.codec = '-vcodec libvpx -acodec libvorbis'
+Hydra::Derivatives::Video::Processor.config.mkv.codec = '-vcodec ffv1'
+Hydra::Derivatives::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
+```
+
 # Installation
 
 Just add `gem 'hydra-derivatives'` to your Gemfile.
 
 ## Dependencies
 
-* [FITS](http://fitstool.org/)
+* [FITS](http://fitstool.org/) - version 0.6.2
 * [FFMpeg](http://www.ffmpeg.org/)
-* [LibreOffice](https://www.libreoffice.org/)
+* [LibreOffice](https://www.libreoffice.org/) (openoffice.org-headless on Ubuntu/Debian to avoid "_X11 error: Can't open display:_")
 * [ImageMagick](http://www.imagemagick.org/)
-* Kakadu's [kdu_compress](http://www.kakadusoftware.com/)
+* Kakadu's [kdu_compress](http://www.kakadusoftware.com/) (optional)
 
 To enable LibreOffice, FFMpeg, ImageMagick, FITS support, and kdu_compress support, make sure they are on your path. Most people will put that in their .bash_profile or somewhere similar.
 

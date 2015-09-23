@@ -4,7 +4,7 @@ version = File.read(File.expand_path("../VERSION", __FILE__)).strip
 
 Gem::Specification.new do |spec|
   spec.name          = "hydra-derivatives"
-  spec.version       = version 
+  spec.version       = version
   spec.authors       = ["Justin Coyne"]
   spec.email         = ["justin@curationexperts.com"]
   spec.description   = %q{Derivative generation plugin for hydra}
@@ -17,16 +17,16 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler", "~> 1.3"
-  spec.add_development_dependency "rake"
-  spec.add_development_dependency "jettywrapper"
-  spec.add_development_dependency "rspec"
+  spec.add_development_dependency 'bundler', '~> 1.3'
+  spec.add_development_dependency 'rake', '~> 10.1'
+  spec.add_development_dependency 'jettywrapper', '~> 2.0'
+  spec.add_development_dependency 'rspec', '~> 3.1'
 
-  spec.add_dependency 'active-fedora', '~> 9.0.0.beta3'
-  spec.add_dependency 'hydra-file_characterization'
-  spec.add_dependency 'mini_magick'
-  spec.add_dependency 'activesupport', '>= 3.2.13', '< 5.0'
-  spec.add_dependency 'mime-types'
+  spec.add_dependency 'active-fedora', '~> 9.0'
+  spec.add_dependency 'hydra-file_characterization', '~> 0.3'
+  spec.add_dependency 'mini_magick', '>= 3.2', '< 5'
+  spec.add_dependency 'activesupport', '~> 4.0'
+  spec.add_dependency 'mime-types', '< 3'
   spec.add_dependency 'deprecation'
 end
 

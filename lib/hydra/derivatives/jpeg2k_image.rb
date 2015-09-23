@@ -25,17 +25,19 @@ module Hydra
         end
       end
 
-      def encode_file(dest_dsid, recipe, opts={})
+      def encode_file(destination_name, recipe, opts={})
         output_file = self.class.tmp_file('.jp2')
         if opts[:file_path]
           self.class.encode(opts[:file_path], recipe, output_file)
         else
-          source_file.to_tempfile do |f|
+          Hydra::Derivatives::TempfileService.create(source_file) do |f|
             self.class.encode(f.path, recipe, output_file)
           end
         end
-        out_file = File.open(output_file, "rb")
-        object.add_file_datastream(out_file.read, dsid: dest_dsid, mime_type: 'image/jp2')
+        out_file = Hydra::Derivatives::IoDecorator.new(File.open(output_file, "rb"))
+        out_file.mime_type = "image/jp2"
+        output_file_service.call(object, out_file, destination_name)
+
         File.unlink(output_file)
       end
 
@@ -72,7 +74,7 @@ module Hydra
 
       def self.kdu_compress_recipe(args, quality, long_dim)
         if args[:recipe].is_a? Symbol
-          recipe = [args[:recipe].to_s, quality].join('_')
+          recipe = [args[:recipe].to_s, quality].join('_').to_sym
           if Hydra::Derivatives.kdu_compress_recipes.has_key? recipe
             return Hydra::Derivatives.kdu_compress_recipes[recipe]
           else

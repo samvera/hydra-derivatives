@@ -12,4 +12,15 @@ RSpec.configure do |config|
   end
 end
 
+# Workaround for RAW image support until these are pushed upstream to
+# the MIME Types gem
+require 'mime-types'
+dng_format = MIME::Type.new('image/x-adobe-dng')
+dng_format.extensions = 'dng'
+MIME::Types.add(dng_format)
+
 $in_travis = !ENV['TRAVIS'].nil? && ENV['TRAVIS'] == 'true'
+
+def fixture_path
+  File.expand_path("../fixtures", __FILE__)
+end

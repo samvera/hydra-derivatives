@@ -1,8 +1,10 @@
 module Hydra
   module Derivatives
     class Config
-      attr_writer :ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path,
+      attr_writer :ffmpeg_path, :libreoffice_path, :temp_file_base, 
+        :source_file_service, :output_file_service, :fits_path,
         :enable_ffmpeg, :kdu_compress_path, :kdu_compress_recipes
+
       def ffmpeg_path
         @ffmpeg_path ||= 'ffmpeg'
       end
@@ -13,6 +15,14 @@ module Hydra
 
       def temp_file_base
         @temp_file_base ||= '/tmp'
+      end
+
+      def source_file_service
+        @source_file_service ||= Hydra::Derivatives::RetrieveSourceFileService
+      end
+
+      def output_file_service
+        @output_file_service ||= Hydra::Derivatives::PersistBasicContainedOutputFileService
       end
 
       def fits_path

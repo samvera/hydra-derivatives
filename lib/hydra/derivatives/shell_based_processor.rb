@@ -9,6 +9,7 @@ module Hydra
       extend ActiveSupport::Concern
 
       included do
+        class_attribute :timeout
         extend Open3
       end
 
@@ -23,29 +24,56 @@ module Hydra
       end
 
       # override this method in subclass if you want to provide specific options.
+      # returns a hash of options that the specific processors use
       def options_for(format)
+        {}
       end
 
-      def encode_file(dest_dsid, file_suffix, mime_type, options = '')
+      def encode_file(destination_name, file_suffix, mime_type, options)
         out_file = nil
         output_file = Dir::Tmpname.create(['sufia', ".#{file_suffix}"], Hydra::Derivatives.temp_file_base){}
-        source_file.to_tempfile do |f|
+        Hydra::Derivatives::TempfileService.create(source_file) do |f|
           self.class.encode(f.path, options, output_file)
         end
-        out_file = File.open(output_file, "rb")
-        object.add_file_datastream(out_file.read, dsid: dest_dsid, mime_type: mime_type)
+        out_file = Hydra::Derivatives::IoDecorator.new(File.open(output_file, "rb"))
+        out_file.mime_type = mime_type
+        output_file_service.call(object, out_file, destination_name)
         File.unlink(output_file)
       end
 
       module ClassMethods
+
         def execute(command)
+          context = {}
+          if timeout
+            execute_with_timeout(timeout, command, context)
+          else
+            execute_without_timeout(command, context)
+          end
+        end
+
+        def execute_with_timeout(timeout, command, context)
+          begin
+            status = Timeout::timeout(timeout) do
+              execute_without_timeout(command, context)
+            end
+          rescue Timeout::Error => ex
+            pid = context[:pid]
+            Process.kill("KILL", pid)
+            raise Hydra::Derivatives::TimeoutError, "Unable to execute command \"#{command}\"\nThe command took longer than #{timeout} seconds to execute"
+          end
+
+        end
+
+        def execute_without_timeout(command, context)
           stdin, stdout, stderr, wait_thr = popen3(command)
+          context[:pid] = wait_thr[:pid]
           stdin.close
           out = stdout.read
           stdout.close
           err = stderr.read
           stderr.close
-          raise "Unable to execute command \"#{command}\"\n#{err}" unless wait_thr.value.success?
+          raise "Unable to execute command \"#{command}\". Exit code: #{wait_thr.value}\nError message: #{err}" unless wait_thr.value.success?
         end
       end
     end

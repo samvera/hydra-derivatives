@@ -1,6 +1,7 @@
 require 'active_fedora'
 require 'hydra/derivatives/railtie' if defined?(Rails)
 require 'deprecation'
+
 module Hydra
   module Derivatives
     extend ActiveSupport::Concern
@@ -18,7 +19,19 @@ module Hydra
     autoload :ExtractMetadata
     autoload :ShellBasedProcessor
     autoload :Jpeg2kImage
+    autoload :RawImage
     autoload :Logger
+    autoload :TempfileService
+    autoload :IoDecorator
+
+    # services
+    autoload :RetrieveSourceFileService,         'hydra/derivatives/services/retrieve_source_file_service'
+    autoload :PersistOutputFileService,          'hydra/derivatives/services/persist_output_file_service'
+    autoload :PersistBasicContainedOutputFileService, 'hydra/derivatives/services/persist_basic_contained_output_file_service'
+    autoload :TempfileService,                   'hydra/derivatives/services/tempfile_service'
+
+    # Raised if the timout elapses
+    class TimeoutError < ::Timeout::Error; end
 
     def self.config
       @config ||= reset_config!
@@ -29,7 +42,7 @@ module Hydra
     end
 
     [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path,
-      :kdu_compress_recipes, :enable_ffmpeg].each do |method|
+      :kdu_compress_recipes, :enable_ffmpeg, :source_file_service, :output_file_service].each do |method|
       module_eval <<-RUBY
         def self.#{method.to_s}
           config.#{method.to_s}
@@ -64,6 +77,9 @@ module Hydra
     # @param file_name
     # @param [Hash] transform_directives - each key corresponds to a desired derivative.  Associated values vary according to processor being used.
     # @param [Hash] opts for specifying things like choice of :processor (processor defaults to :image)
+    # @option opts [Symbol] :processor (:image) Processor to use
+    # @option opts [Class] :source_file_service (Hydra::Derivatives::RetrieveSourceFileService) service to use when persisting generated derivatives.  The default for this can be set in your config file.
+    # @option opts [Class] :output_file_service (Hydra::Derivatives::PersistIndirectlyContainedOutputFile) service to use when retrieving the source.  The default for this can be set in your config file.
     #
     # @example This will create content_thumb
     #   transform_file :content, { :thumb => "100x100>" }
@@ -78,13 +94,33 @@ module Hydra
     #   transform_file :content, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
     #   transform_file :content, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
     #
+    # @example Specify an output file service to use when persisting generated derivatives
+    #   obj.transform_file :content, { mp4: { format: 'mp4' } }, processor: :video, output_file_service: My::System::PersistOutputFileToTapeStorage
+    #
+    # @example Specify a source file service to use when retrieving the source
+    #   obj.transform_file :content, { mp4: { format: 'mp4' } }, processor: :video, source_file_service: My::System::PersistOutputFileToTapeStorage
+
     def transform_file(file_name, transform_directives, opts={})
-      processor = opts[:processor] ? opts[:processor] : :image
-      "Hydra::Derivatives::#{processor.to_s.classify}".constantize.new(self, file_name, transform_directives).process
+      initialize_processor(file_name, transform_directives, opts).process
+    end
+
+    def processor_class(processor)
+      case processor
+        when :video
+          Hydra::Derivatives::Video::Processor
+        else
+          constantize_processor(processor.to_s)
+        end
+    end
+
+    def constantize_processor(processor)
+      "Hydra::Derivatives::#{processor.classify}".constantize
+    rescue NameError
+      processor.classify.constantize
     end
 
     def transform_datastream(file_name, transform_directives, opts={})
-      transform_file(file_name, transform_directives, opts={})
+      transform_file(file_name, transform_directives, opts)
     end
     deprecation_deprecate :transform_datastream
 
@@ -120,5 +156,11 @@ module Hydra
         end
       end
     end
+
+    private
+    def initialize_processor(file_name, transform_directives, opts={})
+      processor_class(opts[:processor] || :image).new(self, file_name, transform_directives, opts)
+    end
+
   end
 end
