@@ -8,7 +8,6 @@ notifications:
   email:
     recipients:
       - "ul-dlt-applications@lists.psu.edu"
-      - "michael@psu.edu"
     on_success: "change"
     on_failure: "always"
   irc:
