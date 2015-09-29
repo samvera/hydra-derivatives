@@ -18,8 +18,7 @@ module Hydra
           format = args[:format]
           raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{args}" unless format
           # TODO if the source is in the correct format, we could just copy it and skip transcoding.
-          output_file_name = args[:datastream] || output_file_id(name)
-          encode_file(output_file_name, format, new_mime_type(format), options_for(format))
+          encode_file(output_filename_for(name, args), format, new_mime_type(format), options_for(format))
         end
       end
 

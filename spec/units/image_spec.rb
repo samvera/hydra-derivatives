@@ -19,7 +19,7 @@ describe Hydra::Derivatives::Image do
   end
 
   describe "when arguments are passed as a hash" do
-    let(:directives) { { thumb: { size: "200x300>", datastream: file_name } } }
+    let(:directives) { { thumb: { size: "200x300>", output_path: file_name } } }
     let(:file_name) { 'thumbnail' }
 
     it "should use the specified size and name" do
