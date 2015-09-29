@@ -16,13 +16,11 @@ module Hydra
       end
 
       def process
-        directives.each do |name, args|
-          format = args[:format]
-          raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{args}" unless format
-          # TODO if the source is in the correct format, we could just copy it and skip transcoding.
-          output_file_name = args.fetch(:datastream, output_file_id(name))
-          encode_file(output_file_name, format, new_mime_type(format), options_for(format))
-        end
+        name = directives.fetch(:label)
+        format = directives[:format]
+        raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{directives}" unless format
+        # TODO if the source is in the correct format, we could just copy it and skip transcoding.
+        encode_file(format, options_for(format))
       end
 
       # override this method in subclass if you want to provide specific options.
@@ -31,14 +29,16 @@ module Hydra
         {}
       end
 
-      def encode_file(destination_name, file_suffix, mime_type, options)
+      def encode_file(file_suffix, options)
         out_file = nil
-        output_file = Dir::Tmpname.create(['sufia', ".#{file_suffix}"], Hydra::Derivatives.temp_file_base){}
-        self.class.encode(source_path, options, output_file)
-        out_file = Hydra::Derivatives::IoDecorator.new(File.open(output_file, "rb"))
-        out_file.mime_type = mime_type
-        output_file_service.call(object, out_file, destination_name)
-        File.unlink(output_file)
+        temp_file_name = output_file(file_suffix)
+        self.class.encode(source_path, options, temp_file_name)
+        output_file_service.call(File.open(temp_file_name, 'rb'), directives)
+        File.unlink(temp_file_name)
+      end
+
+      def output_file(file_suffix)
+        Dir::Tmpname.create(['sufia', ".#{file_suffix}"], Hydra::Derivatives.temp_file_base){}
       end
 
       module ClassMethods

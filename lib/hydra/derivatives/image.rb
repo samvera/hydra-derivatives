@@ -18,19 +18,14 @@ module Hydra
       end
 
       def process_without_timeout
-        directives.each do |name, args|
-          opts = args.kind_of?(Hash) ? args : {size: args}
-          format = opts.fetch(:format, 'png')
-          destination_name = output_filename_for(name, opts)
-          create_resized_image(destination_name, opts[:size], format)
-        end
+        format = directives.fetch(:format)
+        name = directives.fetch(:label, format)
+        destination_name = output_filename_for(name)
+        size = directives.fetch(:size, nil)
+        create_resized_image(destination_name, size, format)
       end
 
       protected
-
-      def new_mime_type(format)
-        MIME::Types.type_for(format).first.to_s
-      end
 
       def create_resized_image(destination_name, size, format, quality=nil)
         create_image(destination_name, format, quality) do |xfrm|
@@ -47,13 +42,11 @@ module Hydra
       end
 
       def write_image(destination_name, format, xfrm)
-        output_io = Hydra::Derivatives::IoDecorator.new(StringIO.new)
-        output_io.mime_type = new_mime_type(format)
-
+        output_io = StringIO.new
         xfrm.write(output_io)
         output_io.rewind
 
-        output_file_service.call(object, output_io, destination_name)
+        output_file_service.call(output_io, directives)
       end
 
       # Override this method if you want a different transformer, or need to load the

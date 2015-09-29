@@ -11,47 +11,24 @@ If you have an ActiveFedora class like this:
         attr_accessor :mime_type
 
         # Use a block to declare which derivatives you want to generate
-        makes_derivatives do |obj|
-          case obj.mime_type
-          when 'application/pdf'
-            obj.transform_file :original_file, { :thumb => "100x100>" }
-          when 'audio/wav'
-            obj.transform_file :original_file, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
-          when 'video/avi'
-            obj.transform_file :original_file, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
-          when 'image/png', 'image/jpg'
-            obj.transform_file :original_file, { :medium => "300x300>", :thumb => "100x100>" }
-          when 'image/tiff'
-            obj.transform_file :original_file, { :service => { resize: "3600x3600>" } }, processor: 'jpeg2k_image'
-          end
-        end
-    end
-```
 
-Or a class like this:
-
-```ruby
-    class GenericFile < ActiveFedora::Base
-        include Hydra::Derivatives
-
-        contains 'original_file'
-        attr_accessor :mime_type
-
-        # Use a callback method to declare which derivatives you want
-        makes_derivatives :generate_derivatives
-
-        def generate_derivatives
+        def create_derivatives(filename)
           case mime_type
           when 'application/pdf'
-            transform_file :original_file, { :thumb => "100x100>" }
+            PdfDerivatives.create(filename, outputs: [{ label: :thumb, size: "100x100>" }]
           when 'audio/wav'
-            transform_file :original_file, { :mp3 => {format: 'mp3'}, :ogg => {format: 'ogg'} }, processor: :audio
+            AudioDerivatives.create(self, source: :original_file, outputs: [{ label: :mp3, format: 'mp3', url: "#{uri}/mp3" }, { label: :ogg, format: 'ogg', url: "#{uri}/ogg" }])
           when 'video/avi'
-            transform_file :original_file, { :mp4 => {format: 'mp4'}, :webm => {format: 'webm'} }, processor: :video
+            VideoDerivatives.create(filename, outputs: [{ label: :mp4, format: 'mp4'}, { label: :webm, format: 'webm'}])
           when 'image/png', 'image/jpg'
-            transform_file :original_file, { :medium => "300x300>", :thumb => {size: "100x100>", datastream: 'thumbnail'} }
+            ImageDerivatives.create(self, source: :original_file,
+                                    outputs: [
+                                      { label: :medium, size: "300x300>", url: "#{uri}/medium" },
+                                      { label: :thumb, size: "100x100>", url: "#{uri}/thumb" }])
+          when 'application/vnd.ms-powerpoint'
+            DocumentDerivatives.create(filename, outputs[{ label: :preservation, format: 'pptx' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' })
           when 'image/tiff'
-            transform_file :original_file, { :service => { recipe: :default } }, processor: 'jpeg2k_image'
+            Jpeg2kDerivatives.create(filename, outputs: [{ label: :service, resize: "3600x3600>" }])
           end
         end
     end
@@ -71,6 +48,14 @@ Then when you call `obj.create_derivatives` two new files, 'thumbnail' and 'cont
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
 ## Configuration
+
+### Retrieving from a basic container in Fedora
+
+Provide the object and `:source` option instead of a filename
+
+```ruby
+PdfDerivatives.create(active_fedora_object, source: :original_file, outputs: [{ label: :thumb, size: "100x100>" }]
+```
 
 ### Processing Timeouts
 

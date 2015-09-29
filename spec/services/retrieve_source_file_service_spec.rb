@@ -35,7 +35,7 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
     end
 
     it "persists the file to the specified destination on the given object" do
-      described_class.call(object, source_name) do |f|
+      described_class.call(object, { source: source_name }) do |f|
         expect(f.read).to eq(object.contained_file.content)
       end
     end
@@ -52,7 +52,7 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
       object.directly_contained_file.content = content
     end
     it "retrieves the file from the specified location on the given object" do
-      described_class.call(object, source_name) do |f|
+      described_class.call(object, { source: source_name }) do |f|
         expect(f.read).to eq(object.directly_contained_file.content)
       end
     end

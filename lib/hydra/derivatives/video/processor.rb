@@ -36,12 +36,6 @@ module Hydra::Derivatives
           raise ArgumentError, "Unknown format `#{format}'"
         end
       end
-
-      def new_mime_type(format)
-        format == "jpg" ? "image/jpeg" : "video/#{format}"
-      end
     end
   end
 end
-
-
