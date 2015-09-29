@@ -19,8 +19,7 @@ module Hydra
           end
           image.write file_path
           recipe = self.class.kdu_compress_recipe(args, quality, long_dim)
-          output_file_name = args[:datastream] || output_file_id(name)
-          encode_file(output_file_name, recipe, file_path: file_path)
+          encode_file(output_filename_for(name), recipe, file_path: file_path)
           File.unlink(file_path) unless file_path.nil?
         end
       end

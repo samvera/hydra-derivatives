@@ -23,7 +23,15 @@ module Hydra
       def output_file
         raise NotImplementedError, "Processor is an abstract class. Utilize an implementation of a PersistOutputFileService class in #{self.class.name}"
       end
-      
+
+      def output_filename_for(name, opts = {})
+        if opts.has_key? :datastream
+          Deprecation.warn Hydra::Derivatives::Image, 'The :datastream option is deprecated and will be removed in hydra-derivatives 3.0.0.'
+          return opts[:datastream]
+        end
+        opts.fetch(:output_path, output_file_id(name))
+      end
+
       def source_file
         @source_file ||= source_file_service.call(object, source_name)
       end

@@ -133,7 +133,7 @@ Unlike the other processors, the `Jpeg2kImage` processor does not generally acce
 
 Instead, each directive may contain these arguments:
 
-  * `:datastream` (String) : The name for the new datastream
+  * `:output_path` (String) : The name for the new file
   * `:to_srgb` (Boolean) : If `true` and the image is a color image it will map the source image color profile to sRGB. Default: `true`
   * `:resize` (String) : Geometry; the same syntax as the `Hydra::Derivatives::Image` processor
   * `:recipe` :

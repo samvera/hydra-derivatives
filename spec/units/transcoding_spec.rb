@@ -13,7 +13,8 @@ describe "Transcoder" do
         m.field "flag_as", :string
       end
 
-      has_attributes :mime_type_from_fits, :flag_as, datastream: :characterization, multiple: false
+      property :mime_type_from_fits, delegate_to: :characterization, multiple: false
+      property :flag_as, delegate_to: :characterization, multiple: false
       contains 'original_file', class_name: 'ContentDatastream'
 
       makes_derivatives do |obj|
@@ -23,9 +24,9 @@ describe "Transcoder" do
         when 'audio/wav'
           obj.transform_file :original_file, { mp3: { format: 'mp3' }, ogg: { format: 'ogg'} }, processor: :audio
         when 'video/avi'
-          obj.transform_file :original_file, { mp4: { format: 'mp4' }, webm: { format: 'webm'}, thumbnail: { format: 'jpg', datastream: 'thumbnail' } }, processor: :video
+          obj.transform_file :original_file, { mp4: { format: 'mp4' }, webm: { format: 'webm'}, thumbnail: { format: 'jpg', output_path: 'thumbnail' } }, processor: :video
         when 'image/png', 'image/jpg'
-          obj.transform_file :original_file, { medium: "300x300>", thumb: "100x100>", access: { format: 'jpg', datastream: 'access'} }
+          obj.transform_file :original_file, { medium: "300x300>", thumb: "100x100>", access: { format: 'jpg', output_path: 'access'} }
         when 'application/vnd.ms-powerpoint'
           obj.transform_file :original_file, { preservation: { format: 'pptx'}, access: { format: 'pdf' }, thumbnail: { format: 'jpg' } }, processor: 'document'
         when 'text/rtf'
@@ -36,17 +37,17 @@ describe "Transcoder" do
           obj.transform_file :original_file, { access: { format: 'pdf' }, preservation: { format: 'xslx' }, thumbnail: { format: 'jpg' } }, processor: 'document'
         when 'image/tiff'
           obj.transform_file :original_file, {
-            resized: { recipe: :default, resize: "600x600>", datastream: 'resized' },
-            config_lookup: { recipe: :default, datastream: 'config_lookup' },
-            string_recipe: { recipe: '-quiet', datastream: 'string_recipe' },
+            resized: { recipe: :default, resize: "600x600>", output_path: 'resized' },
+            config_lookup: { recipe: :default, output_path: 'config_lookup' },
+            string_recipe: { recipe: '-quiet', output_path: 'string_recipe' },
             diy: { }
           }, processor: 'jpeg2k_image'
         when 'image/x-adobe-dng'
-          obj.transform_file :original_file, 
-		 	{
-				access: { size: "300x300>", format: "jpg", datastream: "access" },
-				thumb: { size: "100x100>", format: "jpg", datastream: "thumb" }
-		  	}, processor: :raw_image
+          obj.transform_file :original_file,
+                             {
+                               access: { size: "300x300>", format: "jpg", output_path: "access" },
+                               thumb: { size: "100x100>", format: "jpg", output_path: "thumb" }
+                             }, processor: :raw_image
          end
       end
 
@@ -54,7 +55,7 @@ describe "Transcoder" do
 
       def generate_special_derivatives
         if flag_as == "special" && mime_type_from_fits == 'image/png'
-          transform_file :original_file, { medium: { size: "200x300>", datastream: 'special_ds' } }
+          transform_file :original_file, { medium: { size: "200x300>", output_path: 'special_ds' } }
         end
       end
     end
