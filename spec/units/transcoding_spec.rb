@@ -112,7 +112,7 @@ describe "Transcoder" do
 
   describe "with an attached pdf" do
     let(:attachment) { File.open(File.expand_path('../../fixtures/test.pdf', __FILE__))}
-    let(:file) { GenericFile.new(mime_type_from_fits: 'application/pdf').tap { |t| t.original_file.content = attachment; t.save } }
+    let(:file) { GenericFile.new(mime_type_from_fits: 'application/pdf').tap { |t| t.original_file.content = attachment; t.original_file.mime_type = 'application/pdf'; t.save } }
 
     it "should transcode" do
       expect(file.attached_files.key?('original_file_thumb')).to be_falsey

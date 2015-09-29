@@ -47,7 +47,7 @@ module Hydra
       end
 
       def write_image(destination_name, format, xfrm)
-        output_io = Hydra::Derivatives::IoDecorator.new(StringIO.new) 
+        output_io = Hydra::Derivatives::IoDecorator.new(StringIO.new)
         output_io.mime_type = new_mime_type(format)
 
         xfrm.write(output_io)
@@ -57,9 +57,9 @@ module Hydra
       end
 
       # Override this method if you want a different transformer, or need to load the
-      # raw image from a different source (e.g.  external file)
+      # raw image from a different source (e.g. external file)
       def load_image_transformer
-        MiniMagick::Image.read(source_file.content)
+        MiniMagick::Image.open(source_path)
       end
     end
   end

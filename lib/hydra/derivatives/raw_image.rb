@@ -26,19 +26,13 @@ module Hydra
         xfrm.destroy!
       end
 
-      # Override this method if you want a different transformer, or # need to load the raw image from a different source (e.g.  
+      # Override this method if you want a different transformer, or # need to load the raw image from a different source (e.g.
       # external file).
       #
       # In this case always add an extension to help out MiniMagick
       # with RAW files
       def load_image_transformer
-        extension = MIME::Types[source_file.mime_type].first.extensions.first
-
-        if extension.present?
-          MiniMagick::Image.read(source_file.content, ".#{extension}")
-        else
-          MiniMagick::Image.read(source_file.content)
-        end
+        MiniMagick::Image.open(source_path)
       end
     end
   end

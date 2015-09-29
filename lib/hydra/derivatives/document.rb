@@ -11,17 +11,15 @@ module Hydra
 
       def encode_file(destination_name, file_suffix, mime_type, options = { })
         new_output = ''
-        Hydra::Derivatives::TempfileService.create(source_file) do |f|
-          if mime_type == 'image/jpeg'
-            temp_file = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(f.path), ''), 'pdf'].join('.'))
-            new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(temp_file).sub(File.extname(temp_file), ''), file_suffix].join('.'))
-            self.class.encode(f.path, options, temp_file)
-            self.class.encode(temp_file, options, output_file(file_suffix))
-            File.unlink(temp_file)
-          else
-            self.class.encode(f.path, options, output_file(file_suffix))
-            new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(f.path), ''), file_suffix].join('.'))
-          end
+        if mime_type == 'image/jpeg'
+          temp_file = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(source_path), ''), 'pdf'].join('.'))
+          new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(temp_file).sub(File.extname(temp_file), ''), file_suffix].join('.'))
+          self.class.encode(source_path, options, temp_file)
+          self.class.encode(temp_file, options, output_file(file_suffix))
+          File.unlink(temp_file)
+        else
+          self.class.encode(source_path, options, output_file(file_suffix))
+          new_output = File.join(Hydra::Derivatives.temp_file_base, [File.basename(f.path).sub(File.extname(f.path), ''), file_suffix].join('.'))
         end
         out_file = Hydra::Derivatives::IoDecorator.new(File.open(new_output, "rb"))
         out_file.mime_type = mime_type

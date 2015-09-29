@@ -55,6 +55,8 @@ module Hydra
 
     included do
       class_attribute :transformation_schemes
+      class_attribute :source_file_service
+      self.source_file_service = Hydra::Derivatives.source_file_service
     end
 
     # Runs all of the transformations immediately.
@@ -100,8 +102,14 @@ module Hydra
     # @example Specify a source file service to use when retrieving the source
     #   obj.transform_file :content, { mp4: { format: 'mp4' } }, processor: :video, source_file_service: My::System::PersistOutputFileToTapeStorage
 
-    def transform_file(file_name, transform_directives, opts={})
-      initialize_processor(file_name, transform_directives, opts).process
+    def transform_file(source_name, transform_directives, opts={})
+      source_file(source_name) do |f|
+        initialize_processor(f.path, source_name, transform_directives, opts).process
+      end
+    end
+
+    def source_file(source_name, &block)
+      source_file_service.call(self, source_name, &block)
     end
 
     def processor_class(processor)
@@ -158,9 +166,10 @@ module Hydra
     end
 
     private
-    def initialize_processor(file_name, transform_directives, opts={})
-      processor_class(opts[:processor] || :image).new(self, file_name, transform_directives, opts)
-    end
+
+      def initialize_processor(file_name, out_prefix, transform_directives, opts={})
+        processor_class(opts.fetch(:processor, :image)).new(self, file_name, out_prefix, transform_directives, opts)
+      end
 
   end
 end

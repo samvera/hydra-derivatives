@@ -8,7 +8,7 @@ module Hydra
       include ShellBasedProcessor
 
       def process
-        image = MiniMagick::Image.read(source_file.content)
+        image = MiniMagick::Image.open(source_path)
         quality = image['%[channels]'] == 'gray' ? 'gray' : 'color'
         directives.each do |name, args|
           long_dim = self.class.long_dim(image)

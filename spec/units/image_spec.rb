@@ -3,8 +3,9 @@ require 'spec_helper'
 describe Hydra::Derivatives::Image do
   let(:object) { ActiveFedora::Base.new }
   let(:output_file) { double }
+  let(:file_name) { double }
 
-  subject { Hydra::Derivatives::Image.new(object, 'content', directives)}
+  subject { Hydra::Derivatives::Image.new(object, file_name, 'content', directives)}
 
   before { allow(subject).to receive(:output_file).with(file_name).and_return(output_file) }
 

@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives::Video::Processor do
-  subject { described_class.new(double(:obj), 'content', directives)}
+  let(:file_name) { double }
+  subject { described_class.new(double(:obj), file_name, 'content', directives)}
 
   describe ".config" do
     before do

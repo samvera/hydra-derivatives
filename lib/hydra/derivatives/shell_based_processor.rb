@@ -20,7 +20,8 @@ module Hydra
           format = args[:format]
           raise ArgumentError, "You must provide the :format you want to transcode into. You provided #{args}" unless format
           # TODO if the source is in the correct format, we could just copy it and skip transcoding.
-          encode_file(output_filename_for(name, args), format, new_mime_type(format), options_for(format))
+          output_file_name = args.fetch(:datastream, output_file_id(name))
+          encode_file(output_file_name, format, new_mime_type(format), options_for(format))
         end
       end
 
@@ -33,9 +34,7 @@ module Hydra
       def encode_file(destination_name, file_suffix, mime_type, options)
         out_file = nil
         output_file = Dir::Tmpname.create(['sufia', ".#{file_suffix}"], Hydra::Derivatives.temp_file_base){}
-        Hydra::Derivatives::TempfileService.create(source_file) do |f|
-          self.class.encode(f.path, options, output_file)
-        end
+        self.class.encode(source_path, options, output_file)
         out_file = Hydra::Derivatives::IoDecorator.new(File.open(output_file, "rb"))
         out_file.mime_type = mime_type
         output_file_service.call(object, out_file, destination_name)
