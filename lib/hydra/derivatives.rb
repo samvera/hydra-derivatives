@@ -1,5 +1,4 @@
 require 'active_fedora'
-require 'hydra/derivatives/railtie' if defined?(Rails)
 require 'deprecation'
 
 module Hydra
@@ -16,7 +15,6 @@ module Hydra
     autoload :Audio
     autoload :Config
     autoload :Document
-    autoload :ExtractMetadata
     autoload :ShellBasedProcessor
     autoload :Jpeg2kImage
     autoload :RawImage
