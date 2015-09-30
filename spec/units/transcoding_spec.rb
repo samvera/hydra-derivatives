@@ -155,7 +155,12 @@ describe "Transcoder" do
 
   describe "with an attached video", unless: ENV['TRAVIS'] == 'true' do
     let(:attachment) { File.open(File.expand_path('../../fixtures/countdown.avi', __FILE__))}
-    let(:file) { GenericFile.new(mime_type_from_fits: 'video/avi').tap { |t| t.original_file.content = attachment; t.save } }
+    let(:file) do
+      GenericFile.create(mime_type_from_fits: 'video/avi') do |t|
+        t.original_file.content = attachment
+        t.original_file.mime_type = 'video/msvideo'
+      end
+    end
 
     it "should transcode" do
       file.create_derivatives
@@ -169,7 +174,7 @@ describe "Transcoder" do
 
     context "and the timeout is set" do
       before do
-        Hydra::Derivatives::Video::Processor.timeout = 1 # one second
+        Hydra::Derivatives::Video::Processor.timeout = 0.2 # 200ms
       end
       after do
         Hydra::Derivatives::Video::Processor.timeout = nil # clear timeout
