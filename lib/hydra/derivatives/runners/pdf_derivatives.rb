@@ -1,8 +1,6 @@
 module Hydra
   module Derivatives
-    class Audio < Processor
-      include Ffmpeg
+    class PdfDerivatives < ImageDerivatives
     end
   end
 end
-

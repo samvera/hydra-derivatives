@@ -17,46 +17,47 @@ describe "Transcoder" do
       property :flag_as, delegate_to: :characterization, multiple: false
       contains 'original_file', class_name: 'ContentDatastream'
 
-      makes_derivatives do |obj|
-        case obj.mime_type_from_fits
+      def create_derivatives(filename)
+        case mime_type_from_fits
         when 'application/pdf'
-          obj.transform_file :original_file, { thumb: '100x100>' }
+          PdfDerivatives.create(self, source: :original_file,
+                                outputs: [{ label: :thumb, size: "100x100>", url: "#{uri}/original_file_thumb" }])
         when 'audio/wav'
-          obj.transform_file :original_file, { mp3: { format: 'mp3' }, ogg: { format: 'ogg'} }, processor: :audio
+          AudioDerivatives.create(self, source: :original_file, outputs: [{ label: :mp3, format: 'mp3', url: "#{uri}/mp3" }, { label: :ogg, format: 'ogg', url: "#{uri}/ogg" }])
         when 'video/avi'
-          obj.transform_file :original_file, { mp4: { format: 'mp4' }, webm: { format: 'webm'}, thumbnail: { format: 'jpg', output_path: 'thumbnail' } }, processor: :video
+          VideoDerivatives.create(self, source: :original_file,
+                                  outputs: [
+                                    { label: :mp4, format: 'mp4', url: "#{uri}/original_file_mp4" },
+                                    { label: :webm, format: 'webm', url: "#{uri}/original_file_webm" },
+                                    { label: :thumbnail, format: 'jpg', url: "#{uri}/thumbnail" }])
         when 'image/png', 'image/jpg'
-          obj.transform_file :original_file, { medium: "300x300>", thumb: "100x100>", access: { format: 'jpg', output_path: 'access'} }
+          ImageDerivatives.create(self, source: :original_file,
+                                  outputs: [
+                                    { label: :medium, size: "300x300>", url: "#{uri}/original_file_medium" },
+                                    { label: :thumb, size: "100x100>", url: "#{uri}/original_file_thumb" },
+                                    { label: :access, url: "#{uri}/access", format: 'jpg' },
+          ])
         when 'application/vnd.ms-powerpoint'
-          obj.transform_file :original_file, { preservation: { format: 'pptx'}, access: { format: 'pdf' }, thumbnail: { format: 'jpg' } }, processor: 'document'
+          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'pptx' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
         when 'text/rtf'
-          obj.transform_file :original_file, { preservation: { format: 'odf' }, access: { format: 'pdf' }, thumbnail: { format: 'jpg' } }, processor: 'document'
+          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'odf' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
         when 'application/msword'
-          obj.transform_file :original_file, { access: { format: 'pdf' }, preservation: { format: 'docx' }, thumbnail: { format: 'jpg' } }, processor: 'document'
+          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'docx' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
         when 'application/vnd.ms-excel'
-          obj.transform_file :original_file, { access: { format: 'pdf' }, preservation: { format: 'xslx' }, thumbnail: { format: 'jpg' } }, processor: 'document'
+          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'xslx' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
         when 'image/tiff'
-          obj.transform_file :original_file, {
-            resized: { recipe: :default, resize: "600x600>", output_path: 'resized' },
-            config_lookup: { recipe: :default, output_path: 'config_lookup' },
-            string_recipe: { recipe: '-quiet', output_path: 'string_recipe' },
-            diy: { }
-          }, processor: 'jpeg2k_image'
+          Jpeg2kImageDerivatives.create(self, source: :original_file, outputs: [
+            { label: :resized, recipe: :default, resize: "600x600>", processor: 'jpeg2k_image', url: "#{uri}/resized" },
+            { label: :config_lookup, recipe: :default, processor: 'jpeg2k_image', url: "#{uri}/config_lookup" },
+            { label: :string_recipe, recipe: '-quiet', processor: 'jpeg2k_image', url: "#{uri}/string_recipe" },
+            { label: :diy, processor: 'jpeg2k_image', url: "#{uri}/original_file_diy" }
+          ])
         when 'image/x-adobe-dng'
-          obj.transform_file :original_file,
-                             {
-                               access: { size: "300x300>", format: "jpg", output_path: "access" },
-                               thumb: { size: "100x100>", format: "jpg", output_path: "thumb" }
-                             }, processor: :raw_image
+          ImageDerivatives.create(self, source: :original_file, outputs: [
+            { label: :access, size: "300x300>", format: 'jpg', processor: :raw_image },
+            { label: :thumb, size: "100x100>", format: 'jpg', processor: :raw_image }
+          ])
          end
-      end
-
-      makes_derivatives :generate_special_derivatives
-
-      def generate_special_derivatives
-        if flag_as == "special" && mime_type_from_fits == 'image/png'
-          transform_file :original_file, { medium: { size: "200x300>", output_path: 'special_ds' } }
-        end
       end
     end
   end
@@ -67,9 +68,10 @@ describe "Transcoder" do
   end
 
   describe "with an attached image" do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/world.png', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/world.png', __FILE__) }
+    let(:attachment) { File.open(filename) }
     let(:file) do
-      GenericFile.new(mime_type_from_fits: 'image/png').tap do |f|
+      GenericFile.new(mime_type_from_fits: 'image/png') do |f|
         f.original_file.content = attachment
         f.save!
       end
@@ -77,7 +79,8 @@ describe "Transcoder" do
 
     it "should transcode" do
       expect(file.attached_files.key?('original_file_medium')).to be_falsey
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_medium']).to have_content
       expect(file.attached_files['original_file_medium'].mime_type).to eq('image/png')
       expect(file.attached_files['original_file_thumb']).to have_content
@@ -89,7 +92,8 @@ describe "Transcoder" do
   end
 
   describe "with an attached RAW image", unless: $in_travis do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/test.dng', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/test.dng', __FILE__) }
+    let(:attachment) { File.open(filename) }
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'image/x-adobe-dng') do |f|
         f.original_file.content = attachment
@@ -102,7 +106,7 @@ describe "Transcoder" do
      expect(file.attached_files.key?('access')).to be_falsey
       expect(file.attached_files.key?('thumb')).to be_falsey
 
-      file.create_derivatives
+      file.create_derivatives(filename)
       expect(file.attached_files['access']).to have_content
       expect(file.attached_files['access'].mime_type).to eq('image/jpeg')
       expect(file.attached_files['thumb']).to have_content
@@ -111,23 +115,33 @@ describe "Transcoder" do
   end
 
   describe "with an attached pdf" do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/test.pdf', __FILE__))}
-    let(:file) { GenericFile.new(mime_type_from_fits: 'application/pdf').tap { |t| t.original_file.content = attachment; t.save } }
+    let(:filename) { File.expand_path('../../fixtures/test.pdf', __FILE__) }
+    let(:attachment) { File.open(filename) }
+    let(:file) do
+      GenericFile.new(mime_type_from_fits: 'application/pdf') do |t|
+        t.original_file.content = attachment
+        t.original_file.mime_type = 'application/pdf'
+        t.save
+      end
+    end
 
     it "should transcode" do
       expect(file.attached_files.key?('original_file_thumb')).to be_falsey
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_thumb']).to have_content
       expect(file.attached_files['original_file_thumb'].mime_type).to eq('image/png')
     end
   end
 
   describe "with an attached audio", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/piano_note.wav', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
+    let(:attachment) { File.open(filename) }
     let(:file) { GenericFile.new(mime_type_from_fits: 'audio/wav').tap { |t| t.original_file.content = attachment; t.save } }
 
     it "should transcode" do
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_mp3']).to have_content
       expect(file.attached_files['original_file_mp3'].mime_type).to eq('audio/mpeg')
       expect(file.attached_files['original_file_ogg']).to have_content
@@ -136,7 +150,8 @@ describe "Transcoder" do
   end
 
   describe "when the source datastrem has an unknown mime_type", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/piano_note.wav', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
+    let(:attachment) { File.open(filename) }
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'audio/wav').tap do |t|
         t.original_file.content = attachment;
@@ -147,14 +162,16 @@ describe "Transcoder" do
 
     it "should transcode" do
       allow_any_instance_of(::Logger).to receive(:warn)
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_mp3']).to have_content
       expect(file.attached_files['original_file_mp3'].mime_type).to eq('audio/mpeg')
     end
   end
 
   describe "with an attached video", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/countdown.avi', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/countdown.avi', __FILE__) }
+    let(:attachment) { File.open(filename) }
     let(:file) do
       GenericFile.create(mime_type_from_fits: 'video/avi') do |t|
         t.original_file.content = attachment
@@ -163,7 +180,8 @@ describe "Transcoder" do
     end
 
     it "should transcode" do
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_mp4']).to have_content
       expect(file.attached_files['original_file_mp4'].mime_type).to eq('video/mp4')
       expect(file.attached_files['original_file_webm']).to have_content
@@ -181,30 +199,23 @@ describe "Transcoder" do
       end
 
       it "should raise a timeout" do
-        expect { file.create_derivatives }.to raise_error Hydra::Derivatives::TimeoutError
+        expect { file.create_derivatives(filename) }.to raise_error Hydra::Derivatives::TimeoutError
       end
     end
   end
 
-  describe "using callback methods" do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/world.png', __FILE__))}
-    let(:file) { GenericFile.new(mime_type_from_fits: 'image/png', flag_as: "special").tap { |t| t.original_file.content = attachment; t.save } }
-
-    it "should transcode" do
-      expect(file.attached_files.key?('special_ds')).to be_falsey
-      file.create_derivatives
-      expect(file.attached_files['special_ds']).to have_content
-      expect(file.attached_files['special_ds'].mime_type).to eq('image/png')
-      expect(file.attached_files['special_ds']).to have_content
-    end
-  end
-
   describe "with an attached Powerpoint", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/FlashPix.ppt', __FILE__))}
-    let(:file) { GenericFile.new(mime_type_from_fits: 'application/vnd.ms-powerpoint').tap { |t| t.original_file.content = attachment; t.save } }
+    let(:filename) { File.expand_path('../../fixtures/FlashPix.ppt', __FILE__) }
+    let(:attachment) { File.open(filename) }
+    let(:file) do
+      GenericFile.create(mime_type_from_fits: 'application/vnd.ms-powerpoint') do |t|
+        t.original_file.content = attachment
+      end
+    end
 
     it "should transcode" do
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_thumbnail']).to have_content
       expect(file.attached_files['original_file_thumbnail'].mime_type).to eq('image/jpeg')
       expect(file.attached_files['original_file_access']).to have_content
@@ -215,11 +226,13 @@ describe "Transcoder" do
   end
 
   describe "with an attached rich text format", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/sample.rtf', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/sample.rtf', __FILE__) }
+    let(:attachment) { File.open(filename) }
     let(:file) { GenericFile.new(mime_type_from_fits: 'text/rtf').tap { |t| t.original_file.content = attachment; t.save } }
 
     it "should transcode" do
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_thumbnail']).to have_content
       expect(file.attached_files['original_file_thumbnail'].mime_type).to eq('image/jpeg')
       expect(file.attached_files['original_file_access']).to have_content
@@ -230,11 +243,13 @@ describe "Transcoder" do
   end
 
   describe "with an attached word doc format", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/test.doc', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/test.doc', __FILE__) }
+    let(:attachment) { File.open(filename) }
     let(:file) { GenericFile.new(mime_type_from_fits: 'application/msword').tap { |t| t.original_file.content = attachment; t.save } }
 
     it "should transcode" do
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_thumbnail']).to have_content
       expect(file.attached_files['original_file_thumbnail'].mime_type).to eq('image/jpeg')
       expect(file.attached_files['original_file_access']).to have_content
@@ -245,11 +260,13 @@ describe "Transcoder" do
   end
 
   describe "with an attached excel format", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/test.xls', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/test.xls', __FILE__) }
+    let(:attachment) { File.open(filename)}
     let(:file) { GenericFile.new(mime_type_from_fits: 'application/vnd.ms-excel').tap { |t| t.original_file.content = attachment; t.save } }
 
     it "should transcode" do
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_thumbnail']).to have_content
       expect(file.attached_files['original_file_thumbnail'].mime_type).to eq('image/jpeg')
       expect(file.attached_files['original_file_access']).to have_content
@@ -260,10 +277,12 @@ describe "Transcoder" do
   end
 
   describe "with an attached tiff", unless: ENV['TRAVIS'] == 'true' do
-    let(:attachment) { File.open(File.expand_path('../../fixtures/test.tif', __FILE__))}
+    let(:filename) { File.expand_path('../../fixtures/test.tif', __FILE__) }
+    let(:attachment) { File.open(filename)}
     let(:file) { GenericFile.new(mime_type_from_fits: 'image/tiff').tap { |t| t.original_file.content = attachment; t.save } }
     it "should transcode" do
-      file.create_derivatives
+      file.create_derivatives(filename)
+      file.reload
       expect(file.attached_files['original_file_diy']).to have_content
       expect(file.attached_files['original_file_diy'].mime_type).to eq('image/jp2')
       expect(file.attached_files['config_lookup']).to have_content

@@ -8,23 +8,22 @@ module Hydra
       include ShellBasedProcessor
 
       def process
-        image = MiniMagick::Image.read(source_file.content)
+        image = MiniMagick::Image.open(source_path)
         quality = image['%[channels]'] == 'gray' ? 'gray' : 'color'
-        directives.each do |name, args|
-          long_dim = self.class.long_dim(image)
-          file_path = self.class.tmp_file('.tif')
-          to_srgb = args.fetch(:to_srgb, true)
-          if args[:resize] || to_srgb
-            preprocess(image, resize: args[:resize], to_srgb: to_srgb, src_quality: quality)
-          end
-          image.write file_path
-          recipe = self.class.kdu_compress_recipe(args, quality, long_dim)
-          encode_file(output_filename_for(name), recipe, file_path: file_path)
-          File.unlink(file_path) unless file_path.nil?
+        name = directives.fetch(:label)
+        long_dim = self.class.long_dim(image)
+        file_path = self.class.tmp_file('.tif')
+        to_srgb = directives.fetch(:to_srgb, true)
+        if directives[:resize] || to_srgb
+          preprocess(image, resize: directives[:resize], to_srgb: to_srgb, src_quality: quality)
         end
+        image.write file_path
+        recipe = self.class.kdu_compress_recipe(directives, quality, long_dim)
+        encode_file(recipe, file_path: file_path)
+        File.unlink(file_path) unless file_path.nil?
       end
 
-      def encode_file(destination_name, recipe, opts={})
+      def encode_file(recipe, opts={})
         output_file = self.class.tmp_file('.jp2')
         if opts[:file_path]
           self.class.encode(opts[:file_path], recipe, output_file)
@@ -33,10 +32,7 @@ module Hydra
             self.class.encode(f.path, recipe, output_file)
           end
         end
-        out_file = Hydra::Derivatives::IoDecorator.new(File.open(output_file, "rb"))
-        out_file.mime_type = "image/jp2"
-        output_file_service.call(object, out_file, destination_name)
-
+        output_file_service.call(File.open(output_file, 'rb'), directives)
         File.unlink(output_file)
       end
 
