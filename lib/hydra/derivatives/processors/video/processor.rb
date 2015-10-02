@@ -1,6 +1,6 @@
-module Hydra::Derivatives
+module Hydra::Derivatives::Processors
   module Video
-    class Processor < Hydra::Derivatives::Processor
+    class Processor < Hydra::Derivatives::Processors::Processor
       include Ffmpeg
 
       class_attribute :config

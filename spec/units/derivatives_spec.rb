@@ -5,7 +5,7 @@ describe Hydra::Derivatives do
     class CustomFile < ActiveFedora::Base
       include Hydra::Derivatives
     end
-    class CustomProcessor < Hydra::Derivatives::Processor
+    class CustomProcessor < Hydra::Derivatives::Processors::Processor
     end
     class CustomSourceFileService
     end

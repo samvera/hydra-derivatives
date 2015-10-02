@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-describe Hydra::Derivatives::Processor do
+describe Hydra::Derivatives::Processors::Processor do
 
   let(:object)        { "Fake Object"  }
   let(:source_name)   { 'content' }
   let(:directives)    { { thumb: "100x100>" } }
   let(:file_path)     { double }
 
-  subject { Hydra::Derivatives::Processor.new(file_path, directives)}
+  subject { described_class.new(file_path, directives)}
 
   describe "output_file_service" do
     let(:custom_output_file_service) { "fake service" }
@@ -24,9 +24,8 @@ describe Hydra::Derivatives::Processor do
 
     context "as an instance level configuration setting" do
       subject do
-        Hydra::Derivatives::Processor.new('/opt/derivatives/foo.mp4',
-                                          directives,
-                                          output_file_service: another_custom_output_file_service)
+        described_class.new('/opt/derivatives/foo.mp4', directives,
+                            output_file_service: another_custom_output_file_service)
       end
 
       it "accepts a custom output file service as an option" do
