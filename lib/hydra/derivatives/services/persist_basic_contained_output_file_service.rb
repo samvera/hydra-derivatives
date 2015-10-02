@@ -14,8 +14,7 @@ module Hydra::Derivatives
     # @param [Hash] directives directions which can be used to determine where to persist to.
     # @option directives [String] url This can determine the path of the object.
     def self.call(stream, directives)
-      file = Hydra::Derivatives::IoDecorator.new(stream)
-      file.mime_type = new_mime_type(directives.fetch(:format))
+      file = Hydra::Derivatives::IoDecorator.new(stream, new_mime_type(directives.fetch(:format)))
       o_name = determine_original_name(file)
       m_type = determine_mime_type(file)
       uri = URI(directives.fetch(:url))
