@@ -2,10 +2,6 @@ require 'spec_helper'
 
 describe "Transcoder" do
   before(:all) do
-    class ContentDatastream < ActiveFedora::File
-      include Hydra::Derivatives::ExtractMetadata
-    end
-
     class GenericFile < ActiveFedora::Base
       include Hydra::Derivatives
       contains 'characterization', class_name: 'ActiveFedora::SimpleDatastream' do |m|
@@ -15,7 +11,7 @@ describe "Transcoder" do
 
       property :mime_type_from_fits, delegate_to: :characterization, multiple: false
       property :flag_as, delegate_to: :characterization, multiple: false
-      contains 'original_file', class_name: 'ContentDatastream'
+      contains 'original_file'
 
       def create_derivatives(filename)
         case mime_type_from_fits
@@ -64,7 +60,6 @@ describe "Transcoder" do
 
   after(:all) do
     Object.send(:remove_const, :GenericFile);
-    Object.send(:remove_const, :ContentDatastream);
   end
 
   describe "with an attached image" do
