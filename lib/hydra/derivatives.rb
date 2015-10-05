@@ -8,6 +8,8 @@ module Hydra
     extend Deprecation
     self.deprecation_horizon = "hydra-derivatives 1.0"
 
+    # Runners take a single input and produce one or more outputs
+    # The runner typically accomplishes this by using one or more processors
     autoload_under 'runners' do
       autoload :AudioDerivatives
       autoload :DocumentDerivatives
@@ -18,25 +20,18 @@ module Hydra
       autoload :VideoDerivatives
     end
 
-    autoload :Processor
-    autoload :Image
-    autoload :Ffmpeg
-    autoload :Video
-    autoload :Audio
+    autoload :Processors
     autoload :Config
-    autoload :Document
-    autoload :ShellBasedProcessor
-    autoload :Jpeg2kImage
-    autoload :RawImage
     autoload :Logger
     autoload :TempfileService
     autoload :IoDecorator
 
-    # services
-    autoload :RetrieveSourceFileService,         'hydra/derivatives/services/retrieve_source_file_service'
-    autoload :PersistOutputFileService,          'hydra/derivatives/services/persist_output_file_service'
-    autoload :PersistBasicContainedOutputFileService, 'hydra/derivatives/services/persist_basic_contained_output_file_service'
-    autoload :TempfileService,                   'hydra/derivatives/services/tempfile_service'
+    autoload_under 'services' do
+      autoload :RetrieveSourceFileService
+      autoload :PersistOutputFileService
+      autoload :PersistBasicContainedOutputFileService
+      autoload :TempfileService
+    end
 
     # Raised if the timout elapses
     class TimeoutError < ::Timeout::Error; end

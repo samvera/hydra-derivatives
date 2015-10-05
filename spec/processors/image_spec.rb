@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe Hydra::Derivatives::Image do
+describe Hydra::Derivatives::Processors::Image do
   let(:output_file) { double }
   let(:file_name) { double }
 
-  subject { Hydra::Derivatives::Image.new(file_name, directives) }
+  subject { described_class.new(file_name, directives) }
 
   before { allow(subject).to receive(:output_file).with(file_name).and_return(output_file) }
 
@@ -29,7 +29,7 @@ describe Hydra::Derivatives::Image do
     context 'when set' do
       before do
         subject.timeout = 0.1
-        allow_any_instance_of(Hydra::Derivatives::Image).to receive(:process_without_timeout) { sleep 0.2 }
+        allow_any_instance_of(described_class).to receive(:process_without_timeout) { sleep 0.2 }
       end
       it 'raises a timeout exception' do
         expect { subject.process }.to raise_error Hydra::Derivatives::TimeoutError
