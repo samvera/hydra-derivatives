@@ -1,4 +1,4 @@
-module Hydra::Derivatives
+module Hydra::Derivatives::Processors
   module Video
     extend ActiveSupport::Autoload
 

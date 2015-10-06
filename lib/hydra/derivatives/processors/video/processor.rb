@@ -1,6 +1,6 @@
-module Hydra::Derivatives
+module Hydra::Derivatives::Processors
   module Video
-    class Processor < Hydra::Derivatives::Processor
+    class Processor < Hydra::Derivatives::Processors::Processor
       include Ffmpeg
 
       class_attribute :config
@@ -36,12 +36,6 @@ module Hydra::Derivatives
           raise ArgumentError, "Unknown format `#{format}'"
         end
       end
-
-      def new_mime_type(format)
-        format == "jpg" ? "image/jpeg" : "video/#{format}"
-      end
     end
   end
 end
-
-

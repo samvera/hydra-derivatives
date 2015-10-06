@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives do
-  
   before(:all) do
     class CustomFile < ActiveFedora::Base
       include Hydra::Derivatives
     end
-    class CustomProcessor < Hydra::Derivatives::Processor
+    class CustomProcessor < Hydra::Derivatives::Processors::Processor
     end
     class CustomSourceFileService
     end
@@ -21,34 +20,27 @@ describe Hydra::Derivatives do
     Object.send(:remove_const, :CustomOutputFileService)
   end
 
-  describe "initialize_processor" do
-    subject{ CustomFile.new.send(:initialize_processor, :content, { thumb: '100x100>' }, processor: Hydra::Derivatives::Video::Processor, source_file_service: CustomSourceFileService, output_file_service: CustomOutputFileService) }
-    it "passes source_file_service and output_file_service options to the processor" do
-      expect(subject.class).to eq(Hydra::Derivatives::Video::Processor)
-      expect(subject.source_file_service).to eq(CustomSourceFileService)
-      expect(subject.output_file_service).to eq(CustomOutputFileService)
+  describe "source_file_service" do
+    let(:custom_source_file_service) { "fake service" }
+    before do
+      allow(Hydra::Derivatives).to receive(:source_file_service).and_return(custom_source_file_service)
+    end
+    subject { Class.new { include Hydra::Derivatives } }
+
+    context "as a global configuration setting" do
+      it "utilizes the default source file service" do
+        expect(subject.source_file_service).to eq(custom_source_file_service)
+      end
+    end
+
+    context "as an instance level configuration setting" do
+      let(:another_custom_source_file_service) { "another fake service" }
+      subject { Class.new { include Hydra::Derivatives }.new }
+      before { subject.source_file_service = another_custom_source_file_service }
+
+      it "accepts a custom source file service as an option" do
+        expect(subject.source_file_service).to eq(another_custom_source_file_service)
+      end
     end
   end
-
-  context "when using an included processor" do
-    subject { CustomFile.new.processor_class(:image) }
-    it { is_expected.to eql Hydra::Derivatives::Image }
-  end
-
-  context "when using the video processor" do
-    subject { CustomFile.new.processor_class(:video) }
-    it { is_expected.to eql Hydra::Derivatives::Video::Processor }
-  end
-  
-  context "when using the video processor" do
-    subject { CustomFile.new.processor_class("CustomProcessor") }
-    it { is_expected.to eql CustomProcessor }
-  end
-
-  context "when using a fake processor" do
-    it "raises an error" do
-      expect( lambda{ CustomFile.new.processor_class("BogusProcessor") }).to raise_error(NameError)
-    end
-  end
-
 end
