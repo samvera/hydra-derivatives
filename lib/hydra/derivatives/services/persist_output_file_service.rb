@@ -3,11 +3,10 @@ module Hydra::Derivatives
 
     # Persists the file within the object at destination_name.  Uses basic containment.
     # If you want to use direct containment (ie. with PCDM) you must use a different service (ie. Hydra::Works::AddFileToGenericFile Service)
-    # @param [Object] object the source file is attached to
-    # @param [Hydra::Derivatives::IoDecorator] filestream to be added
-    # @param [String] destination_name is the fedora path at which the child resource will be found or created beneath the object.
-
-    def self.call(object, file, destination_path)
+    # @param [String] file_path the path to the file to be added
+    # @param [Hash] directives directions which can be used to determine where to persist to.
+    # @option directives [String] url This can determine the path of the object.
+    def self.call(file_path, directives)
       raise NotImplementedError, "PersistOutputFileService is an abstract class. Implement `call' on #{self.class.name}"
     end
 

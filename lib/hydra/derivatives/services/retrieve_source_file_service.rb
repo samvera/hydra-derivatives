@@ -2,11 +2,13 @@ module Hydra::Derivatives
   class RetrieveSourceFileService
 
     # Retrieves the source
-    # @param [Object] object the source file is attached to
-    # @param [String] method name that can be called on object to retrieve the source file
-
-    def self.call(object, source_name)
-      object.send(source_name)
+    # @param [ActiveFedora::Base] object the source file is attached to
+    # @param [Hash] options
+    # @option options [Symbol] :source a method that can be called on the object to retrieve the source file
+    # @yield [Tempfile] a temporary source file that has a lifetime of the block
+    def self.call(object, options, &block)
+      source_name = options.fetch(:source)
+      Hydra::Derivatives::TempfileService.create(object.send(source_name), &block)
     end
   end
 end
