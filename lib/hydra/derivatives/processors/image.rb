@@ -21,7 +21,8 @@ module Hydra::Derivatives::Processors
       name = directives.fetch(:label, format)
       destination_name = output_filename_for(name)
       size = directives.fetch(:size, nil)
-      create_resized_image(destination_name, size, format)
+      quality = directives.fetch(:quality, nil)
+      create_resized_image(destination_name, size, format, quality)
     end
 
     protected
