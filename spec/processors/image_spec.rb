@@ -9,11 +9,11 @@ describe Hydra::Derivatives::Processors::Image do
   before { allow(subject).to receive(:output_file).with(file_name).and_return(output_file) }
 
   describe "when arguments are passed as a hash" do
-    let(:directives) { { label: :thumb, size: "200x300>", format: 'png' } }
+    let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
     let(:file_name) { 'thumbnail' }
 
-    it "uses the specified size and name" do
-      expect(subject).to receive(:create_resized_image).with(file_name, "200x300>", 'png')
+    it "uses the specified size and name and quality" do
+      expect(subject).to receive(:create_resized_image).with(file_name, "200x300>", 'png', 75)
       subject.process
     end
   end
