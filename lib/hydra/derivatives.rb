@@ -13,6 +13,7 @@ module Hydra
     autoload_under 'runners' do
       autoload :AudioDerivatives
       autoload :DocumentDerivatives
+      autoload :FullTextExtract
       autoload :ImageDerivatives
       autoload :Jpeg2kImageDerivatives
       autoload :PdfDerivatives
@@ -31,6 +32,7 @@ module Hydra
       autoload :PersistOutputFileService
       autoload :PersistBasicContainedOutputFileService
       autoload :TempfileService
+      autoload :MimeTypeService
     end
 
     # Raised if the timout elapses

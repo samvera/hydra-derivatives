@@ -3,6 +3,12 @@ module Hydra::Derivatives::Processors
   class Processor
     attr_accessor :source_path, :directives, :output_file_service
 
+    # @param [String] source_path path to the file on disk
+    # @param [Hash] directives directions for creating the output
+    # @option [String] :format the format of the output
+    # @option [String] :url the location to put the output
+    # @param [Hash] opts
+    # @option [#call] :output_file_service An output file service to call
     def initialize(source_path, directives, opts={})
       self.source_path = source_path
       self.directives = directives
