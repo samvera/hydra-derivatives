@@ -18,6 +18,7 @@ describe "Transcoder" do
         when 'application/pdf'
           PdfDerivatives.create(self, source: :original_file,
                                 outputs: [{ label: :thumb, size: "100x100>", url: "#{uri}/original_file_thumb" }])
+          FullTextExtract.create(self, source: :original_file, outputs: [{ url: "#{uri}/fulltext" }])
         when 'audio/wav'
           AudioDerivatives.create(self, source: :original_file, outputs: [{ label: :mp3, format: 'mp3', url: "#{uri}/mp3" }, { label: :ogg, format: 'ogg', url: "#{uri}/ogg" }])
         when 'video/avi'
@@ -109,7 +110,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached pdf" do
+  describe "with an attached pdf", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/test.pdf', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -126,10 +127,12 @@ describe "Transcoder" do
       file.reload
       expect(file.attached_files['original_file_thumb']).to have_content
       expect(file.attached_files['original_file_thumb'].mime_type).to eq('image/png')
+      expect(file.attached_files['fulltext'].content).to match /This PDF file was created using CutePDF/
+      expect(file.attached_files['fulltext'].mime_type).to eq 'text/plain'
     end
   end
 
-  describe "with an attached audio", unless: ENV['TRAVIS'] == 'true' do
+  describe "with an attached audio", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) { GenericFile.new(mime_type_from_fits: 'audio/wav').tap { |t| t.original_file.content = attachment; t.save } }
@@ -144,7 +147,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "when the source datastrem has an unknown mime_type", unless: ENV['TRAVIS'] == 'true' do
+  describe "when the source datastrem has an unknown mime_type", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -164,7 +167,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached video", unless: ENV['TRAVIS'] == 'true' do
+  describe "with an attached video", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/countdown.avi', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -199,7 +202,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached Powerpoint", unless: ENV['TRAVIS'] == 'true' do
+  describe "with an attached Powerpoint", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/FlashPix.ppt', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -220,7 +223,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached rich text format", unless: ENV['TRAVIS'] == 'true' do
+  describe "with an attached rich text format", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/sample.rtf', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) { GenericFile.new(mime_type_from_fits: 'text/rtf').tap { |t| t.original_file.content = attachment; t.save } }
@@ -237,7 +240,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached word doc format", unless: ENV['TRAVIS'] == 'true' do
+  describe "with an attached word doc format", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/test.doc', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) { GenericFile.new(mime_type_from_fits: 'application/msword').tap { |t| t.original_file.content = attachment; t.save } }
@@ -254,7 +257,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached excel format", unless: ENV['TRAVIS'] == 'true' do
+  describe "with an attached excel format", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/test.xls', __FILE__) }
     let(:attachment) { File.open(filename)}
     let(:file) { GenericFile.new(mime_type_from_fits: 'application/vnd.ms-excel').tap { |t| t.original_file.content = attachment; t.save } }
@@ -271,7 +274,7 @@ describe "Transcoder" do
     end
   end
 
-  describe "with an attached tiff", unless: ENV['TRAVIS'] == 'true' do
+  describe "with an attached tiff", unless: $in_travis do
     let(:filename) { File.expand_path('../../fixtures/test.tif', __FILE__) }
     let(:attachment) { File.open(filename)}
     let(:file) { GenericFile.new(mime_type_from_fits: 'image/tiff').tap { |t| t.original_file.content = attachment; t.save } }

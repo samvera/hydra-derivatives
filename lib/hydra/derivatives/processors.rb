@@ -5,13 +5,15 @@ module Hydra::Derivatives
     eager_autoload do
       autoload :Processor
     end
-    autoload :Image
-    autoload :Ffmpeg
-    autoload :Video
+
     autoload :Audio
     autoload :Document
-    autoload :ShellBasedProcessor
+    autoload :Ffmpeg
+    autoload :FullText
+    autoload :Image
     autoload :Jpeg2kImage
     autoload :RawImage
+    autoload :ShellBasedProcessor
+    autoload :Video
   end
 end
