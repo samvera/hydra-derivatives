@@ -19,6 +19,12 @@ describe Hydra::Derivatives::Processors::Jpeg2kImage do
 
   end
 
+  describe ".srgb_profile_path" do
+    it "exists" do
+      expect(File.exists?(described_class.srgb_profile_path)).to eq true
+    end
+  end
+
   describe "#kdu_compress_recipe" do
     before(:all) do
       @sample_cfg = YAML.load_file(File.expand_path('../../fixtures/jpeg2k_config.yml', __FILE__))['test']
