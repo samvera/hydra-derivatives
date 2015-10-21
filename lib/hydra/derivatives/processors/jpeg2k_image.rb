@@ -47,7 +47,7 @@ module Hydra::Derivatives::Processors
 
     def self.encode(path, recipe, output_file)
       kdu_compress = Hydra::Derivatives.kdu_compress_path
-      execute "#{kdu_compress} -i #{path} -o #{output_file} #{recipe}"
+      execute "#{kdu_compress} -quiet -i #{path} -o #{output_file} #{recipe}"
     end
 
     def self.srgb_profile_path
