@@ -19,13 +19,14 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency 'bundler', '~> 1.3'
   spec.add_development_dependency 'rake', '~> 10.1'
-  spec.add_development_dependency 'jettywrapper', '~> 2.0'
   spec.add_development_dependency 'rspec', '~> 3.1'
+  spec.add_development_dependency "solr_wrapper", "~> 0.4"
+  spec.add_development_dependency 'fcrepo_wrapper', '~> 0.2'
 
   spec.add_dependency 'active-fedora', '~> 9.0'
   spec.add_dependency 'mini_magick', '>= 3.2', '< 5'
   spec.add_dependency 'activesupport', '~> 4.0'
-  spec.add_dependency 'mime-types', '< 3'
+  spec.add_dependency 'mime-types', '> 2.0', '< 4.0'
   spec.add_dependency 'deprecation'
 end
 

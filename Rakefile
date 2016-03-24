@@ -2,24 +2,19 @@
 
 require "bundler/gem_tasks"
 
-require 'jettywrapper'
-Jettywrapper.hydra_jetty_version = "v8.1.0"
-
 # Dir.glob('tasks/*.rake').each { |r| import r }
 
 require 'rspec/core/rake_task'
-
 RSpec::Core::RakeTask.new(:spec)
 
+require 'solr_wrapper/rake_task'
+require 'fcrepo_wrapper'
+require 'active_fedora/rake_support'
 
-desc 'Spin up hydra-jetty and run specs'
-task :ci => ['jetty:unzip'] do
-  puts 'running continuous integration'
-  jetty_params = Jettywrapper.load_config
-  error = Jettywrapper.wrap(jetty_params) do
+desc 'Start Fedora and Solr and run specs'
+task :ci do
+  with_test_server do
     Rake::Task['spec'].invoke
   end
-  raise "test failures: #{error}" if error
 end
-
-task :default => :ci
+task default: :ci
