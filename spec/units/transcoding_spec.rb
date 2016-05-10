@@ -4,14 +4,8 @@ describe "Transcoder" do
   before(:all) do
     class GenericFile < ActiveFedora::Base
       include Hydra::Derivatives
-      contains 'characterization', class_name: 'ActiveFedora::SimpleDatastream' do |m|
-        m.field "mime_type_from_fits", :string
-        m.field "flag_as", :string
-      end
-
-      property :mime_type_from_fits, delegate_to: :characterization, multiple: false
-      property :flag_as, delegate_to: :characterization, multiple: false
-      contains 'original_file'
+      property :mime_type_from_fits, predicate: ::RDF::URI('http://example.com/mime'), multiple: false
+      has_subresource 'original_file'
 
       def create_derivatives(filename)
         case mime_type_from_fits
