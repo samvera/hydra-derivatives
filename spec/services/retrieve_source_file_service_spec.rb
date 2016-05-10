@@ -10,7 +10,7 @@ describe Hydra::Derivatives::RetrieveSourceFileService do
     end
 
     class ObjectWithBasicContainer < ActiveFedora::Base
-      contains "contained_file"
+      has_subresource "contained_file"
     end
 
     class DirectContainerObject < ActiveFedora::Base

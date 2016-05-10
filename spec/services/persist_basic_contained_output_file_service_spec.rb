@@ -4,7 +4,7 @@ describe Hydra::Derivatives::PersistBasicContainedOutputFileService do
 
   before(:all) do
     class BasicContainerObject < ActiveFedora::Base
-      contains "the_derivative_name"
+      has_subresource "the_derivative_name"
     end
   end
 
