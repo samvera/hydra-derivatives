@@ -23,7 +23,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "solr_wrapper", "~> 0.4"
   spec.add_development_dependency 'fcrepo_wrapper', '~> 0.2'
 
-  spec.add_dependency 'active-fedora', '~> 9.0'
+  spec.add_dependency 'active-fedora', '>= 9.0', '< 11'
   spec.add_dependency 'mini_magick', '>= 3.2', '< 5'
   spec.add_dependency 'activesupport', '~> 4.0'
   spec.add_dependency 'mime-types', '> 2.0', '< 4.0'
