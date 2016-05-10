@@ -1,3 +1,5 @@
+require 'tmpdir'
+
 module Hydra
   module Derivatives
     class Config
@@ -14,7 +16,7 @@ module Hydra
       end
 
       def temp_file_base
-        @temp_file_base ||= '/tmp'
+        @temp_file_base ||= Dir.tmpdir
       end
 
       def source_file_service
