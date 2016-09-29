@@ -3,4 +3,3 @@ module Hydra::Derivatives::Processors
     include Ffmpeg
   end
 end
-

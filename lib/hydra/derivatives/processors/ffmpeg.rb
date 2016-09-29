@@ -3,13 +3,12 @@ module Hydra::Derivatives::Processors
   module Ffmpeg
     extend ActiveSupport::Concern
 
-    INPUT_OPTIONS=:input_options
-    OUTPUT_OPTIONS=:output_options
+    INPUT_OPTIONS = :input_options
+    OUTPUT_OPTIONS = :output_options
 
     included do
       include ShellBasedProcessor
     end
-
 
     module ClassMethods
       def encode(path, options, output_file)

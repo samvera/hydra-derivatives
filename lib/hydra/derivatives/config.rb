@@ -3,9 +3,9 @@ require 'tmpdir'
 module Hydra
   module Derivatives
     class Config
-      attr_writer :ffmpeg_path, :libreoffice_path, :temp_file_base, 
-        :source_file_service, :output_file_service, :fits_path,
-        :enable_ffmpeg, :kdu_compress_path, :kdu_compress_recipes
+      attr_writer :ffmpeg_path, :libreoffice_path, :temp_file_base,
+                  :source_file_service, :output_file_service, :fits_path,
+                  :enable_ffmpeg, :kdu_compress_path, :kdu_compress_recipes
 
       def ffmpeg_path
         @ffmpeg_path ||= 'ffmpeg'
@@ -41,7 +41,7 @@ module Hydra
 
       def kdu_compress_recipes
         @kdu_compress_recipes ||= {
-          default_color: %Q{-rate 2.4,1.48331273,.91673033,.56657224,.35016049,.21641118,.13374944,.08266171
+          default_color: %(-rate 2.4,1.48331273,.91673033,.56657224,.35016049,.21641118,.13374944,.08266171
             -jp2_space sRGB
             -double_buffering 10
             -num_threads 4
@@ -54,8 +54,8 @@ module Hydra
             Corder=RPCL
             ORGgen_plt=yes
             ORGtparts=R
-            "Stiles={1024,1024}" }.gsub(/\s+/, " ").strip,
-          default_grey: %Q{-rate 2.4,1.48331273,.91673033,.56657224,.35016049,.21641118,.13374944,.08266171
+            "Stiles={1024,1024}" ).gsub(/\s+/, " ").strip,
+          default_grey: %(-rate 2.4,1.48331273,.91673033,.56657224,.35016049,.21641118,.13374944,.08266171
             -jp2_space sLUM
             -double_buffering 10
             -num_threads 4
@@ -68,10 +68,9 @@ module Hydra
             Corder=RPCL
             ORGgen_plt=yes
             ORGtparts=R
-            "Stiles={1024,1024}" }.gsub(/\s+/, " ").strip
+            "Stiles={1024,1024}" ).gsub(/\s+/, " ").strip
         }
       end
-
     end
   end
 end

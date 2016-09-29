@@ -8,5 +8,3 @@ module Hydra::Derivatives::Processors
     end
   end
 end
-
-
