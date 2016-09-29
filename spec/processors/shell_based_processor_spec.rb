@@ -9,7 +9,7 @@ describe Hydra::Derivatives::Processors::ShellBasedProcessor do
 
   after { Object.send(:remove_const, :TestProcessor) }
 
-  let (:processor) { TestProcessor.new }
+  let(:processor) { TestProcessor.new }
 
   describe "options_for" do
     it "returns a hash" do

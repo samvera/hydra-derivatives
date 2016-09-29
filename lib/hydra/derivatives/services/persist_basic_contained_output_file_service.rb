@@ -4,7 +4,6 @@ module Hydra::Derivatives
   # and, at the time that this class was authored, corresponds to the behavior of ActiveFedora::Base.attach_file and ActiveFedora::Base.attached_files
   ### Rename this
   class PersistBasicContainedOutputFileService < PersistOutputFileService
-
     # This method conforms to the signature of the .call method on Hydra::Derivatives::PeristOutputFileService
     # * Persists the file within the object at destination_name
     #

@@ -2,13 +2,13 @@ module Hydra::Derivatives::Processors
   class Document < Processor
     include ShellBasedProcessor
 
-    def self.encode(path, options, output_file)
+    def self.encode(path, _options, output_file)
       format = File.extname(output_file).sub('.', '')
       outdir = File.dirname(output_file)
       execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{path}"
     end
 
-    def encode_file(file_suffix, options = { })
+    def encode_file(file_suffix, options = {})
       new_output = ''
       if file_suffix == 'jpg'
         temp_file = File.join(Hydra::Derivatives.temp_file_base, [directives.fetch(:label).to_s, 'pdf'].join('.'))

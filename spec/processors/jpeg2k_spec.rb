@@ -16,12 +16,11 @@ describe Hydra::Derivatives::Processors::Jpeg2kImage do
       calc = described_class.layer_rates(layers, compression_num)
       expect(calc).to eq("2.4,1.48331273,0.91675694,0.56659885,0.3501847,0.21643059,0.13376427,0.0826726")
     end
-
   end
 
   describe ".srgb_profile_path" do
     it "exists" do
-      expect(File.exists?(described_class.srgb_profile_path)).to eq true
+      expect(File.exist?(described_class.srgb_profile_path)).to eq true
     end
   end
 

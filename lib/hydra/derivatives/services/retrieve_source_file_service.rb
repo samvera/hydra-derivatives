@@ -1,6 +1,5 @@
 module Hydra::Derivatives
   class RetrieveSourceFileService
-
     # Retrieves the source
     # @param [ActiveFedora::Base] object the source file is attached to
     # @param [Hash] options

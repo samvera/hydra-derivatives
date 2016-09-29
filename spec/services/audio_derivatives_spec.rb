@@ -3,10 +3,10 @@ require 'spec_helper'
 describe Hydra::Derivatives::AudioDerivatives do
   describe ".create" do
     let(:filename) { 'spec/fixtures/piano_note.wav' }
-    context "with a filename", unless: $in_travis do
+    context "with a filename", unless: in_travis? do
       before do
         class LocalFileService
-          def self.call(file_name, options, &block)
+          def self.call(file_name, _options, &_block)
             yield File.open(file_name)
           end
         end
@@ -27,7 +27,7 @@ describe Hydra::Derivatives::AudioDerivatives do
     end
 
     context "with an object" do
-      let(:object)      { "Fake Object"  }
+      let(:object)      { "Fake Object" }
       let(:source_name) { :content }
       let(:file)        { double("the file") }
 
@@ -49,8 +49,8 @@ describe Hydra::Derivatives::AudioDerivatives do
     subject { described_class }
 
     it "relies on the source_file_service" do
-      expect(subject.source_file_service).to receive(:call).with('foo/bar.aiff', { baz: true })
-      subject.source_file('foo/bar.aiff', { baz: true })
+      expect(subject.source_file_service).to receive(:call).with('foo/bar.aiff', baz: true)
+      subject.source_file('foo/bar.aiff', baz: true)
     end
   end
 

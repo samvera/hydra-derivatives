@@ -45,7 +45,7 @@ describe Hydra::Derivatives::Processors::FullText do
       let(:resp) { double(code: '500', body: response_body) }
       it "raises an error" do
         expect(request).to receive(:post).with('http://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
-        expect { subject }.to raise_error RuntimeError, /Solr Extract service was unsuccessful. 'http:\/\/example\.com:99\/solr\/update' returned code 500 for .*spec\/fixtures\/test.docx\nreturned by Solr/
+        expect { subject }.to raise_error(RuntimeError, "Solr Extract service was unsuccessful. 'http:\/\/example\.com:99\/solr\/update' returned code 500 for .*spec\/fixtures\/test.docx\nreturned by Solr")
       end
     end
   end

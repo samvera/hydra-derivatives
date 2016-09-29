@@ -2,7 +2,6 @@ require 'mime/types'
 
 module Hydra::Derivatives
   class TempfileService
-
     def self.create(file, &block)
       new(file).tempfile(&block)
     end
@@ -21,7 +20,7 @@ module Hydra::Derivatives
       end
     end
 
-    def default_tempfile(&block)
+    def default_tempfile(&_block)
       Tempfile.open(filename_for_characterization) do |f|
         f.binmode
         if source_file.content.respond_to? :read
@@ -39,9 +38,9 @@ module Hydra::Derivatives
       registered_mime_type = MIME::Types[source_file.mime_type].first
       Logger.warn "Unable to find a registered mime type for #{source_file.mime_type.inspect} on #{source_file.uri}" unless registered_mime_type
       extension = registered_mime_type ? ".#{registered_mime_type.extensions.first}" : ''
-      version_id = 1 # TODO fixme
-      m = /\/([^\/]*)$/.match(source_file.uri)
-      ["#{m[1]}-#{version_id}", "#{extension}"]
+      version_id = 1 # TODO: fixme
+      m = %r{/([^/]*)$}.match(source_file.uri)
+      ["#{m[1]}-#{version_id}", extension.to_s]
     end
   end
 end

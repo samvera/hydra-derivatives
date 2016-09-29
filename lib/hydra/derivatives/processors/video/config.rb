@@ -41,13 +41,11 @@ module Hydra::Derivatives::Processors::Video
         @codec = default
       end
 
-      def codec
-        @codec
-      end
+      attr_reader :codec
     end
 
-
     protected
+
       def default_video_bitrate
         '345k'
       end

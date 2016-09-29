@@ -13,4 +13,3 @@ module Hydra::Derivatives
     end
   end
 end
-

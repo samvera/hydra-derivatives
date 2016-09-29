@@ -9,7 +9,7 @@ module Hydra::Derivatives::Processors
     # @option [String] :url the location to put the output
     # @param [Hash] opts
     # @option [#call] :output_file_service An output file service to call
-    def initialize(source_path, directives, opts={})
+    def initialize(source_path, directives, opts = {})
       self.source_path = source_path
       self.directives = directives
       self.output_file_service = opts.fetch(:output_file_service, Hydra::Derivatives.output_file_service)

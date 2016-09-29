@@ -36,7 +36,7 @@ module Hydra::Derivatives::Processors
 
       # @return [Hash] the request headers to send to the Solr extract service
       def request_headers
-        { Faraday::Request::UrlEncoded::CONTENT_TYPE => "#{mime_type}",
+        { Faraday::Request::UrlEncoded::CONTENT_TYPE => mime_type.to_s,
           Faraday::Adapter::CONTENT_LENGTH => original_size.to_s }
       end
 

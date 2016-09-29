@@ -47,13 +47,13 @@ module Hydra
     end
 
     [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path,
-      :kdu_compress_recipes, :enable_ffmpeg, :source_file_service, :output_file_service].each do |method|
+     :kdu_compress_recipes, :enable_ffmpeg, :source_file_service, :output_file_service].each do |method|
       module_eval <<-RUBY
-        def self.#{method.to_s}
-          config.#{method.to_s}
+        def self.#{method}
+          config.#{method}
         end
-        def self.#{method.to_s}= val
-          config.#{method.to_s}= val
+        def self.#{method}= val
+          config.#{method}= val
         end
       RUBY
     end

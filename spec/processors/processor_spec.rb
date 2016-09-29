@@ -1,13 +1,12 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives::Processors::Processor do
-
-  let(:object)        { "Fake Object"  }
+  let(:object)        { "Fake Object" }
   let(:source_name)   { 'content' }
   let(:directives)    { { thumb: "100x100>" } }
   let(:file_path)     { double }
 
-  subject { described_class.new(file_path, directives)}
+  subject { described_class.new(file_path, directives) }
 
   describe "output_file_service" do
     let(:custom_output_file_service) { "fake service" }

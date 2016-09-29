@@ -11,7 +11,9 @@ describe Hydra::Derivatives::TempfileService do
         @uri = 'http://example.com/pid/123'
       end
 
-      def has_content?; content.present?; end
+      def has_content?
+        content.present?
+      end
     end
   end
 
@@ -19,7 +21,7 @@ describe Hydra::Derivatives::TempfileService do
 
   let(:file) { class_with_metadata_extraction.new(initialization_options) }
 
-  subject { Hydra::Derivatives::TempfileService.new(file) }
+  subject { described_class.new(file) }
   context '#tempfile' do
     it 'has a method called to_tempfile' do
       expect { |b| subject.tempfile(&b) }.to yield_with_args(Tempfile)

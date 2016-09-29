@@ -1,9 +1,8 @@
 module Hydra
   module Derivatives
     class Runner
-
-      def self.output_file_service= val
-        @output_file_service = val
+      class << self
+        attr_writer :output_file_service
       end
 
       # Use the output service configured for this class or default to the global setting
@@ -11,15 +10,14 @@ module Hydra
         @output_file_service || Hydra::Derivatives.output_file_service
       end
 
-      def self.source_file_service= val
-        @source_file_service = val
+      class << self
+        attr_writer :source_file_service
       end
 
       # Use the source service configured for this class or default to the global setting
       def self.source_file_service
         @source_file_service || Hydra::Derivatives.source_file_service
       end
-
 
       # @param [String, ActiveFedora::Base] object_or_filename path to the source file, or an object
       # @param [Hash] options options to pass to the encoder
@@ -49,4 +47,3 @@ module Hydra
     end
   end
 end
-
