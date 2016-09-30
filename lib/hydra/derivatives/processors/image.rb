@@ -27,9 +27,14 @@ module Hydra::Derivatives::Processors
 
     protected
 
+      # When resizing images, it is necessary to flatten any layers, otherwise the background
+      # may be completely black. This happens especially with PDFs. See #110
       def create_resized_image(destination_name, size, format, quality = nil)
         create_image(destination_name, format, quality) do |xfrm|
-          xfrm.resize(size) if size.present?
+          if size.present?
+            xfrm.flatten
+            xfrm.resize(size)
+          end
         end
       end
 
