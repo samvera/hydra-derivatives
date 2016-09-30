@@ -5,47 +5,40 @@ module Hydra::Derivatives::Processors
     class_attribute :timeout
 
     def process
-      timeout ? process_with_timeout : process_without_timeout
+      timeout ? process_with_timeout : create_resized_image
     end
 
     def process_with_timeout
-      Timeout.timeout(timeout) do
-        process_without_timeout
-      end
+      Timeout.timeout(timeout) { create_resized_image }
     rescue Timeout::Error
       raise Hydra::Derivatives::TimeoutError, "Unable to process image derivative\nThe command took longer than #{timeout} seconds to execute"
     end
 
-    def process_without_timeout
-      format = directives.fetch(:format)
-      name = directives.fetch(:label, format)
-      destination_name = output_filename_for(name)
-      size = directives.fetch(:size, nil)
-      quality = directives.fetch(:quality, nil)
-      create_resized_image(destination_name, size, format, quality)
-    end
-
     protected
 
-      def create_resized_image(destination_name, size, format, quality = nil)
-        create_image(destination_name, format, quality) do |xfrm|
-          xfrm.resize(size) if size.present?
+      # When resizing images, it is necessary to flatten any layers, otherwise the background
+      # may be completely black. This happens especially with PDFs. See #110
+      def create_resized_image
+        create_image do |xfrm|
+          if size
+            xfrm.flatten
+            xfrm.resize(size)
+          end
         end
       end
 
-      def create_image(destination_name, format, quality = nil)
+      def create_image
         xfrm = load_image_transformer
         yield(xfrm) if block_given?
-        xfrm.format(format)
+        xfrm.format(directives.fetch(:format))
         xfrm.quality(quality.to_s) if quality
-        write_image(destination_name, format, xfrm)
+        write_image(xfrm)
       end
 
-      def write_image(_destination_name, _format, xfrm)
+      def write_image(xfrm)
         output_io = StringIO.new
         xfrm.write(output_io)
         output_io.rewind
-
         output_file_service.call(output_io, directives)
       end
 
@@ -53,6 +46,16 @@ module Hydra::Derivatives::Processors
       # raw image from a different source (e.g. external file)
       def load_image_transformer
         MiniMagick::Image.open(source_path)
+      end
+
+    private
+
+      def size
+        directives.fetch(:size, nil)
+      end
+
+      def quality
+        directives.fetch(:quality, nil)
       end
   end
 end
