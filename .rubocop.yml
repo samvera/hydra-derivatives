@@ -62,6 +62,5 @@ RSpec/DescribeClass:
 
 RSpec/AnyInstance:
   Exclude:
-    - spec/processors/full_text.rb
     - spec/processors/image_spec.rb
     - spec/units/transcoding_spec.rb
