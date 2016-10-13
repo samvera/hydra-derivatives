@@ -14,40 +14,59 @@ describe "Transcoding" do
                                       outputs: [{ label: :thumb, size: "100x100>", url: "#{uri}/original_file_thumb" }])
           FullTextExtract.create(self, source: :original_file, outputs: [{ url: "#{uri}/fulltext" }])
         when 'audio/wav'
-          AudioDerivatives.create(self, source: :original_file, outputs: [{ label: :mp3, format: 'mp3', url: "#{uri}/mp3" }, { label: :ogg, format: 'ogg', url: "#{uri}/ogg" }])
+          AudioDerivatives.create(self, source: :original_file,
+                                        outputs: [
+                                          { label: :mp3, format: 'mp3', url: "#{uri}/mp3" },
+                                          { label: :ogg, format: 'ogg', url: "#{uri}/ogg" }])
         when 'video/avi'
           VideoDerivatives.create(self, source: :original_file,
                                         outputs: [
-                                          { label: :mp4, format: 'mp4', url: "#{uri}/original_file_mp4" },
-                                          { label: :webm, format: 'webm', url: "#{uri}/original_file_webm" },
-                                          { label: :thumbnail, format: 'jpg', url: "#{uri}/thumbnail" }])
+                                          { label: :mp4,       format: 'mp4',  url: "#{uri}/original_file_mp4" },
+                                          { label: :webm,      format: 'webm', url: "#{uri}/original_file_webm" },
+                                          { label: :thumbnail, format: 'jpg',  url: "#{uri}/thumbnail" }])
         when 'image/png', 'image/jpg'
           ImageDerivatives.create(self, source: :original_file,
                                   outputs: [
                                     { label: :medium, size: "300x300>", url: "#{uri}/original_file_medium" },
-                                    { label: :thumb, size: "100x100>", url: "#{uri}/original_file_thumb" },
-                                    { label: :access, url: "#{uri}/access", format: 'jpg' },
+                                    { label: :thumb,  size: "100x100>", url: "#{uri}/original_file_thumb" },
+                                    { label: :access, format: 'jpg',    url: "#{uri}/access" },
           ])
         when 'application/vnd.ms-powerpoint'
-          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'pptx' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
+          DocumentDerivatives.create(self, source: :original_file,
+                                           outputs: [
+                                             { label: :preservation, format: 'pptx', url: "#{uri}/original_file_preservation" },
+                                             { label: :access,       format: 'pdf',  url: "#{uri}/original_file_access" },
+                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }])
         when 'text/rtf'
-          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'odf' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
+          DocumentDerivatives.create(self, source: :original_file,
+                                           outputs: [
+                                             { label: :preservation, format: 'odf', url: "#{uri}/original_file_preservation" },
+                                             { label: :access,       format: 'pdf', url: "#{uri}/original_file_access" },
+                                             { label: :thumnail,     format: 'jpg', url: "#{uri}/original_file_thumbnail" }])
         when 'application/msword'
-          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'docx' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
+          DocumentDerivatives.create(self, source: :original_file,
+                                           outputs: [
+                                             { label: :preservation, format: 'docx', url: "#{uri}/original_file_preservation" },
+                                             { label: :access,       format: 'pdf',  url: "#{uri}/original_file_access" },
+                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }])
         when 'application/vnd.ms-excel'
-          DocumentDerivatives.create(self, source: :original_file, outputs: [{ label: :preservation, format: 'xslx' }, { label: :access, format: 'pdf' }, { label: :thumnail, format: 'jpg' }])
+          DocumentDerivatives.create(self, source: :original_file,
+                                           outputs: [
+                                             { label: :preservation, format: 'xslx', url: "#{uri}/original_file_preservation" },
+                                             { label: :access,       format: 'pdf',  url: "#{uri}/original_file_access" },
+                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }])
         when 'image/tiff'
-          Jpeg2kImageDerivatives.create(self, source: :original_file, outputs: [
-                                          { label: :resized, recipe: :default, resize: "600x600>", processor: 'jpeg2k_image', url: "#{uri}/resized" },
-                                          { label: :config_lookup, recipe: :default, processor: 'jpeg2k_image', url: "#{uri}/config_lookup" },
-                                          { label: :string_recipe, recipe: '-quiet', processor: 'jpeg2k_image', url: "#{uri}/string_recipe" },
-                                          { label: :diy, processor: 'jpeg2k_image', url: "#{uri}/original_file_diy" }
-                                        ])
+          Jpeg2kImageDerivatives.create(self, source: :original_file,
+                                              outputs: [
+                                                { label: :resized,       recipe: :default, processor: 'jpeg2k_image', resize: "600x600>", url: "#{uri}/resized" },
+                                                { label: :config_lookup, recipe: :default, processor: 'jpeg2k_image',                     url: "#{uri}/config_lookup" },
+                                                { label: :string_recipe, recipe: '-quiet', processor: 'jpeg2k_image',                     url: "#{uri}/string_recipe" },
+                                                { label: :diy,                             processor: 'jpeg2k_image',                     url: "#{uri}/original_file_diy" }])
         when 'image/x-adobe-dng'
-          ImageDerivatives.create(self, source: :original_file, outputs: [
-                                    { label: :access, size: "300x300>", format: 'jpg', processor: :raw_image },
-                                    { label: :thumb, size: "100x100>", format: 'jpg', processor: :raw_image }
-                                  ])
+          ImageDerivatives.create(self, source: :original_file,
+                                        outputs: [
+                                          { label: :access, size: "300x300>", format: 'jpg', processor: :raw_image },
+                                          { label: :thumb,  size: "100x100>", format: 'jpg', processor: :raw_image }])
         end
       end
     end
@@ -245,12 +264,13 @@ describe "Transcoding" do
   end
 
   describe "with an attached word doc format", unless: in_travis? do
-    let(:filename) { File.expand_path('../../fixtures/test.doc', __FILE__) }
+    let(:filename)   { File.expand_path('../../fixtures/test.doc', __FILE__) }
     let(:attachment) { File.open(filename) }
 
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'application/msword').tap do |t|
         t.original_file.content = attachment
+        t.original_file.mime_type = 'application/msword'
         t.save
       end
     end
@@ -268,12 +288,13 @@ describe "Transcoding" do
   end
 
   describe "with an attached excel format", unless: in_travis? do
-    let(:filename) { File.expand_path('../../fixtures/test.xls', __FILE__) }
+    let(:filename)   { File.expand_path('../../fixtures/test.xls', __FILE__) }
     let(:attachment) { File.open(filename) }
 
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'application/vnd.ms-excel').tap do |t|
         t.original_file.content = attachment
+        t.original_file.mime_type = 'application/vnd.ms-excel'
         t.save
       end
     end
