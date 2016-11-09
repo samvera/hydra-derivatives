@@ -5,20 +5,38 @@ describe Hydra::Derivatives::Processors::Image do
   subject { described_class.new(file_name, directives) }
 
   context "when arguments are passed as a hash" do
-    let(:directives)       { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
     let(:mock_transformer) { double("MockTransformer") }
+    let(:mock_layer)       { double("MockLayer") }
 
-    before do
-      allow(subject).to receive(:load_image_transformer).and_return(mock_transformer)
-      allow(subject).to receive(:write_image).with(mock_transformer)
+    before { allow(subject).to receive(:load_image_transformer).and_return(mock_transformer) }
+
+    context "using image directives" do
+      let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
+
+      before { allow(subject).to receive(:write_image).with(mock_transformer) }
+
+      it "uses the specified size and name and quality" do
+        expect(mock_transformer).to receive(:flatten)
+        expect(mock_transformer).to receive(:resize).with("200x300>")
+        expect(mock_transformer).to receive(:format).with("png")
+        expect(mock_transformer).to receive(:quality).with("75")
+        subject.process
+      end
     end
 
-    it "uses the specified size and name and quality" do
-      expect(mock_transformer).to receive(:flatten)
-      expect(mock_transformer).to receive(:resize).with("200x300>")
-      expect(mock_transformer).to receive(:format).with("png")
-      expect(mock_transformer).to receive(:quality).with("75")
-      subject.process
+    context "using pdf directives" do
+      let(:directives) { { label: :thumb, size: "200x300>", format: 'pdf', layer: 0, quality: 75 } }
+
+      before { allow(subject).to receive(:write_image).with(mock_layer) }
+
+      it "uses the specified size and name and quality" do
+        expect(mock_transformer).to receive(:layers).and_return([mock_layer])
+        expect(mock_layer).to receive(:flatten)
+        expect(mock_layer).to receive(:resize).with("200x300>")
+        expect(mock_layer).to receive(:format).with("pdf")
+        expect(mock_layer).to receive(:quality).with("75")
+        subject.process
+      end
     end
   end
 
