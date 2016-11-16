@@ -28,7 +28,7 @@ module Hydra::Derivatives::Processors
       end
 
       def create_image
-        xfrm = load_image_transformer
+        xfrm = selected_layers(load_image_transformer)
         yield(xfrm) if block_given?
         xfrm.format(directives.fetch(:format))
         xfrm.quality(quality.to_s) if quality
@@ -56,6 +56,12 @@ module Hydra::Derivatives::Processors
 
       def quality
         directives.fetch(:quality, nil)
+      end
+
+      def selected_layers(image)
+        layer_index = directives.fetch(:layer, false)
+        return image unless layer_index
+        image.layers[layer_index]
       end
   end
 end
