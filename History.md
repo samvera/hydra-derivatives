@@ -1,3 +1,41 @@
+## 3.2.0 (2016-11-16)
+2016-11-08: Directive option for layer [Adam Wead]
+
+## 3.1.4 (2016-10-13)
+2016-10-13: Convert documents to pdf and jpg, fixes #109 [Adam Wead]
+
+2016-09-30: Flatten images when resizing, fixes #110 [Adam Wead]
+
+2016-09-29: Adding Rubocop to manage our style [Adam Wead]
+
+## 3.1.3 (2016-09-13)
+2016-09-13: Loosen dependecy to allow active-fedora 11 [Justin Coyne]
+
+## 3.1.2 (2016-08-09)
+2016-07-28: Bumping version of Ruby to 2.2.5 for updated ActiveSupport [Esmé Cowles]
+
+2016-07-11: Allow for Rails 5 [Trey Pendragon]
+
+## 3.1.1 (2016-05-18)
+2016-05-10: Use `Dir.tmpdir` to get a platform-specific tmp dir [Chris Beer]
+
+## 3.1.0 (2016-05-10)
+2016-05-10: Allow hydra-derivatives to work with active-fedora 10 [Justin Coyne]
+
+2016-05-10: Update solr schema for Solr 6 compatibility [Chris Beer]
+
+## 3.0.2 (2016-05-04)
+2016-04-26: Update FITS version in README [Michael J. Giarlo]
+
+## 3.0.1 (2016-03-24)
+2016-03-24: Solr/Fedora Wrapper [Trey Pendragon]
+
+2016-03-24: Allow for Mime-Types 3.0 [Trey Pendragon]
+
+2015-10-21: Silence Kakadu messages. [Trey Terrell]
+
+2015-10-20: Fix srgb_profile_path. [Trey Terrell]
+
 ## 3.0.0 (2015-10-07)
 2015-10-07: Update to the containerized builds on travis [Justin Coyne]
 
