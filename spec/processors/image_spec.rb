@@ -5,37 +5,86 @@ describe Hydra::Derivatives::Processors::Image do
   subject { described_class.new(file_name, directives) }
 
   context "when arguments are passed as a hash" do
-    let(:mock_transformer) { double("MockTransformer") }
-    let(:mock_layer)       { double("MockLayer") }
+    before { allow(subject).to receive(:load_image_transformer).and_return(mock_image) }
 
-    before { allow(subject).to receive(:load_image_transformer).and_return(mock_transformer) }
+    context "with a multi-page pdf source file" do
+      let(:first_page)  { double("MockPage") }
+      let(:second_page) { double("MockPage") }
+      let(:mock_image)  { double("MockImageOfPdf", layers: [first_page, second_page]) }
 
-    context "using image directives" do
-      let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
+      before { allow(mock_image).to receive(:type).and_return("PDF") }
 
-      before { allow(subject).to receive(:write_image).with(mock_transformer) }
+      context "by default" do
+        let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
 
-      it "uses the specified size and name and quality" do
-        expect(mock_transformer).to receive(:flatten)
-        expect(mock_transformer).to receive(:resize).with("200x300>")
-        expect(mock_transformer).to receive(:format).with("png")
-        expect(mock_transformer).to receive(:quality).with("75")
-        subject.process
+        it "uses the first page" do
+          expect(first_page).to receive(:flatten)
+          expect(second_page).not_to receive(:flatten)
+          expect(first_page).to receive(:resize).with("200x300>")
+          expect(second_page).not_to receive(:resize)
+          expect(first_page).to receive(:format).with("png")
+          expect(second_page).not_to receive(:format)
+          expect(first_page).to receive(:quality).with("75")
+          expect(second_page).not_to receive(:quality)
+          expect(subject).to receive(:write_image).with(first_page)
+          subject.process
+        end
+      end
+
+      context "when specifying a layer" do
+        let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75, layer: 1 } }
+
+        it "uses the second page" do
+          expect(second_page).to receive(:flatten)
+          expect(first_page).not_to receive(:flatten)
+          expect(second_page).to receive(:resize).with("200x300>")
+          expect(first_page).not_to receive(:resize)
+          expect(second_page).to receive(:format).with("png")
+          expect(first_page).not_to receive(:format)
+          expect(second_page).to receive(:quality).with("75")
+          expect(first_page).not_to receive(:quality)
+          expect(subject).to receive(:write_image).with(second_page)
+          subject.process
+        end
       end
     end
 
-    context "using pdf directives" do
-      let(:directives) { { label: :thumb, size: "200x300>", format: 'pdf', layer: 0, quality: 75 } }
+    context "with an image source file" do
+      before { allow(mock_image).to receive(:type).and_return("JPEG") }
 
-      before { allow(subject).to receive(:write_image).with(mock_layer) }
+      context "by default" do
+        let(:mock_image) { double("MockImage") }
+        let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
 
-      it "uses the specified size and name and quality" do
-        expect(mock_transformer).to receive(:layers).and_return([mock_layer])
-        expect(mock_layer).to receive(:flatten)
-        expect(mock_layer).to receive(:resize).with("200x300>")
-        expect(mock_layer).to receive(:format).with("pdf")
-        expect(mock_layer).to receive(:quality).with("75")
-        subject.process
+        it "uses the image file" do
+          expect(mock_image).not_to receive(:layers)
+          expect(mock_image).to receive(:flatten)
+          expect(mock_image).to receive(:resize).with("200x300>")
+          expect(mock_image).to receive(:format).with("png")
+          expect(mock_image).to receive(:quality).with("75")
+          expect(subject).to receive(:write_image).with(mock_image)
+          subject.process
+        end
+      end
+
+      context "when specifying a layer" do
+        let(:first_layer)  { double("MockPage") }
+        let(:second_layer) { double("MockPage") }
+        let(:mock_image)   { double("MockImage", layers: [first_layer, second_layer]) }
+        let(:directives)   { { label: :thumb, size: "200x300>", format: 'png', quality: 75, layer: 1 } }
+
+        it "uses the layer" do
+          expect(second_layer).to receive(:flatten)
+          expect(first_layer).not_to receive(:flatten)
+          expect(second_layer).to receive(:resize).with("200x300>")
+          expect(first_layer).not_to receive(:resize)
+          expect(second_layer).to receive(:format).with("png")
+          expect(first_layer).not_to receive(:format)
+          expect(second_layer).to receive(:quality).with("75")
+          expect(first_layer).not_to receive(:quality)
+          expect(subject).to receive(:write_image).with(second_layer)
+          subject.process
+        end
       end
     end
   end
