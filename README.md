@@ -83,6 +83,18 @@ Hydra::Derivatives::Video::Processor.config.mkv.codec = '-vcodec ffv1'
 Hydra::Derivatives::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
 ```
 
+### Additional Directives
+
+#### Layers
+
+When processing pdf files or images that may contain layers, you can select which layer you want
+to use. This is especially useful with multipage pdf files, which are flattened to ensure the
+background is correctly rendered. To choose the first layer or page for a pdf:
+
+```
+PdfDerivatives.create(filename, outputs: [{ label: :thumb, size: "100x100>", layer: 0 }]
+```
+
 # Installation
 
 Just add `gem 'hydra-derivatives'` to your Gemfile.
