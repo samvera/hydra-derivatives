@@ -59,9 +59,13 @@ module Hydra::Derivatives::Processors
       end
 
       def selected_layers(image)
-        layer_index = directives.fetch(:layer, false)
-        return image unless layer_index
-        image.layers[layer_index]
+        if image.type =~ /pdf/i
+          image.layers[directives.fetch(:layer, 0)]
+        elsif directives.fetch(:layer, false)
+          image.layers[directives.fetch(:layer)]
+        else
+          image
+        end
       end
   end
 end
