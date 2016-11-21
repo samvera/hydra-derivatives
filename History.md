@@ -1,3 +1,6 @@
+## 3.2.1 (2016-11-21)
+2016-11-17: Default to first page for pdf images [Adam Wead]
+
 ## 3.2.0 (2016-11-16)
 2016-11-08: Directive option for layer [Adam Wead]
 
