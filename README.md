@@ -89,10 +89,12 @@ Hydra::Derivatives::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
 
 When processing pdf files or images that may contain layers, you can select which layer you want
 to use. This is especially useful with multipage pdf files, which are flattened to ensure the
-background is correctly rendered. To choose the first layer or page for a pdf:
+background is correctly rendered. By default, the first page, or layer 0, is chosen when creating
+images from pdf files. If you want to choose a different page, such as the second page, you can
+set the layer directive:
 
 ```
-PdfDerivatives.create(filename, outputs: [{ label: :thumb, size: "100x100>", layer: 0 }]
+PdfDerivatives.create(filename, outputs: [{ label: :thumb, size: "100x100>", layer: 1 }]
 ```
 
 # Installation
