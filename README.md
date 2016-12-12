@@ -125,6 +125,17 @@ Hydra::Derivatives.fits_path = '/opt/local/fits/bin/fits.sh'
 Hydra::Derivatives.libreoffice_path = '/opt/local/libreoffice_path/bin/soffice'
 Hydra::Derivatives.kdu_compress_path = '/usr/local/bin/kdu_compress'
 ```
+## Configuration
+
+ImageMagick by default stores temp files in system /tmp. If you'd like to override this, adjust these environment variables:
+
+```
+MAGICK_TEMPORARY_PATH
+MAGICK_TMPDIR
+MAGICK_TEMPDIR
+
+```
+YMMV as to where setting them will take effect in your app; the application's web server's vhost directives are a location known to work with an Apache web server set up.
 
 ## JPEG2k Directives
 
