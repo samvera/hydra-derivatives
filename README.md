@@ -65,10 +65,10 @@ If no timeout is set the system will process until complete (possibly indefinite
 ```
 require 'hydra/derivatives'
 
-Hydra::Derivatives::Video::Processor.timeout  = 10.minutes
-Hydra::Derivatives::Document.timeout = 5.minutes
-Hydra::Derivatives::Audio.timeout = 10.minutes
-Hydra::Derivatives::Image.timeout = 5.minutes
+Hydra::Derivatives::Processors::Video::Processor.timeout  = 10.minutes
+Hydra::Derivatives::Processors::Document.timeout = 5.minutes
+Hydra::Derivatives::Processors::Audio.timeout = 10.minutes
+Hydra::Derivatives::Processors::Image.timeout = 5.minutes
 
 ```
 
@@ -77,10 +77,10 @@ Hydra::Derivatives::Image.timeout = 5.minutes
 Flags can be set for using different video codes.  Default codecs are shown below
 
 ```
-Hydra::Derivatives::Video::Processor.config.mpeg4.codec = '-vcodec libx264 -acodec libfdk_aac'
-Hydra::Derivatives::Video::Processor.config.webm.codec = '-vcodec libvpx -acodec libvorbis'
-Hydra::Derivatives::Video::Processor.config.mkv.codec = '-vcodec ffv1'
-Hydra::Derivatives::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
+Hydra::Derivatives::Processors::Video::Processor.config.mpeg4.codec = '-vcodec libx264 -acodec libfdk_aac'
+Hydra::Derivatives::Processors::Video::Processor.config.webm.codec = '-vcodec libvpx -acodec libvorbis'
+Hydra::Derivatives::Processors::Video::Processor.config.mkv.codec = '-vcodec ffv1'
+Hydra::Derivatives::Processors::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
 ```
 
 ### Additional Directives
