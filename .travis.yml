@@ -1,6 +1,7 @@
 language: ruby
 cache: bundler
 sudo: false
+before_install: gem install rainbow
 rvm:
   - 2.2.5
   - 2.3.1
