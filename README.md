@@ -103,7 +103,7 @@ Just add `gem 'hydra-derivatives'` to your Gemfile.
 
 ## Dependencies
 
-* [FITS](http://fitstool.org/) - 0.8.x (0.8.5 is known to be good)
+* [FITS](http://fitstool.org/) - 1.0.x (1.0.5 is known to be good)
 * [FFMpeg](http://www.ffmpeg.org/)
 * [LibreOffice](https://www.libreoffice.org/) (openoffice.org-headless on Ubuntu/Debian to avoid "_X11 error: Can't open display:_")
 * [ImageMagick](http://www.imagemagick.org/)
@@ -115,7 +115,7 @@ For example:
 
 ```bash
 # in .bash_profile
-export PATH=${PATH}:/Users/justin/workspace/fits-0.8.5:/Applications/LibreOffice.app/Contents/MacOS
+export PATH=${PATH}:/Users/justin/workspace/fits-1.0.5:/Applications/LibreOffice.app/Contents/MacOS
 ```
 
 Alternatively, you can configure their paths:
