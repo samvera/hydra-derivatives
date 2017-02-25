@@ -1,8 +1,13 @@
 language: ruby
 cache: bundler
 sudo: false
+before_install:
+  - gem update --system
+  - gem install bundler
 rvm:
   - 2.2.5
+  - 2.3.1
+  - 2.4.0
 env:
   global:
     - NOKOGIRI_USE_SYSTEM_LIBRARIES=true
