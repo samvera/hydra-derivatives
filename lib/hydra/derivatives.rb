@@ -26,6 +26,7 @@ module Hydra
     autoload :Logger
     autoload :TempfileService
     autoload :IoDecorator
+    autoload :AudioEncoder
 
     autoload_under 'services' do
       autoload :RetrieveSourceFileService
