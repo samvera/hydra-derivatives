@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Hydra::Derivatives::AudioDerivatives do
   describe ".create" do
     let(:filename) { 'spec/fixtures/piano_note.wav' }
-    context "with a filename", unless: in_travis? do
+    context "with a filename", requires_ffmpeg: true do
       before do
         class LocalFileService
           def self.call(file_name, _options, &_block)

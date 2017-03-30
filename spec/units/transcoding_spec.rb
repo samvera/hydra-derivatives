@@ -100,7 +100,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached RAW image", unless: in_travis? do
+  describe "with an attached RAW image", requires_imagemagick: true do
     let(:filename) { File.expand_path('../../fixtures/test.dng', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -123,7 +123,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached pdf", unless: in_travis? do
+  describe "with an attached pdf", requires_imagemagick: true do
     let(:filename) { File.expand_path('../../fixtures/test.pdf', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -145,7 +145,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached audio", unless: in_travis? do
+  describe "with an attached audio", requires_ffmpeg: true do
     let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -165,7 +165,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "when the source datastrem has an unknown mime_type", unless: in_travis? do
+  describe "when the source datastrem has an unknown mime_type", requires_ffmpeg: true do
     let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -185,7 +185,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached video", unless: in_travis? do
+  describe "with an attached video", requires_ffmpeg: true do
     let(:filename) { File.expand_path('../../fixtures/countdown.avi', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -220,7 +220,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached Powerpoint", unless: in_travis? do
+  describe "with an attached Powerpoint", requires_libreoffice: true do
     let(:filename) { File.expand_path('../../fixtures/FlashPix.ppt', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -241,7 +241,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached rich text format", unless: in_travis? do
+  describe "with an attached rich text format", requires_libreoffice: true do
     let(:filename) { File.expand_path('../../fixtures/sample.rtf', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
@@ -263,7 +263,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached word doc format", unless: in_travis? do
+  describe "with an attached word doc format", requires_libreoffice: true do
     let(:filename)   { File.expand_path('../../fixtures/test.doc', __FILE__) }
     let(:attachment) { File.open(filename) }
 
@@ -287,7 +287,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached excel format", unless: in_travis? do
+  describe "with an attached excel format", requires_libreoffice: true do
     let(:filename)   { File.expand_path('../../fixtures/test.xls', __FILE__) }
     let(:attachment) { File.open(filename) }
 
@@ -311,7 +311,7 @@ describe "Transcoding" do
     end
   end
 
-  describe "with an attached tiff", unless: in_travis? do
+  describe "with an attached tiff", requires_kdu_compress: true do
     let(:filename) { File.expand_path('../../fixtures/test.tif', __FILE__) }
     let(:attachment) { File.open(filename) }
 

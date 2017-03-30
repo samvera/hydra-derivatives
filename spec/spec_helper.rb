@@ -22,7 +22,3 @@ MIME::Types.add(dng_format)
 def fixture_path
   File.expand_path("../fixtures", __FILE__)
 end
-
-def in_travis?
-  !ENV['TRAVIS'].nil? && ENV['TRAVIS'] == 'true'
-end

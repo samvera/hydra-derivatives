@@ -111,7 +111,7 @@ describe Hydra::Derivatives::Processors::Image do
       end
     end
 
-    context "when running the complete command", unless: in_travis? do
+    context "when running the complete command", requires_imagemagick: true do
       let(:file_name) { File.join(fixture_path, "test.tif") }
       it "converts the image" do
         expect(Hydra::Derivatives::PersistBasicContainedOutputFileService).to receive(:call).with(kind_of(StringIO), directives)
