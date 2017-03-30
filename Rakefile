@@ -19,7 +19,9 @@ namespace :derivatives do
     task.fail_on_error = true
   end
 
-  RSpec::Core::RakeTask.new(:rspec)
+  RSpec::Core::RakeTask.new(:rspec) do |task|
+    task.rspec_opts = "--tag ~requires_imagemagick --tag ~requires_ffmpeg --tag ~requires_libreoffice --tag ~requires_kdu_compress" if ENV['TRAVIS']
+  end
 
   desc 'Start up Solr & Fedora and run tests'
   task :spec do
