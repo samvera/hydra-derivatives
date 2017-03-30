@@ -32,7 +32,8 @@ module Hydra
       end
 
       def enable_ffmpeg
-        @enable_ffmpeg ||= true
+        return @enable_ffmpeg unless @enable_ffmpeg.nil?
+        @enable_ffmpeg = true
       end
 
       def kdu_compress_path

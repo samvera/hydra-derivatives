@@ -3,6 +3,11 @@ require 'spec_helper'
 describe "the configuration" do
   subject { Hydra::Derivatives }
 
+  before do
+    # It's not always /tmp; it depends on OS and ENV vars
+    allow(Dir).to receive(:tmpdir).and_return('/tmp')
+  end
+
   it "has some configuration defaults" do
     expect(subject.ffmpeg_path).to eq('ffmpeg')
     expect(subject.enable_ffmpeg).to be true
@@ -20,6 +25,9 @@ describe "the configuration" do
 
     subject.kdu_compress_path = '/opt/local/bin/kdu_compress'
     expect(subject.kdu_compress_path).to eq('/opt/local/bin/kdu_compress')
+
+    subject.enable_ffmpeg = false
+    expect(subject.enable_ffmpeg).to be false
   end
 
   it "lets you set a custom output file service" do
