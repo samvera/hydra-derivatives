@@ -31,6 +31,9 @@ describe Hydra::Derivatives::Processors::Jpeg2kImage do
       @sample_cfg = YAML.load_file(File.expand_path('../../fixtures/jpeg2k_config.yml', __FILE__))['test']
       Hydra::Derivatives.kdu_compress_recipes = @sample_cfg['jp2_recipes']
     end
+    after(:all) do
+      Hydra::Derivatives.reset_config!
+    end
 
     it "can get the recipe from a config file" do
       args = { recipe: :myrecipe }
