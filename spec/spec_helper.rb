@@ -1,4 +1,13 @@
 ENV['environment'] ||= 'test'
+
+require 'simplecov'
+require 'coveralls'
+SimpleCov.formatter = Coveralls::SimpleCov::Formatter
+SimpleCov.start do
+  add_filter '/spec'
+end
+Coveralls.wear!
+
 # - RSpec adds ./lib to the $LOAD_PATH
 require 'hydra/derivatives'
 # Resque.inline = Rails.env.test?
