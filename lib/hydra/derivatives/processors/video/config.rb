@@ -19,7 +19,7 @@ module Hydra::Derivatives::Processors::Video
     end
 
     def mpeg4
-      @mpeg4 ||= CodecConfig.new('-vcodec libx264 -acodec libfdk_aac')
+      @mpeg4 ||= CodecConfig.new('-vcodec libx264 -acodec aac')
     end
 
     def webm
