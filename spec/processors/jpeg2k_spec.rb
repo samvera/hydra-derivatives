@@ -61,14 +61,13 @@ describe Hydra::Derivatives::Processors::Jpeg2kImage do
     it "executes the external utility" do
       expect(described_class).to receive(:execute) { 0 }
       described_class.encode('infile', 'recipe', 'outfile')
-      # expect(Hydra::Derivatives::Processors::ShellBasedProcessor).to have_received(:execute)
     end
   end
 
   describe "#tmp_file" do
     it "returns a temp file with the correct extension" do
-      f = described_class.tmp_file('test')
-      expect(f).to match(/sufia.*test$/)
+      f = described_class.tmp_file('.test')
+      expect(f).to end_with('.test')
     end
   end
 
