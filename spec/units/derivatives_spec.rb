@@ -31,8 +31,7 @@ describe Hydra::Derivatives do
     end
   end
 
-  [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path,
-   :kdu_compress_recipes, :enable_ffmpeg, :source_file_service, :output_file_service].each do |method|
+  Hydra::Derivatives::CONFIG_METHODS.each do |method|
     describe method.to_s do
       it 'returns the config value' do
         expect(subject.send(method)).to eq subject.config.send(method)
@@ -46,7 +45,7 @@ describe Hydra::Derivatives do
   end
 
   describe 'reset_config!' do
-    it "lets you reset the configuration" do
+    it "resets the configuration" do
       subject.ffmpeg_path = '/usr/local/ffmpeg-1.0/bin/ffmpeg'
       subject.reset_config!
       expect(subject.ffmpeg_path).to eq('ffmpeg')
