@@ -7,3 +7,4 @@ pkg/
 .ruby-gemset
 fcrepo4-data/
 fcrepo4-test-data/
+coverage/

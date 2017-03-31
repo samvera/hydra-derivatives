@@ -58,10 +58,10 @@ describe "Transcoding" do
         when 'image/tiff'
           Jpeg2kImageDerivatives.create(self, source: :original_file,
                                               outputs: [
-                                                { label: :resized,       recipe: :default, processor: 'jpeg2k_image', resize: "600x600>", url: "#{uri}/resized" },
-                                                { label: :config_lookup, recipe: :default, processor: 'jpeg2k_image',                     url: "#{uri}/config_lookup" },
-                                                { label: :string_recipe, recipe: '-quiet', processor: 'jpeg2k_image',                     url: "#{uri}/string_recipe" },
-                                                { label: :diy,                             processor: 'jpeg2k_image',                     url: "#{uri}/original_file_diy" }])
+                                                { label: :resized,       format: 'jp2', recipe: :default, processor: 'jpeg2k_image', resize: "600x600>", url: "#{uri}/resized" },
+                                                { label: :config_lookup, format: 'jp2', recipe: :default, processor: 'jpeg2k_image', url: "#{uri}/config_lookup" },
+                                                { label: :string_recipe, format: 'jp2', recipe: '-jp2_space sRGB', processor: 'jpeg2k_image', url: "#{uri}/string_recipe" },
+                                                { label: :diy,           format: 'jp2', processor: 'jpeg2k_image', url: "#{uri}/original_file_diy" }])
         when 'image/x-adobe-dng'
           ImageDerivatives.create(self, source: :original_file,
                                         outputs: [
@@ -318,6 +318,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'image/tiff').tap do |t|
         t.original_file.content = attachment
+        t.original_file.mime_type = 'image/tiff'
         t.save
       end
     end

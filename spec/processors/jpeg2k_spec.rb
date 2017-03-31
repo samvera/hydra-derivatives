@@ -3,6 +3,8 @@ require 'yaml'
 
 describe Hydra::Derivatives::Processors::Jpeg2kImage do
   let(:object) { ActiveFedora::Base.new }
+  let(:filename) { File.expand_path('../../fixtures/test.tif', __FILE__) }
+  let(:image) { MiniMagick::Image.open(filename) }
 
   describe "#calculate_recipe" do
     it "calculates the number of levels from a size" do
@@ -52,6 +54,26 @@ describe Hydra::Derivatives::Processors::Jpeg2kImage do
       args = {}
       r = described_class.kdu_compress_recipe(args, 'grey', 7200)
       expect(r).to eq(described_class.calculate_recipe(args, 'grey', 7200))
+    end
+  end
+
+  describe "#encode" do
+    it "executes the external utility" do
+      expect(described_class).to receive(:execute) { 0 }
+      described_class.encode('infile', 'recipe', 'outfile')
+    end
+  end
+
+  describe "#tmp_file" do
+    it "returns a temp file with the correct extension" do
+      f = described_class.tmp_file('.test')
+      expect(f).to end_with('.test')
+    end
+  end
+
+  describe "long_dim" do
+    it "returns the image's largest dimension" do
+      expect(described_class.long_dim(image)).to eq(386)
     end
   end
 end
