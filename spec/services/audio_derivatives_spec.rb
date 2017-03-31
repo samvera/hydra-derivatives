@@ -3,6 +3,8 @@ require 'spec_helper'
 describe Hydra::Derivatives::AudioDerivatives do
   describe ".create" do
     let(:filename) { 'spec/fixtures/piano_note.wav' }
+    let(:af_path) { ActiveFedora.fedora.host + ActiveFedora.fedora.base_path }
+
     context "with a filename", requires_ffmpeg: true do
       before do
         class LocalFileService
@@ -21,8 +23,8 @@ describe Hydra::Derivatives::AudioDerivatives do
 
       it "creates derivatives" do
         described_class.create(filename,
-                               outputs: [{ label: 'mp3', format: 'mp3', url: 'http://localhost:8983/fedora/rest/dev/1234/mp3' },
-                                         { label: 'ogg', format: 'ogg', url: 'http://localhost:8983/fedora/rest/dev/1234/ogg' }])
+                               outputs: [{ label: 'mp3', format: 'mp3', url: "#{af_path}/1234/mp3" },
+                                         { label: 'ogg', format: 'ogg', url: "#{af_path}/1234/ogg" }])
       end
     end
 
