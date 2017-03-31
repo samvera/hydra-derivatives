@@ -73,20 +73,18 @@ module Hydra::Derivatives::Processors
         rates.map(&:to_s).join(',')
       end
 
-      protected
+      def encode(path, recipe, output_file)
+        kdu_compress = Hydra::Derivatives.kdu_compress_path
+        execute "#{kdu_compress} -quiet -i #{path} -o #{output_file} #{recipe}"
+      end
 
-        def encode(path, recipe, output_file)
-          kdu_compress = Hydra::Derivatives.kdu_compress_path
-          execute "#{kdu_compress} -quiet -i #{path} -o #{output_file} #{recipe}"
-        end
+      def tmp_file(ext)
+        Dir::Tmpname.create(['sufia', ext], Hydra::Derivatives.temp_file_base) {}
+      end
 
-        def tmp_file(ext)
-          Dir::Tmpname.create(['sufia', ext], Hydra::Derivatives.temp_file_base) {}
-        end
-
-        def long_dim(image)
-          [image[:width], image[:height]].max
-        end
+      def long_dim(image)
+        [image[:width], image[:height]].max
+      end
     end
 
     def process
