@@ -30,4 +30,29 @@ describe Hydra::Derivatives do
       end
     end
   end
+
+  Hydra::Derivatives::CONFIG_METHODS.each do |method|
+    describe method.to_s do
+      it 'returns the config value' do
+        expect(subject.send(method)).to eq subject.config.send(method)
+      end
+    end
+    describe "#{method}=" do
+      it 'stores config changes' do
+        expect { subject.send("#{method}=", "new_value") }.to change { subject.config.send(method) }.from(subject.config.send(method)).to("new_value")
+      end
+    end
+  end
+
+  describe 'reset_config!' do
+    it "resets the configuration" do
+      subject.ffmpeg_path = '/usr/local/ffmpeg-1.0/bin/ffmpeg'
+      subject.reset_config!
+      expect(subject.ffmpeg_path).to eq('ffmpeg')
+
+      subject.kdu_compress_path = '/usr/local/bin/kdu_compress'
+      subject.reset_config!
+      expect(subject.kdu_compress_path).to eq('kdu_compress')
+    end
+  end
 end
