@@ -13,12 +13,12 @@ describe "Transcoding" do
           PdfDerivatives.create(self, source: :original_file,
                                       outputs: [{ label: :thumb, size: "100x100>", url: "#{uri}/original_file_thumb" }])
           FullTextExtract.create(self, source: :original_file, outputs: [{ url: "#{uri}/fulltext" }])
-        when 'audio/wav'
+        when 'audio/x-wav'
           AudioDerivatives.create(self, source: :original_file,
                                         outputs: [
-                                          { label: :mp3, format: 'mp3', url: "#{uri}/mp3" },
-                                          { label: :ogg, format: 'ogg', url: "#{uri}/ogg" }])
-        when 'video/avi'
+                                          { label: :mp3, format: 'mp3', url: "#{uri}/original_file_mp3" },
+                                          { label: :ogg, format: 'ogg', url: "#{uri}/original_file_ogg" }])
+        when 'video/x-msvideo'
           VideoDerivatives.create(self, source: :original_file,
                                         outputs: [
                                           { label: :mp4,       format: 'mp4',  url: "#{uri}/original_file_mp4" },
@@ -40,7 +40,7 @@ describe "Transcoding" do
         when 'text/rtf'
           DocumentDerivatives.create(self, source: :original_file,
                                            outputs: [
-                                             { label: :preservation, format: 'odf', url: "#{uri}/original_file_preservation" },
+                                             { label: :preservation, format: 'odt', url: "#{uri}/original_file_preservation" },
                                              { label: :access,       format: 'pdf', url: "#{uri}/original_file_access" },
                                              { label: :thumnail,     format: 'jpg', url: "#{uri}/original_file_thumbnail" }])
         when 'application/msword'
@@ -52,7 +52,7 @@ describe "Transcoding" do
         when 'application/vnd.ms-excel'
           DocumentDerivatives.create(self, source: :original_file,
                                            outputs: [
-                                             { label: :preservation, format: 'xslx', url: "#{uri}/original_file_preservation" },
+                                             { label: :preservation, format: 'xlsx', url: "#{uri}/original_file_preservation" },
                                              { label: :access,       format: 'pdf',  url: "#{uri}/original_file_access" },
                                              { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }])
         when 'image/tiff'
@@ -82,6 +82,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'image/png') do |f|
         f.original_file.content = attachment
+        f.original_file.mime_type = f.mime_type_from_fits
         f.save!
       end
     end
@@ -106,7 +107,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'image/x-adobe-dng') do |f|
         f.original_file.content = attachment
-        f.original_file.mime_type = 'image/x-adobe-dng'
+        f.original_file.mime_type = f.mime_type_from_fits
         f.save!
       end
     end
@@ -129,7 +130,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'application/pdf') do |t|
         t.original_file.content = attachment
-        t.original_file.mime_type = 'application/pdf'
+        t.original_file.mime_type = t.mime_type_from_fits
         t.save
       end
     end
@@ -149,8 +150,9 @@ describe "Transcoding" do
     let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
-      GenericFile.new(mime_type_from_fits: 'audio/wav').tap do |t|
+      GenericFile.new(mime_type_from_fits: 'audio/x-wav').tap do |t|
         t.original_file.content = attachment
+        t.original_file.mime_type = t.mime_type_from_fits
         t.save
       end
     end
@@ -169,7 +171,7 @@ describe "Transcoding" do
     let(:filename) { File.expand_path('../../fixtures/piano_note.wav', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
-      GenericFile.new(mime_type_from_fits: 'audio/wav').tap do |t|
+      GenericFile.new(mime_type_from_fits: 'audio/x-wav').tap do |t|
         t.original_file.content = attachment
         t.original_file.mime_type = 'audio/vnd.wav'
         t.save
@@ -189,9 +191,10 @@ describe "Transcoding" do
     let(:filename) { File.expand_path('../../fixtures/countdown.avi', __FILE__) }
     let(:attachment) { File.open(filename) }
     let(:file) do
-      GenericFile.create(mime_type_from_fits: 'video/avi') do |t|
+      GenericFile.create(mime_type_from_fits: 'video/x-msvideo') do |t|
         t.original_file.content = attachment
-        t.original_file.mime_type = 'video/msvideo'
+        t.original_file.mime_type = t.mime_type_from_fits
+        t.save
       end
     end
 
@@ -226,6 +229,8 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.create(mime_type_from_fits: 'application/vnd.ms-powerpoint') do |t|
         t.original_file.content = attachment
+        t.original_file.mime_type = t.mime_type_from_fits
+        t.save
       end
     end
 
@@ -247,6 +252,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'text/rtf').tap do |t|
         t.original_file.content = attachment
+        t.original_file.mime_type = t.mime_type_from_fits
         t.save
       end
     end
@@ -270,7 +276,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'application/msword').tap do |t|
         t.original_file.content = attachment
-        t.original_file.mime_type = 'application/msword'
+        t.original_file.mime_type = t.mime_type_from_fits
         t.save
       end
     end
@@ -294,7 +300,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'application/vnd.ms-excel').tap do |t|
         t.original_file.content = attachment
-        t.original_file.mime_type = 'application/vnd.ms-excel'
+        t.original_file.mime_type = t.mime_type_from_fits
         t.save
       end
     end
@@ -318,7 +324,7 @@ describe "Transcoding" do
     let(:file) do
       GenericFile.new(mime_type_from_fits: 'image/tiff').tap do |t|
         t.original_file.content = attachment
-        t.original_file.mime_type = 'image/tiff'
+        t.original_file.mime_type = t.mime_type_from_fits
         t.save
       end
     end
