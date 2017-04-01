@@ -53,6 +53,10 @@ describe Hydra::Derivatives do
       subject.kdu_compress_path = '/usr/local/bin/kdu_compress'
       subject.reset_config!
       expect(subject.kdu_compress_path).to eq('kdu_compress')
+
+      subject.active_encode_poll_time = 2
+      subject.reset_config!
+      expect(subject.active_encode_poll_time).to eq 10
     end
   end
 end

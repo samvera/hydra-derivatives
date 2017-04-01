@@ -9,6 +9,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/internal/bin/*'
     - 'spec/internal/db/schema.rb'
+    - 'spec/processors/active_encode_spec.rb'
 
 Metrics/LineLength:
   Enabled: false
@@ -39,6 +40,13 @@ Style/IndentationConsistency:
 Style/PredicateName:
   Exclude:
     - spec/services/tempfile_service_spec.rb
+
+Style/RaiseArgs:
+  Enabled: false
+
+Style/HashSyntax:
+  Exclude:
+    - spec/processors/active_encode_spec.rb
 
 RSpec/ExampleWording:
   CustomTransform:
