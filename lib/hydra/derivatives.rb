@@ -11,6 +11,7 @@ module Hydra
     # Runners take a single input and produce one or more outputs
     # The runner typically accomplishes this by using one or more processors
     autoload_under 'runners' do
+      autoload :ActiveEncodeDerivatives
       autoload :AudioDerivatives
       autoload :DocumentDerivatives
       autoload :FullTextExtract
@@ -34,6 +35,8 @@ module Hydra
       autoload :PersistBasicContainedOutputFileService
       autoload :TempfileService
       autoload :MimeTypeService
+      autoload :NullOutputFileService
+      autoload :UriSourceFileService
     end
 
     # Raised if the timout elapses

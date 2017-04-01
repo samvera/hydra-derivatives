@@ -6,6 +6,7 @@ module Hydra::Derivatives
       autoload :Processor
     end
 
+    autoload :ActiveEncode
     autoload :Audio
     autoload :Document
     autoload :Ffmpeg
