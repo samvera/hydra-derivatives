@@ -19,7 +19,8 @@ module Hydra::Derivatives::Processors::Video
     end
 
     def mpeg4
-      @mpeg4 ||= CodecConfig.new('-vcodec libx264 -acodec libfdk_aac')
+      audio_encoder = Hydra::Derivatives::AudioEncoder.new
+      @mpeg4 ||= CodecConfig.new("-vcodec libx264 -acodec #{audio_encoder.audio_encoder}")
     end
 
     def webm
