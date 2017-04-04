@@ -65,8 +65,8 @@ describe "Transcoding" do
         when 'image/x-adobe-dng'
           ImageDerivatives.create(self, source: :original_file,
                                         outputs: [
-                                          { label: :access, size: "300x300>", format: 'jpg', processor: :raw_image },
-                                          { label: :thumb,  size: "100x100>", format: 'jpg', processor: :raw_image }])
+                                          { label: :access, size: "300x300>", format: 'jpg', processor: :raw_image, url: "#{uri}/original_file_access" },
+                                          { label: :thumb,  size: "100x100>", format: 'jpg', processor: :raw_image, url: "#{uri}/original_file_thumb" }])
         end
       end
     end
@@ -113,14 +113,15 @@ describe "Transcoding" do
     end
 
     it "transcodes" do
-      expect(file.attached_files.key?('access')).to be_falsey
-      expect(file.attached_files.key?('thumb')).to be_falsey
+      expect(file.attached_files.key?('original_file_access')).to be_falsey
+      expect(file.attached_files.key?('original_file_thumb')).to be_falsey
 
       file.create_derivatives(filename)
-      expect(file.attached_files['access']).to have_content
-      expect(file.attached_files['access'].mime_type).to eq('image/jpeg')
-      expect(file.attached_files['thumb']).to have_content
-      expect(file.attached_files['thumb'].mime_type).to eq('image/jpeg')
+      file.reload
+      expect(file.attached_files['original_file_access']).to have_content
+      expect(file.attached_files['original_file_access'].mime_type).to eq('image/jpeg')
+      expect(file.attached_files['original_file_thumb']).to have_content
+      expect(file.attached_files['original_file_thumb'].mime_type).to eq('image/jpeg')
     end
   end
 
