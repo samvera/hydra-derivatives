@@ -40,6 +40,9 @@ Style/PredicateName:
   Exclude:
     - spec/services/tempfile_service_spec.rb
 
+Style/RaiseArgs:
+  Enabled: false
+
 RSpec/ExampleWording:
   CustomTransform:
     be: is

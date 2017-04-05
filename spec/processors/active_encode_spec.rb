@@ -1,10 +1,7 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives::Processors::ActiveEncode do
-
-#  before do
-#    ActiveEncode::Base.engine_adapter = :test
-#  end
+  # before { # ActiveEncode::Base.engine_adapter = :test }
 
   let(:file_path) { File.join(fixture_path, 'videoshort.mp4') }
   let(:directives) { [] }
@@ -28,9 +25,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       it 'raises an exception' do
-        expect{ subject }.to raise_error('Encoding failed: error 1 ; error 2')
+        expect { subject }.to raise_error('Encoding failed: error 1 ; error 2')
       end
     end
   end
-
 end
