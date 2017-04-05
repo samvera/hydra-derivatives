@@ -20,6 +20,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       let(:state) { :failed }
       let(:errors) { ['error 1', 'error 2'] }
 
+      # Mock out the actual encoding, just pretend that the
+      # encode returned a failed status.
       before do
         allow(encode_double).to receive(:failed?).and_return(true)
         allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
