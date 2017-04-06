@@ -111,6 +111,7 @@ Just add `gem 'hydra-derivatives'` to your Gemfile.
 * [FITS](http://fitstool.org/) - 1.0.x (1.0.5 is known to be good)
 * [FFMpeg](http://www.ffmpeg.org/)
 * [LibreOffice](https://www.libreoffice.org/) (openoffice.org-headless on Ubuntu/Debian to avoid "_X11 error: Can't open display:_")
+* [GhostScript](https://www.ghostscript.com/)
 * [ImageMagick](http://www.imagemagick.org/)
 * Kakadu's [kdu_compress](http://www.kakadusoftware.com/) (optional)
 * [ufraw](http://ufraw.sourceforge.net/)
