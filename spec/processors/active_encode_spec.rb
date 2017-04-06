@@ -33,7 +33,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       it 'raises an exception' do
-        expect { subject }.to raise_error('Encoding failed: error 1 ; error 2')
+        expect { subject }.to raise_error("Encoding failed for #{file_path}: error 1 ; error 2")
       end
     end
 
@@ -46,7 +46,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       it 'raises an exception' do
-        expect { subject }.to raise_error("Encoding cancelled: #{file_path}")
+        expect { subject }.to raise_error("Encoding cancelled for #{file_path}")
       end
     end
   end
