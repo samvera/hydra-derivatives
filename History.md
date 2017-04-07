@@ -1,3 +1,7 @@
+## 3.2.2 (2017-04-07)
+* 2017-04-05: Raise an exception when encoding fails [Valerie Maher] * 2017-04-03: Add in service check to determine which libraries ffmpeg has [Jame Little]
+* 2017-04-01: Fix broken rspec tests [Chris Colvard]
+
 ## 3.2.1 (2016-11-21)
 2016-11-17: Default to first page for pdf images [Adam Wead]
 
