@@ -5,8 +5,11 @@ describe "the configuration" do
 
   before do
     # It's not always /tmp; it depends on OS and ENV vars
+    subject.temp_file_base = nil
     allow(Dir).to receive(:tmpdir).and_return('/tmp')
   end
+
+  after { subject.temp_file_base = nil }
 
   it "has some configuration defaults" do
     expect(subject.ffmpeg_path).to eq('ffmpeg')
