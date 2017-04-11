@@ -15,10 +15,12 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     # encode finished and returned a certain status.
     let(:failed_status) { false }
     let(:cancelled_status) { false }
+    let(:completed_status) { false }
     let(:errors) { [] }
     let(:encode_double) do
       double('encode double',
              reload: self, state: state, errors: errors,
+             :completed? => completed_status,
              :failed? => failed_status,
              :cancelled? => cancelled_status)
     end
@@ -33,7 +35,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       it 'raises an exception' do
-        expect { subject }.to raise_error('Encoding failed: error 1 ; error 2')
+        expect { subject }.to raise_error(Hydra::Derivatives::Processors::ActiveEncodeError, "ActiveEncode status was \"failed\" for #{file_path}: error 1 ; error 2")
       end
     end
 
@@ -46,7 +48,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       it 'raises an exception' do
-        expect { subject }.to raise_error("Encoding cancelled: #{file_path}")
+        expect { subject }.to raise_error(Hydra::Derivatives::Processors::ActiveEncodeError, "ActiveEncode status was \"cancelled\" for #{file_path}")
       end
     end
   end
