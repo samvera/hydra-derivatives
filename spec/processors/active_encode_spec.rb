@@ -11,21 +11,42 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
   describe '#process' do
     subject { processor.process }
 
-    let(:encode_double) { double('encode double', reload: self, state: state, errors: errors) }
+    # Mock out the actual encoding, just pretend that the
+    # encode finished and returned a certain status.
+    let(:failed_status) { false }
+    let(:cancelled_status) { false }
+    let(:errors) { [] }
+    let(:encode_double) do
+      double('encode double',
+             reload: self, state: state, errors: errors,
+             :failed? => failed_status,
+             :cancelled? => cancelled_status)
+    end
 
     context 'when the encoding failed' do
       let(:state) { :failed }
+      let(:failed_status) { true }
       let(:errors) { ['error 1', 'error 2'] }
 
-      # Mock out the actual encoding, just pretend that the
-      # encode returned a failed status.
       before do
-        allow(encode_double).to receive(:failed?).and_return(true)
         allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
       end
 
       it 'raises an exception' do
         expect { subject }.to raise_error('Encoding failed: error 1 ; error 2')
+      end
+    end
+
+    context 'when the encoding was cancelled' do
+      let(:state) { :cancelled }
+      let(:cancelled_status) { true }
+
+      before do
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
+      end
+
+      it 'raises an exception' do
+        expect { subject }.to raise_error("Encoding cancelled: #{file_path}")
       end
     end
   end

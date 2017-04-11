@@ -43,6 +43,10 @@ Style/PredicateName:
 Style/RaiseArgs:
   Enabled: false
 
+Style/HashSyntax:
+  Exclude:
+    - spec/processors/active_encode_spec.rb
+
 RSpec/ExampleWording:
   CustomTransform:
     be: is
