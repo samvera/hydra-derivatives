@@ -5,7 +5,7 @@ module Hydra::Derivatives
     # @param [Hash] options
     # @option options [Symbol] :source a method that can be called on the object to retrieve the source file
     # @yield [Tempfile] a temporary source file that has a lifetime of the block
-    def self.call(object, options, &block)
+    def self.call(object, options, &_block)
       source_name = options.fetch(:source)
       yield(object.send(source_name).uri.to_s)
     end
