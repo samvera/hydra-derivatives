@@ -18,11 +18,13 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     let(:completed_status) { false }
     let(:errors) { [] }
     let(:encode_double) do
-      double('encode double',
-             reload: self, state: state, errors: errors,
-             :completed? => completed_status,
-             :failed? => failed_status,
-             :cancelled? => cancelled_status)
+      enc = double('encode', state: state, errors: errors,
+                   'running?': false,
+                   'completed?': completed_status,
+                   'failed?': failed_status,
+                   'cancelled?': cancelled_status)
+      allow(enc).to receive(:reload).and_return(enc)
+      enc
     end
 
     context 'when the encoding failed' do
@@ -31,6 +33,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       let(:errors) { ['error 1', 'error 2'] }
 
       before do
+        # Don't really open or encode the file during specs
+        allow(File).to receive(:open).with(file_path)
         allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
       end
 
@@ -44,6 +48,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       let(:cancelled_status) { true }
 
       before do
+        # Don't really open or encode the file during specs
+        allow(File).to receive(:open).with(file_path)
         allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
       end
 

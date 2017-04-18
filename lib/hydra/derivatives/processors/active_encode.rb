@@ -13,8 +13,13 @@ module Hydra::Derivatives::Processors
     def process
       encode = ::ActiveEncode::Base.create(source_path, directives)
 
+      # TODO: Instead of hard-coding sleep time, make a config
+
       # Wait until the encoding job is finished
-      # while(encode.reload.running?) { sleep 10 }
+      sleep 10 while encode.reload.running?
+
+      # TODO: Handle timeout
+      # https://github.com/projecthydra/hydra-derivatives#processing-timeouts
 
       raise ActiveEncodeError.new(encode.state, source_path, encode.errors) unless encode.completed?
 

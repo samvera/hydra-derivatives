@@ -9,6 +9,7 @@ AllCops:
     - 'vendor/**/*'
     - 'spec/internal/bin/*'
     - 'spec/internal/db/schema.rb'
+    - 'spec/processors/active_encode_spec.rb'
 
 Metrics/LineLength:
   Enabled: false
