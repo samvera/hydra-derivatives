@@ -16,10 +16,8 @@ module Hydra::Derivatives::Processors
       # override it with a sub-class of AE::Base.
       encode = ::ActiveEncode::Base.create(source_path, directives)
 
-      # TODO: Instead of hard-coding sleep time, make a config
-
       # Wait until the encoding job is finished
-      sleep 10 while encode.reload.running?
+      sleep Hydra::Derivatives.active_encode_poll_time while encode.reload.running?
 
       # TODO: Handle timeout
       # https://github.com/projecthydra/hydra-derivatives#processing-timeouts

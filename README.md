@@ -88,6 +88,13 @@ Hydra::Derivatives::Processors::Video::Processor.config.mkv.codec = '-vcodec ffv
 Hydra::Derivatives::Processors::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
 ```
 
+### Configuration for Audio/Video Processing with ActiveEncode
+
+```ruby
+# Sleep time (in seconds) to poll for status of encoding job
+Hydra::Derivatives.active_encode_poll_time = 10
+```
+
 ### Additional Directives
 
 #### Layers
