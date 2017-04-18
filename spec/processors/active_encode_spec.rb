@@ -57,5 +57,26 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
         expect { subject }.to raise_error(Hydra::Derivatives::Processors::ActiveEncodeError, "ActiveEncode status was \"cancelled\" for #{file_path}")
       end
     end
+
+    context 'when the timeout is set' do
+      before do
+        processor.timeout = 0.01
+        allow(processor).to receive(:create_encode) { sleep 0.1 }
+      end
+
+      it 'raises a timeout exception' do
+        expect { processor.process }.to raise_error Hydra::Derivatives::TimeoutError
+      end
+    end
+
+    context 'when the timeout is not set' do
+      before { processor.timeout = nil }
+
+      it 'processes the encoding without a timeout' do
+        expect(processor).to receive(:process_with_timeout).never
+        expect(processor).to receive(:create_encode).once
+        processor.process
+      end
+    end
   end
 end

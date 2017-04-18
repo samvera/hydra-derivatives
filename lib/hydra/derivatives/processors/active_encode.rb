@@ -10,7 +10,19 @@ module Hydra::Derivatives::Processors
   end
 
   class ActiveEncode < Processor
+    class_attribute :timeout
+
     def process
+      timeout ? process_with_timeout : create_encode
+    end
+
+    def process_with_timeout
+      Timeout.timeout(timeout) { create_encode }
+    rescue Timeout::Error
+      raise Hydra::Derivatives::TimeoutError, "Unable to process ActiveEncode derivative\nThe command took longer than #{timeout} seconds to execute"
+    end
+
+    def create_encode
       # TODO: Instead of hard-coding ActiveEncode::Base,
       # pass in or configure the class so that a user can
       # override it with a sub-class of AE::Base.
@@ -18,9 +30,6 @@ module Hydra::Derivatives::Processors
 
       # Wait until the encoding job is finished
       sleep Hydra::Derivatives.active_encode_poll_time while encode.reload.running?
-
-      # TODO: Handle timeout
-      # https://github.com/projecthydra/hydra-derivatives#processing-timeouts
 
       raise ActiveEncodeError.new(encode.state, source_path, encode.errors) unless encode.completed?
 
