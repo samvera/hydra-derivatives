@@ -11,6 +11,9 @@ module Hydra::Derivatives::Processors
 
   class ActiveEncode < Processor
     def process
+      # TODO: Instead of hard-coding ActiveEncode::Base,
+      # pass in or configure the class so that a user can
+      # override it with a sub-class of AE::Base.
       encode = ::ActiveEncode::Base.create(source_path, directives)
 
       # TODO: Instead of hard-coding sleep time, make a config
