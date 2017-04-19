@@ -16,6 +16,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     let(:failed_status) { false }
     let(:cancelled_status) { false }
     let(:completed_status) { false }
+    let(:state) { :completed }
     let(:errors) { [] }
     let(:encode_double) do
       enc = double('encode', state: state, errors: errors,
@@ -61,7 +62,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     context 'when the timeout is set' do
       before do
         processor.timeout = 0.01
-        allow(processor).to receive(:create_encode) { sleep 0.1 }
+        allow(processor).to receive(:wait_for_encode) { sleep 0.1 }
       end
 
       it 'raises a timeout exception' do
@@ -73,9 +74,22 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       before { processor.timeout = nil }
 
       it 'processes the encoding without a timeout' do
-        expect(processor).to receive(:process_with_timeout).never
-        expect(processor).to receive(:create_encode).once
+        expect(processor).to receive(:wait_for_encode_with_timeout).never
+        expect(processor).to receive(:wait_for_encode).once
         processor.process
+      end
+    end
+
+    context 'when error occurs during timeout cleanup' do
+      before do
+        processor.timeout = 0.01
+        allow(processor).to receive(:wait_for_encode) { sleep 0.1 }
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
+        allow(encode_double).to receive(:cancel!).and_raise(StandardError.new)
+      end
+
+      it 'doesnt lose the timeout error' do
+        expect { processor.process }.to raise_error Hydra::Derivatives::TimeoutError
       end
     end
   end
