@@ -34,8 +34,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       let(:errors) { ['error 1', 'error 2'] }
 
       before do
-        # Don't really open or encode the file during specs
-        allow(File).to receive(:open).with(file_path)
+        # Don't really encode the file during specs
         allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
       end
 
@@ -49,8 +48,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       let(:cancelled_status) { true }
 
       before do
-        # Don't really open or encode the file during specs
-        allow(File).to receive(:open).with(file_path)
+        # Don't really encode the file during specs
         allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
       end
 
