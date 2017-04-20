@@ -64,7 +64,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       it 'raises a timeout exception' do
-        expect { processor.process }.to raise_error Hydra::Derivatives::TimeoutError
+        msg = "Unable to process ActiveEncode derivative: The command took longer than 0.01 seconds to execute. Encoding will be cancelled."
+        expect { processor.process }.to raise_error Hydra::Derivatives::TimeoutError, msg
       end
     end
 
@@ -79,15 +80,18 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     end
 
     context 'when error occurs during timeout cleanup' do
+      let(:error) { StandardError.new('some error message') }
+
       before do
         processor.timeout = 0.01
         allow(processor).to receive(:wait_for_encode) { sleep 0.1 }
         allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
-        allow(encode_double).to receive(:cancel!).and_raise(StandardError.new)
+        allow(encode_double).to receive(:cancel!).and_raise(error)
       end
 
-      it 'doesnt lose the timeout error' do
-        expect { processor.process }.to raise_error Hydra::Derivatives::TimeoutError
+      it 'doesnt lose the timeout error, but adds the new error message' do
+        msg = "Unable to process ActiveEncode derivative: The command took longer than 0.01 seconds to execute. Encoding will be cancelled. An error occurred while trying to cancel encoding: some error message"
+        expect { processor.process }.to raise_error Hydra::Derivatives::TimeoutError, msg
       end
     end
   end

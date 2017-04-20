@@ -25,7 +25,6 @@ module Hydra::Derivatives::Processors
       Timeout.timeout(timeout) { wait_for_encode(encode) }
     rescue Timeout::Error
       cleanup_after_timeout(encode)
-      raise Hydra::Derivatives::TimeoutError, "Unable to process ActiveEncode derivative\nThe command took longer than #{timeout} seconds to execute"
     end
 
     # Wait until the encoding job is finished.  If the status
@@ -38,10 +37,12 @@ module Hydra::Derivatives::Processors
     # After a timeout error, try to cancel the encoding.
     def cleanup_after_timeout(encode)
       encode.cancel!
-    rescue
-      # No-op: We're trying to cancel the encoding because we
-      # have already encountered an error.  We want to preserve
-      # that timeout error, so don't raise anything here.
+    rescue => e
+      cancel_error = e
+    ensure
+      msg = "Unable to process ActiveEncode derivative: The command took longer than #{timeout} seconds to execute. Encoding will be cancelled."
+      msg = "#{msg} An error occurred while trying to cancel encoding: #{cancel_error}" if cancel_error
+      raise Hydra::Derivatives::TimeoutError, msg
     end
   end
 end
