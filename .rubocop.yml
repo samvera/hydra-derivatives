@@ -48,10 +48,6 @@ Style/HashSyntax:
   Exclude:
     - spec/processors/active_encode_spec.rb
 
-Lint/HandleExceptions:
-  Exclude:
-    - lib/hydra/derivatives/processors/active_encode.rb
-
 RSpec/ExampleWording:
   CustomTransform:
     be: is
