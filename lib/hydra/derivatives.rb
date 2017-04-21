@@ -33,12 +33,12 @@ module Hydra
 
     autoload_under 'services' do
       autoload :RetrieveSourceFileService
+      autoload :RemoteSourceFile
       autoload :PersistOutputFileService
       autoload :PersistBasicContainedOutputFileService
       autoload :TempfileService
       autoload :MimeTypeService
       autoload :NullOutputFileService
-      autoload :UriSourceFileService
     end
 
     # Raised if the timout elapses
