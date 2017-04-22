@@ -4,8 +4,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
   # before { # ActiveEncode::Base.engine_adapter = :test }
 
   let(:file_path) { File.join(fixture_path, 'videoshort.mp4') }
-  let(:directives) { [] }
-  let(:output_file_service) { Hydra::Derivatives::NullOutputFileService }
+  let(:directives) { { url: '12345/derivative' } }
+  let(:output_file_service) { Hydra::Derivatives::PersistExternalFileOutputFileService }
   let(:processor) { described_class.new(file_path, directives, output_file_service: output_file_service) }
 
   describe '#process' do
@@ -18,8 +18,11 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     let(:completed_status) { false }
     let(:state) { :completed }
     let(:errors) { [] }
+    let(:external_url) { 'http://www.example.com/external/content' }
+    let(:output) { [{ url: external_url }] }
     let(:encode_double) do
       enc = double('encode', state: state, errors: errors,
+                   output: output,
                    'running?': false,
                    'completed?': completed_status,
                    'failed?': failed_status,
@@ -70,7 +73,11 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     end
 
     context 'when the timeout is not set' do
-      before { processor.timeout = nil }
+      before do
+        processor.timeout = nil
+        # Don't really encode the file during specs
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
+      end
 
       it 'processes the encoding without a timeout' do
         expect(processor).to receive(:wait_for_encode_with_timeout).never

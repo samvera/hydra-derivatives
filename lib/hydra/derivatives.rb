@@ -36,9 +36,9 @@ module Hydra
       autoload :RemoteSourceFile
       autoload :PersistOutputFileService
       autoload :PersistBasicContainedOutputFileService
+      autoload :PersistExternalFileOutputFileService
       autoload :TempfileService
       autoload :MimeTypeService
-      autoload :NullOutputFileService
     end
 
     # Raised if the timout elapses
