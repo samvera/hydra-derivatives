@@ -96,6 +96,9 @@ Hydra::Derivatives::Processors::Video::Processor.config.jpeg.codec = '-vcodec mj
 Hydra::Derivatives.active_encode_poll_time = 10
 ```
 
+For additional documentation on using ActiveEncode, see:
+* [Using Amazon Elastic Transcoder](doc/amazon_elastic_transcoder.md)
+
 ### Additional Directives
 
 #### Layers
