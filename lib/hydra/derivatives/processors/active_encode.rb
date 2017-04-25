@@ -18,7 +18,9 @@ module Hydra::Derivatives::Processors
     def process
       encode = ::ActiveEncode::Base.create(source_path, directives)
       timeout ? wait_for_encode_with_timeout(encode) : wait_for_encode(encode)
-      # TODO: call output_file_service with the output url
+      encode.output.each do |output|
+        output_file_service.call(output, directives)
+      end
     end
 
     def wait_for_encode_with_timeout(encode)

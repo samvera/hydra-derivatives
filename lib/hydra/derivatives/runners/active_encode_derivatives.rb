@@ -20,7 +20,7 @@ module Hydra::Derivatives
 
     # Use the output service configured for this class or default to the null output service
     def self.output_file_service
-      @output_file_service || NullOutputFileService
+      @output_file_service || PersistExternalFileOutputFileService
     end
 
     def self.processor_class
