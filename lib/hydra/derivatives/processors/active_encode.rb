@@ -11,7 +11,12 @@ module Hydra::Derivatives::Processors
 
   class ActiveEncode < Processor
     class_attribute :timeout
-    attr_writer :encode_class
+    attr_accessor :encode_class
+
+    def initialize(source_path, directives, opts = {})
+      super
+      @encode_class = opts.delete(:encode_class) || ::ActiveEncode::Base
+    end
 
     def process
       encode = encode_class.create(source_path, directives)
@@ -32,10 +37,6 @@ module Hydra::Derivatives::Processors
     def wait_for_encode(encode)
       sleep Hydra::Derivatives.active_encode_poll_time while encode.reload.running?
       raise ActiveEncodeError.new(encode.state, source_path, encode.errors) unless encode.completed?
-    end
-
-    def encode_class
-      @encode_class || Hydra::Derivatives::ActiveEncodeDerivatives.encode_class
     end
 
     # After a timeout error, try to cancel the encoding.

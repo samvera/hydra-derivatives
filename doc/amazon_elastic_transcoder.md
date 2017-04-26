@@ -100,3 +100,11 @@ video_record.source_file_name = 'sample_data.mp4'
 Hydra::Derivatives::ActiveEncodeDerivatives.create(video_record, source: :source_file_name, outputs: [low_res_video])
 ```
 
+## How to pass in a custom encode class
+
+If you don't want to use the default encode class `::ActiveEncode::Base`, you can pass in `encode_class`:
+
+```ruby
+Hydra::Derivatives::ActiveEncodeDerivatives.create(video_record, encode_class: MyCustomEncode, source: :source_file_name, outputs: [low_res_video])
+```
+

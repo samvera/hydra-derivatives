@@ -6,7 +6,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
   let(:file_path) { File.join(fixture_path, 'videoshort.mp4') }
   let(:directives) { { url: '12345/derivative' } }
   let(:output_file_service) { Hydra::Derivatives::PersistExternalFileOutputFileService }
-  let(:processor) { described_class.new(file_path, directives, output_file_service: output_file_service) }
+  let(:options) { { output_file_service: output_file_service } }
+  let(:processor) { described_class.new(file_path, directives, options) }
 
   describe '#process' do
     subject { processor.process }
@@ -32,12 +33,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     end
 
     context 'with a custom encode class' do
-      let(:completed_status) { true }
-      let(:state) { :completed }
-
       before do
         class TestEncode < ::ActiveEncode::Base; end
-        processor.encode_class = TestEncode
 
         # For this spec we don't care what happens with output,
         # so stub it out to speed up the spec.
@@ -45,6 +42,11 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       after { Object.send(:remove_const, :TestEncode) }
+
+      let(:completed_status) { true }
+      let(:state) { :completed }
+      let(:options) { { encode_class: TestEncode,
+                        output_file_service: output_file_service } }
 
       it 'uses the configured encode class' do
         expect(TestEncode).to receive(:create).and_return(encode_double)

@@ -3,14 +3,23 @@ module Hydra::Derivatives
     # @param [String, ActiveFedora::Base] object_or_filename source file name (or path), or an object that has a method that will return the file name
     # @param [Hash] options options to pass to the encoder
     # @option options [Symbol] :source a method that can be called on the object to retrieve the source file's name
+    # @option options [Symbol] :encode_class class name of the encode object (usually a subclass of ::ActiveEncode::Base)
     # @options options [Array] :outputs a list of desired outputs
     def self.create(object_or_filename, options)
+      processor_opts = processor_options(options)
       source_file(object_or_filename, options) do |file_name|
         transform_directives(options.delete(:outputs)).each do |instructions|
-          processor = processor_class.new(file_name, instructions, output_file_service: output_file_service)
+          processor = processor_class.new(file_name, instructions, processor_opts)
           processor.process
         end
       end
+    end
+
+    def self.processor_options(options)
+      opts = { output_file_service: output_file_service }
+      encode_class = options.delete(:encode_class)
+      opts = opts.merge(encode_class: encode_class) if encode_class
+      opts
     end
 
     # Use the source service configured for this class or default to the remote file service
@@ -25,14 +34,6 @@ module Hydra::Derivatives
 
     def self.processor_class
       Processors::ActiveEncode
-    end
-
-    def self.encode_class
-      @encode_class || ::ActiveEncode::Base
-    end
-
-    class << self
-      attr_writer :encode_class
     end
   end
 end

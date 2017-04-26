@@ -98,9 +98,6 @@ ActiveEncode::Base.engine_adapter = :elastic_transcoder
 # Sleep time (in seconds) to poll for status of encoding job
 Hydra::Derivatives.active_encode_poll_time = 10
 
-# If you want to use a different class for the encode object
-Hydra::Derivatives::ActiveEncodeDerivatives.encode_class = MyCustomEncode
-
 # If you want to use a different class for the source file service
 Hydra::Derivatives::ActiveEncodeDerivatives.source_file_service = MyCustomSourceFileService
 
