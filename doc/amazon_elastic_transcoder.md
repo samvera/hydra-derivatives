@@ -30,14 +30,7 @@ In an initializer file such as `config/initializers/active_encode.rb`, make sure
 ```ruby
 # Use Amazon's Elastic Transcoder
 ActiveEncode::Base.engine_adapter = :elastic_transcoder
-
-# If you want to use a different source file or output file service than the defaults
-# Hydra::Derivatives::ActiveEncodeDerivatives.source_file_service = MyCustomSourceFileService
-# Hydra::Derivatives::ActiveEncodeDerivatives.output_file_service = MyCustomOutputFileService
 ```
-
-Note: Please don't confuse these methods with the similar methods in the parent class:
-`Hydra::Derivatives.source_file_service` and `Hydra::Derivatives.output_file_service`
 
 ## How to create derivatives (Multiple derivatives per Elastic Transcoder job)
 

@@ -26,5 +26,13 @@ module Hydra::Derivatives
     def self.processor_class
       Processors::ActiveEncode
     end
+
+    def self.encode_class
+      @encode_class || ::ActiveEncode::Base
+    end
+
+    class << self
+      attr_writer :encode_class
+    end
   end
 end

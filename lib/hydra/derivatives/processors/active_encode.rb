@@ -11,12 +11,10 @@ module Hydra::Derivatives::Processors
 
   class ActiveEncode < Processor
     class_attribute :timeout
+    attr_writer :encode_class
 
-    # TODO: Instead of hard-coding ActiveEncode::Base,
-    # pass in or configure the class so that a user can
-    # override it with a sub-class of AE::Base.
     def process
-      encode = ::ActiveEncode::Base.create(source_path, directives)
+      encode = encode_class.create(source_path, directives)
       timeout ? wait_for_encode_with_timeout(encode) : wait_for_encode(encode)
       encode.output.each do |output|
         output_file_service.call(output, directives)
@@ -34,6 +32,10 @@ module Hydra::Derivatives::Processors
     def wait_for_encode(encode)
       sleep Hydra::Derivatives.active_encode_poll_time while encode.reload.running?
       raise ActiveEncodeError.new(encode.state, source_path, encode.errors) unless encode.completed?
+    end
+
+    def encode_class
+      @encode_class || Hydra::Derivatives::ActiveEncodeDerivatives.encode_class
     end
 
     # After a timeout error, try to cancel the encoding.

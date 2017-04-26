@@ -92,9 +92,24 @@ Hydra::Derivatives::Processors::Video::Processor.config.jpeg.codec = '-vcodec mj
 ### Configuration for Audio/Video Processing with ActiveEncode
 
 ```ruby
+# Set the transcoding engine
+ActiveEncode::Base.engine_adapter = :elastic_transcoder
+
 # Sleep time (in seconds) to poll for status of encoding job
 Hydra::Derivatives.active_encode_poll_time = 10
+
+# If you want to use a different class for the encode object
+Hydra::Derivatives::ActiveEncodeDerivatives.encode_class = MyCustomEncode
+
+# If you want to use a different class for the source file service
+Hydra::Derivatives::ActiveEncodeDerivatives.source_file_service = MyCustomSourceFileService
+
+# If you want to use a different class for the output file service
+Hydra::Derivatives::ActiveEncodeDerivatives.output_file_service = MyCustomOutputFileService
 ```
+
+Note: Please don't confuse these methods with the similar methods in the parent class:
+`Hydra::Derivatives.source_file_service` and `Hydra::Derivatives.output_file_service`
 
 For additional documentation on using ActiveEncode, see:
 * [Using Amazon Elastic Transcoder](doc/amazon_elastic_transcoder.md)

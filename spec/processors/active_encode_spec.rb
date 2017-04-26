@@ -31,6 +31,27 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       enc
     end
 
+    context 'with a custom encode class' do
+      let(:completed_status) { true }
+      let(:state) { :completed }
+
+      before do
+        class TestEncode < ::ActiveEncode::Base; end
+        processor.encode_class = TestEncode
+
+        # For this spec we don't care what happens with output,
+        # so stub it out to speed up the spec.
+        allow(output_file_service).to receive(:call)
+      end
+
+      after { Object.send(:remove_const, :TestEncode) }
+
+      it 'uses the configured encode class' do
+        expect(TestEncode).to receive(:create).and_return(encode_double)
+        subject
+      end
+    end
+
     context 'when the encoding failed' do
       let(:state) { :failed }
       let(:failed_status) { true }

@@ -1,11 +1,33 @@
 require 'spec_helper'
 
-class TestVideo < ActiveFedora::Base
-  attr_accessor :remote_file_name
-end
-
 describe Hydra::Derivatives::ActiveEncodeDerivatives do
+  context '.encode_class' do
+    before { class TestEncode < ::ActiveEncode::Base; end }
+
+    after do
+      Object.send(:remove_const, :TestEncode)
+      described_class.encode_class = ::ActiveEncode::Base
+    end
+
+    it 'has a default encode class' do
+      expect(described_class.encode_class).to eq ::ActiveEncode::Base
+    end
+
+    it 'can set the encode class' do
+      expect(described_class.encode_class).to eq ::ActiveEncode::Base
+      described_class.encode_class = TestEncode
+      expect(described_class.encode_class).to eq TestEncode
+    end
+  end
+
   context '.create' do
+    before do
+      class TestVideo < ActiveFedora::Base
+        attr_accessor :remote_file_name
+      end
+    end
+    after { Object.send(:remove_const, :TestVideo) }
+
     let(:file_path) { 'some/path/to/my_video.mp4' }
     let(:video_record) { TestVideo.new(remote_file_name: file_path) }
     let(:options) { { source: :remote_file_name, outputs: [low_res_video] } }
