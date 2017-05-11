@@ -15,13 +15,6 @@ module Hydra::Derivatives
       end
     end
 
-    def self.processor_options(options)
-      opts = { output_file_service: output_file_service }
-      encode_class = options.delete(:encode_class)
-      opts = opts.merge(encode_class: encode_class) if encode_class
-      opts
-    end
-
     # Use the source service configured for this class or default to the remote file service
     def self.source_file_service
       @source_file_service || RemoteSourceFile
@@ -34,6 +27,17 @@ module Hydra::Derivatives
 
     def self.processor_class
       Processors::ActiveEncode
+    end
+
+    class << self
+      private
+
+        def processor_options(options)
+          opts = { output_file_service: output_file_service }
+          encode_class = options.delete(:encode_class)
+          opts = opts.merge(encode_class: encode_class) if encode_class
+          opts
+        end
     end
   end
 end
