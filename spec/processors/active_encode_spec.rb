@@ -22,12 +22,14 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     let(:external_url) { 'http://www.example.com/external/content' }
     let(:output) { [{ url: external_url }] }
     let(:encode_double) do
-      enc = double('encode', state: state, errors: errors,
+      enc = double('encode',
+                   state: state,
+                   errors: errors,
                    output: output,
-                   'running?': false,
-                   'completed?': completed_status,
-                   'failed?': failed_status,
-                   'cancelled?': cancelled_status)
+                   running?: false,
+                   completed?: completed_status,
+                   failed?: failed_status,
+                   cancelled?: cancelled_status)
       allow(enc).to receive(:reload).and_return(enc)
       enc
     end
@@ -45,8 +47,12 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
 
       let(:completed_status) { true }
       let(:state) { :completed }
-      let(:options) { { encode_class: TestEncode,
-                        output_file_service: output_file_service } }
+      let(:options) do
+        {
+          encode_class: TestEncode,
+          output_file_service: output_file_service
+        }
+      end
 
       it 'uses the configured encode class' do
         expect(TestEncode).to receive(:create).and_return(encode_double)
