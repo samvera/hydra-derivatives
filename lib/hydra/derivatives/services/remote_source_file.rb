@@ -6,7 +6,7 @@
 module Hydra::Derivatives
   class RemoteSourceFile
     # Finds the file name of the remote source file.
-    # @param [String, ActiveFedora::Base] String file name, or an object that has a method that will return the file name
+    # @param [String, ActiveFedora::Base] object file name, or an object that has a method that will return the file name
     # @param [Hash] options
     # @option options [Symbol] :source a method that can be called on the object to retrieve the source file's name
     # @yield [String] the file name

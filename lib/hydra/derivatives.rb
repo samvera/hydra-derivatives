@@ -8,8 +8,6 @@ module Hydra
     extend Deprecation
     self.deprecation_horizon = "hydra-derivatives 1.0"
 
-    require 'active_encode'
-
     # Runners take a single input and produce one or more outputs
     # The runner typically accomplishes this by using one or more processors
     autoload_under 'runners' do

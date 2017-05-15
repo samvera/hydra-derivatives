@@ -4,7 +4,7 @@ module Hydra::Derivatives::Processors
   class ActiveEncodeError < StandardError
     def initialize(status, source_path, errors = [])
       msg = "ActiveEncode status was \"#{status}\" for #{source_path}"
-      msg = "#{msg}: #{errors.join(' ; ')}" unless errors.empty?
+      msg = "#{msg}: #{errors.join(' ; ')}" if errors.any?
       super(msg)
     end
   end
@@ -12,6 +12,7 @@ module Hydra::Derivatives::Processors
   class ActiveEncode < Processor
     class_attribute :timeout
     attr_accessor :encode_class
+    attr_reader :encode_job
 
     def initialize(source_path, directives, opts = {})
       super
@@ -19,31 +20,31 @@ module Hydra::Derivatives::Processors
     end
 
     def process
-      encode = encode_class.create(source_path, directives)
-      timeout ? wait_for_encode_with_timeout(encode) : wait_for_encode(encode)
-      encode.output.each do |output|
+      @encode_job = encode_class.create(source_path, directives)
+      timeout ? wait_for_encode_job_with_timeout : wait_for_encode_job
+      encode_job.output.each do |output|
         output_file_service.call(output, directives)
       end
     end
 
     private
 
-      def wait_for_encode_with_timeout(encode)
-        Timeout.timeout(timeout) { wait_for_encode(encode) }
+      def wait_for_encode_job_with_timeout
+        Timeout.timeout(timeout) { wait_for_encode_job }
       rescue Timeout::Error
-        cleanup_after_timeout(encode)
+        cleanup_after_timeout
       end
 
       # Wait until the encoding job is finished.  If the status
       # is anything other than 'completed', raise an error.
-      def wait_for_encode(encode)
-        sleep Hydra::Derivatives.active_encode_poll_time while encode.reload.running?
-        raise ActiveEncodeError.new(encode.state, source_path, encode.errors) unless encode.completed?
+      def wait_for_encode_job
+        sleep Hydra::Derivatives.active_encode_poll_time while encode_job.reload.running?
+        raise ActiveEncodeError.new(encode_job.state, source_path, encode_job.errors) unless encode_job.completed?
       end
 
       # After a timeout error, try to cancel the encoding.
-      def cleanup_after_timeout(encode)
-        encode.cancel!
+      def cleanup_after_timeout
+        encode_job.cancel!
       rescue => e
         cancel_error = e
       ensure

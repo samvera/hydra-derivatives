@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives::Processors::ActiveEncode do
-  # before { # ActiveEncode::Base.engine_adapter = :test }
-
   let(:file_path) { File.join(fixture_path, 'videoshort.mp4') }
   let(:directives) { { url: '12345/derivative' } }
   let(:output_file_service) { Hydra::Derivatives::PersistExternalFileOutputFileService }
@@ -55,7 +53,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       end
 
       it 'uses the configured encode class' do
-        expect(TestEncode).to receive(:create).and_return(encode_double)
+        expect(TestEncode).to receive(:create).and_return(encode_job_double)
         subject
       end
     end
@@ -67,7 +65,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
 
       before do
         # Don't really encode the file during specs
-        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_job_double)
       end
 
       it 'raises an exception' do
@@ -81,7 +79,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
 
       before do
         # Don't really encode the file during specs
-        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_job_double)
       end
 
       it 'raises an exception' do
@@ -92,7 +90,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     context 'when the timeout is set' do
       before do
         processor.timeout = 0.01
-        allow(processor).to receive(:wait_for_encode) { sleep 0.1 }
+        allow(processor).to receive(:wait_for_encode_job) { sleep 0.1 }
       end
 
       it 'raises a timeout exception' do
@@ -105,12 +103,12 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       before do
         processor.timeout = nil
         # Don't really encode the file during specs
-        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_job_double)
       end
 
       it 'processes the encoding without a timeout' do
-        expect(processor).to receive(:wait_for_encode_with_timeout).never
-        expect(processor).to receive(:wait_for_encode).once
+        expect(processor).not_to receive(:wait_for_encode_job_with_timeout)
+        expect(processor).to receive(:wait_for_encode_job).once
         processor.process
       end
     end
@@ -120,9 +118,9 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
 
       before do
         processor.timeout = 0.01
-        allow(processor).to receive(:wait_for_encode) { sleep 0.1 }
-        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_double)
-        allow(encode_double).to receive(:cancel!).and_raise(error)
+        allow(processor).to receive(:wait_for_encode_job) { sleep 0.1 }
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_job_double)
+        allow(encode_job_double).to receive(:cancel!).and_raise(error)
       end
 
       it 'doesnt lose the timeout error, but adds the new error message' do
