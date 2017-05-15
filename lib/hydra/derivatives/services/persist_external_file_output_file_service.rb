@@ -1,3 +1,5 @@
+require 'addressable'
+
 module Hydra::Derivatives
   class PersistExternalFileOutputFileService < PersistOutputFileService
     # Persists a new file at specified location that points to external content
@@ -11,7 +13,7 @@ module Hydra::Derivatives
       external_file.content = ''
       external_file.mime_type = "message/external-body; access-type=URL; URL=\"#{output[:url]}\""
       # external_file.external_url = output[:url]
-      external_file.original_name = URI.parse(output[:url]).path.split('/').last
+      external_file.original_name = Addressable::URI.parse(output[:url]).path.split('/').last
       external_file.save
     end
   end
