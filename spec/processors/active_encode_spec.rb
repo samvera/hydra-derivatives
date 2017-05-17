@@ -19,8 +19,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     let(:errors) { [] }
     let(:external_url) { 'http://www.example.com/external/content' }
     let(:output) { [{ url: external_url }] }
-    let(:encode_double) do
-      enc = double('encode',
+    let(:encode_job_double) do
+      enc = double('encode_job',
                    state: state,
                    errors: errors,
                    output: output,
