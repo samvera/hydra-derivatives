@@ -3,7 +3,7 @@ module Hydra::Derivatives::Processors
     include ShellBasedProcessor
 
     def self.encode(path, format, outdir)
-      execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} #{path}"
+      execute "#{Hydra::Derivatives.libreoffice_path} --invisible --headless --convert-to #{format} --outdir #{outdir} \"#{path}\""
     end
 
     # Converts the document to the format specified in the directives hash.
