@@ -75,7 +75,7 @@ module Hydra::Derivatives::Processors
 
       def encode(path, recipe, output_file)
         kdu_compress = Hydra::Derivatives.kdu_compress_path
-        execute "#{kdu_compress} -quiet -i #{path} -o #{output_file} #{recipe}"
+        execute "#{kdu_compress} -quiet -i #{Shellwords.escape(path)} -o #{output_file} #{recipe}"
       end
 
       def tmp_file(ext)
