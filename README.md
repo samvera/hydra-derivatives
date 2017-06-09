@@ -52,6 +52,8 @@ Then when you call `obj.create_derivatives` two new files, 'thumbnail' and 'cont
 
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
+The ActiveEncode runner provides support for using external video transcoding services like Amazon Elastic Transcoder.  See [ActiveEncode](https://github.com/samvera-labs/active_encode) for details on specific adapters supported.
+
 ## Configuration
 
 ### Retrieving from a basic container in Fedora
