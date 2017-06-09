@@ -5,7 +5,8 @@ module Hydra
     class Config
       attr_writer :ffmpeg_path, :libreoffice_path, :temp_file_base,
                   :source_file_service, :output_file_service, :fits_path,
-                  :enable_ffmpeg, :kdu_compress_path, :kdu_compress_recipes
+                  :enable_ffmpeg, :kdu_compress_path, :kdu_compress_recipes,
+                  :active_encode_poll_time
 
       def ffmpeg_path
         @ffmpeg_path ||= 'ffmpeg'
@@ -71,6 +72,13 @@ module Hydra
             ORGtparts=R
             "Stiles={1024,1024}" ).gsub(/\s+/, " ").strip
         }
+      end
+
+      # The poll time (in seconds) that the active encode
+      # processor will sleep before it checks the status of an
+      # encoding job.
+      def active_encode_poll_time
+        @active_encode_poll_time ||= 10
       end
     end
   end

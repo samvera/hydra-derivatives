@@ -52,6 +52,8 @@ Then when you call `obj.create_derivatives` two new files, 'thumbnail' and 'cont
 
 We recommend you run `obj.create_derivatives` in a background worker, because some derivative creation (especially videos) can take a long time.
 
+The ActiveEncode runner provides support for using external video transcoding services like Amazon Elastic Transcoder.  See [ActiveEncode](https://github.com/samvera-labs/active_encode) for details on specific adapters supported.
+
 ## Configuration
 
 ### Retrieving from a basic container in Fedora
@@ -74,6 +76,7 @@ Hydra::Derivatives::Processors::Video::Processor.timeout  = 10.minutes
 Hydra::Derivatives::Processors::Document.timeout = 5.minutes
 Hydra::Derivatives::Processors::Audio.timeout = 10.minutes
 Hydra::Derivatives::Processors::Image.timeout = 5.minutes
+Hydra::Derivatives::Processors::ActiveEncode.timeout = 5.minutes
 
 ```
 
@@ -87,6 +90,28 @@ Hydra::Derivatives::Processors::Video::Processor.config.webm.codec = '-vcodec li
 Hydra::Derivatives::Processors::Video::Processor.config.mkv.codec = '-vcodec ffv1'
 Hydra::Derivatives::Processors::Video::Processor.config.jpeg.codec = '-vcodec mjpeg'
 ```
+
+### Configuration for Audio/Video Processing with ActiveEncode
+
+```ruby
+# Set the transcoding engine
+ActiveEncode::Base.engine_adapter = :elastic_transcoder
+
+# Sleep time (in seconds) to poll for status of encoding job
+Hydra::Derivatives.active_encode_poll_time = 10
+
+# If you want to use a different class for the source file service
+Hydra::Derivatives::ActiveEncodeDerivatives.source_file_service = MyCustomSourceFileService
+
+# If you want to use a different class for the output file service
+Hydra::Derivatives::ActiveEncodeDerivatives.output_file_service = MyCustomOutputFileService
+```
+
+Note: Please don't confuse these methods with the similar methods in the parent class:
+`Hydra::Derivatives.source_file_service` and `Hydra::Derivatives.output_file_service`
+
+For additional documentation on using ActiveEncode, see:
+* [Using Amazon Elastic Transcoder](doc/amazon_elastic_transcoder.md)
 
 ### Additional Directives
 

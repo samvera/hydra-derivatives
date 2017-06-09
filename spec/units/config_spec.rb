@@ -41,4 +41,10 @@ describe "the configuration" do
     subject.source_file_service = source_file_service
     expect(subject.source_file_service).to eq(source_file_service)
   end
+
+  it "lets you set the poll time for ActiveEncode jobs" do
+    expect(subject.active_encode_poll_time).to eq 10
+    subject.active_encode_poll_time = 15
+    expect(subject.active_encode_poll_time).to eq 15
+  end
 end

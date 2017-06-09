@@ -11,6 +11,7 @@ module Hydra
     # Runners take a single input and produce one or more outputs
     # The runner typically accomplishes this by using one or more processors
     autoload_under 'runners' do
+      autoload :ActiveEncodeDerivatives
       autoload :AudioDerivatives
       autoload :DocumentDerivatives
       autoload :FullTextExtract
@@ -30,8 +31,10 @@ module Hydra
 
     autoload_under 'services' do
       autoload :RetrieveSourceFileService
+      autoload :RemoteSourceFile
       autoload :PersistOutputFileService
       autoload :PersistBasicContainedOutputFileService
+      autoload :PersistExternalFileOutputFileService
       autoload :TempfileService
       autoload :MimeTypeService
     end
@@ -48,7 +51,7 @@ module Hydra
     end
 
     CONFIG_METHODS = [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path,
-                      :kdu_compress_recipes, :enable_ffmpeg, :source_file_service, :output_file_service].freeze
+                      :kdu_compress_recipes, :enable_ffmpeg, :source_file_service, :output_file_service, :active_encode_poll_time].freeze
     CONFIG_METHODS.each do |method|
       module_eval <<-RUBY
         def self.#{method}
