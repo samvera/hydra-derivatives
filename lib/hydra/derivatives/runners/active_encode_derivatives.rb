@@ -32,6 +32,7 @@ module Hydra::Derivatives
     class << self
       private
 
+        # Build an options hash specifically for the processor isolated from the runner options
         def processor_options(options)
           opts = { output_file_service: output_file_service }
           encode_class = options.delete(:encode_class)
