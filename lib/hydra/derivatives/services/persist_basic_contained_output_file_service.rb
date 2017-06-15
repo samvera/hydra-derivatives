@@ -9,31 +9,55 @@ module Hydra::Derivatives
     #
     # NOTE: Uses basic containment. If you want to use direct containment (ie. with PCDM) you must use a different service (ie. Hydra::Works::AddFileToGenericFile Service)
     #
-    # @param [#read] stream the data to be persisted
+    # @param [IO,String] content the data to be persisted
     # @param [Hash] directives directions which can be used to determine where to persist to.
     # @option directives [String] url This can determine the path of the object.
-    def self.call(stream, directives)
-      file = Hydra::Derivatives::IoDecorator.new(stream, new_mime_type(directives.fetch(:format)))
-      o_name = determine_original_name(file)
-      m_type = determine_mime_type(file)
-      uri = URI(directives.fetch(:url))
-      raise ArgumentError, "#{uri} is not an http uri" unless uri.scheme == 'http'
-      remote_file = ActiveFedora::File.new(uri.to_s)
+    # @option directives [String] format The file extension (e.g. 'jpg')
+    def self.call(content, directives)
+      file = io(content, directives)
+      remote_file = retrieve_remote_file(directives)
       remote_file.content = file
-      remote_file.mime_type = m_type
-      remote_file.original_name = o_name
+      remote_file.mime_type = determine_mime_type(file)
+      remote_file.original_name = determine_original_name(file)
       remote_file.save
     end
 
-    def self.new_mime_type(format)
-      case format
+    # Override this implementation if you need a remote file from a different location
+    # @return [ActiveFedora::File]
+    def self.retrieve_remote_file(directives)
+      uri = URI(directives.fetch(:url))
+      raise ArgumentError, "#{uri} is not an http uri" unless uri.scheme == 'http'
+      ActiveFedora::File.new(uri.to_s)
+    end
+    private_class_method :retrieve_remote_file
+
+    def self.io(content, directives)
+      Hydra::Derivatives::IoDecorator.new(content, new_mime_type(directives.fetch(:format), charset(content)))
+    end
+    private_class_method :io
+
+    def self.new_mime_type(extension, charset = nil)
+      fmt = mime_format(extension)
+      fmt += "; charset=#{charset}" if charset
+      fmt
+    end
+
+    # Strings (from FullText) have encoding. Retrieve it
+    def self.charset(content)
+      content.encoding.name if content.respond_to?(:encoding)
+    end
+    private_class_method :charset
+
+    def self.mime_format(extension)
+      case extension
       when 'mp4'
         'video/mp4' # default is application/mp4
       when 'webm'
         'video/webm' # default is audio/webm
       else
-        MIME::Types.type_for(format).first.to_s
+        MIME::Types.type_for(extension).first.to_s
       end
     end
+    private_class_method :mime_format
   end
 end

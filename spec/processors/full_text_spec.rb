@@ -7,7 +7,10 @@ describe Hydra::Derivatives::Processors::FullText do
 
   describe "#process" do
     it 'extracts fulltext and stores the results' do
-      expect(processor.output_file_service).to receive(:call).with(/Project Charter for E-Content Delivery Platform Review/, directives)
+      expect(processor.output_file_service).to receive(:call) do |first, second|
+        expect(first).to match(/Project Charter for E-Content Delivery Platform Review/)
+        expect(second).to eq directives
+      end
       processor.process
     end
   end
