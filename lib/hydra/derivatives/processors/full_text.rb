@@ -50,11 +50,12 @@ module Hydra::Derivatives::Processors
 
       # @returns [URI] path to the extract service
       def uri
-        @uri ||= URI("#{connection_url}/update/extract?extractOnly=true&wt=json&extractFormat=text")
+        @uri ||= connection_url + 'update/extract?extractOnly=true&wt=json&extractFormat=text'
       end
 
+      # @returns [URI] path to the solr collection
       def connection_url
-        ActiveFedora.solr_config[:url]
+        ActiveFedora::SolrService.instance.conn.uri
       end
   end
 end

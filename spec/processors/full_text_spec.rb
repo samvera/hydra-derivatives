@@ -46,10 +46,15 @@ describe Hydra::Derivatives::Processors::FullText do
 
   describe "uri" do
     subject { processor.send(:uri) }
+    let(:root) { URI('http://example.com/solr/myCollection/') }
+
+    before do
+      allow(ActiveFedora::SolrService.instance.conn).to receive(:uri).and_return(root)
+    end
 
     it "points at the extraction service" do
       expect(subject).to be_kind_of URI
-      expect(subject.to_s).to end_with '/update/extract?extractOnly=true&wt=json&extractFormat=text'
+      expect(subject.to_s).to eq 'http://example.com/solr/myCollection/update/extract?extractOnly=true&wt=json&extractFormat=text'
     end
   end
 end
