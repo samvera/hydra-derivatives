@@ -28,10 +28,20 @@ describe Hydra::Derivatives::Processors::FullText do
     end
 
     context "that is successful" do
-      let(:resp) { double(code: '200', body: response_body) }
+      let(:resp) { double(code: '200', type_params: {}, body: response_body) }
       it "calls the extraction service" do
         expect(request).to receive(:post).with('http://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
         expect(subject).to eq response_body
+      end
+    end
+
+    context "that is successful with UTF-8 content" do
+      let(:response_utf8)  { "returned by “Solr”" }
+      let(:response_ascii) { response_utf8.dup.force_encoding("ASCII-8BIT") }
+      let(:resp)           { double(code: '200', type_params: { "charset" => "UTF-8" }, body: response_ascii) }
+      it "calls the extraction service" do
+        expect(request).to receive(:post).with('http://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
+        expect(subject).to eq response_utf8
       end
     end
 

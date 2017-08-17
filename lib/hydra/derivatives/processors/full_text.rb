@@ -27,6 +27,9 @@ module Hydra::Derivatives::Processors
         raise "Solr Extract service was unsuccessful. '#{uri}' returned code #{resp.code} for #{source_path}\n#{resp.body}" unless resp.code == '200'
         file_content.rewind if file_content.respond_to?(:rewind)
 
+        if resp.type_params['charset']
+          resp.body.force_encoding(resp.type_params['charset'])
+        end
         resp.body
       end
 
