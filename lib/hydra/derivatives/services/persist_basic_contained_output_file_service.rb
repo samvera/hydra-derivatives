@@ -31,6 +31,9 @@ module Hydra::Derivatives
     end
     private_class_method :retrieve_remote_file
 
+    # @param [IO,String] content the data to be persisted
+    # @param [Hash] directives directions which can be used to determine where to persist to.
+    # @return [Hydra::Derivatives::IoDecorator]
     def self.io(content, directives)
       Hydra::Derivatives::IoDecorator.new(content, new_mime_type(directives.fetch(:format), charset(content)))
     end
