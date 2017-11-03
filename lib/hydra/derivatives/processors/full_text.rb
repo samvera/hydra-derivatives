@@ -23,6 +23,7 @@ module Hydra::Derivatives::Processors
       # @return [String] the result of calling the extract service
       def fetch
         req = Net::HTTP.new(uri.host, uri.port)
+        req.use_ssl = true if check_for_ssl
         resp = req.post(uri.to_s, file_content, request_headers)
         raise "Solr Extract service was unsuccessful. '#{uri}' returned code #{resp.code} for #{source_path}\n#{resp.body}" unless resp.code == '200'
         file_content.rewind if file_content.respond_to?(:rewind)
@@ -54,6 +55,10 @@ module Hydra::Derivatives::Processors
       # @returns [URI] path to the extract service
       def uri
         @uri ||= connection_url + 'update/extract?extractOnly=true&wt=json&extractFormat=text'
+      end
+
+      def check_for_ssl
+        uri.scheme == 'https'
       end
 
       # @returns [URI] path to the solr collection
