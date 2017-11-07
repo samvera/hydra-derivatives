@@ -25,8 +25,14 @@ describe Hydra::Derivatives::IoDecorator do
       it { is_expected.to eq 'text/plain' }
     end
 
+    describe "original_filename" do
+      subject { decorator.original_filename }
+      it { is_expected.to eq 'help.txt' }
+    end
+
     describe "original_name" do
       subject { decorator.original_name }
+      before { allow(Deprecation).to receive(:warn) }
       it { is_expected.to eq 'help.txt' }
     end
   end

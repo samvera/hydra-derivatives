@@ -9,14 +9,16 @@ module Hydra::Derivatives
       raise NotImplementedError, "PersistOutputFileService is an abstract class. Implement `call' on #{self.class.name}"
     end
 
+    # @param file [Hydra::Derivatives::IoDecorator]
     def self.determine_original_name(file)
-      if file.respond_to? :original_name
-        file.original_name
+      if file.respond_to? :original_filename
+        file.original_filename
       else
         "derivative"
       end
     end
 
+    # @param file [Hydra::Derivatives::IoDecorator]
     def self.determine_mime_type(file)
       if file.respond_to? :mime_type
         file.mime_type
