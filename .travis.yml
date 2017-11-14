@@ -24,3 +24,15 @@ notifications:
       - "irc.freenode.org#scholarsphere"
     template:
       - "%{repository}//%{branch}@%{commit} by %{author}: %{message} - %{build_url}"
+addons:
+  apt:
+    sources:
+      - "trusty-media"
+      - sourceline: ppa:jonathonf/ffmpeg-3
+    packages:
+      - ghostscript
+      - ufraw-batch
+      - libpng-dev
+      - imagemagick
+      - ffmpeg
+      - libreoffice
