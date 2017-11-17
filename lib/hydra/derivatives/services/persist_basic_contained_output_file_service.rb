@@ -35,7 +35,8 @@ module Hydra::Derivatives
     # @param [Hash] directives directions which can be used to determine where to persist to.
     # @return [Hydra::Derivatives::IoDecorator]
     def self.io(content, directives)
-      Hydra::Derivatives::IoDecorator.new(content, new_mime_type(directives.fetch(:format), charset(content)))
+      charset = charset(content) if directives[:format] == 'txt' || !directives.fetch(:binary, true)
+      Hydra::Derivatives::IoDecorator.new(content, new_mime_type(directives.fetch(:format), charset))
     end
     private_class_method :io
 
