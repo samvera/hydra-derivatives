@@ -20,7 +20,7 @@ namespace :derivatives do
   end
 
   RSpec::Core::RakeTask.new(:rspec) do |task|
-    task.rspec_opts = "--tag ~requires_imagemagick --tag ~requires_ffmpeg --tag ~requires_libreoffice --tag ~requires_kdu_compress" if ENV['TRAVIS']
+    task.rspec_opts = "--tag ~requires_kdu_compress" if ENV['TRAVIS']
   end
 
   desc 'Start up Solr & Fedora and run tests'

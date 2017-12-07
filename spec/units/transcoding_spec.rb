@@ -143,7 +143,7 @@ describe "Transcoding" do
       expect(file.attached_files['original_file_thumb']).to have_content
       expect(file.attached_files['original_file_thumb'].mime_type).to eq('image/png')
       expect(file.attached_files['fulltext'].content).to match(/This PDF file was created using CutePDF/)
-      expect(file.attached_files['fulltext'].mime_type).to eq 'text/plain'
+      expect(file.attached_files['fulltext'].mime_type).to eq 'text/plain;charset=UTF-8'
     end
   end
 
