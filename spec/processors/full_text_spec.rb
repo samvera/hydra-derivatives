@@ -16,19 +16,20 @@ describe Hydra::Derivatives::Processors::FullText do
   end
 
   describe "fetch" do
+    subject { processor.send(:fetch) }
+
     let(:request)       { double }
     let(:response_body) { 'returned by Solr' }
     let(:uri)           { URI('https://example.com:99/solr/update') }
-
-    subject { processor.send(:fetch) }
 
     before do
       allow(processor).to receive(:uri).and_return(uri)
       allow(Net::HTTP).to receive(:new).with('example.com', 99).and_return(request)
     end
 
-    context "that is successful" do
+    context "when that is successful" do
       let(:resp) { double(code: '200', type_params: {}, body: response_body) }
+
       it "calls the extraction service" do
         expect(processor).to receive(:check_for_ssl)
         expect(request).to receive(:post).with('https://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
@@ -36,10 +37,11 @@ describe Hydra::Derivatives::Processors::FullText do
       end
     end
 
-    context "that is successful with UTF-8 content" do
+    context "when that is successful with UTF-8 content" do
       let(:response_utf8)  { "returned by “Solr”" }
       let(:response_ascii) { response_utf8.dup.force_encoding("ASCII-8BIT") }
       let(:resp)           { double(code: '200', type_params: { "charset" => "UTF-8" }, body: response_ascii) }
+
       it "calls the extraction service" do
         expect(processor).to receive(:check_for_ssl)
         expect(request).to receive(:post).with('https://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
@@ -47,8 +49,9 @@ describe Hydra::Derivatives::Processors::FullText do
       end
     end
 
-    context "that fails" do
+    context "when that fails" do
       let(:resp) { double(code: '500', body: response_body) }
+
       it "raises an error" do
         expect(processor).to receive(:check_for_ssl)
         expect(request).to receive(:post).with('https://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
@@ -59,6 +62,7 @@ describe Hydra::Derivatives::Processors::FullText do
 
   describe "uri" do
     subject { processor.send(:uri) }
+
     let(:root) { URI('https://example.com/solr/myCollection/') }
 
     before do

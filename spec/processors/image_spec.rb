@@ -1,20 +1,21 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives::Processors::Image do
-  let(:file_name) { "file_name" }
   subject { described_class.new(file_name, directives) }
+
+  let(:file_name) { "file_name" }
 
   context "when arguments are passed as a hash" do
     before { allow(subject).to receive(:load_image_transformer).and_return(mock_image) }
 
     context "with a multi-page pdf source file" do
-      let(:first_page)  { double("MockPage") }
-      let(:second_page) { double("MockPage") }
-      let(:mock_image)  { double("MockImageOfPdf", layers: [first_page, second_page]) }
+      let(:first_page)  { instance_double("MockPage") }
+      let(:second_page) { instance_double("MockPage") }
+      let(:mock_image)  { instance_double("MockImageOfPdf", layers: [first_page, second_page]) }
 
       before { allow(mock_image).to receive(:type).and_return("PDF") }
 
-      context "by default" do
+      context "when default" do
         let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
 
         it "uses the first page" do
@@ -52,8 +53,8 @@ describe Hydra::Derivatives::Processors::Image do
     context "with an image source file" do
       before { allow(mock_image).to receive(:type).and_return("JPEG") }
 
-      context "by default" do
-        let(:mock_image) { double("MockImage") }
+      context "when default" do
+        let(:mock_image) { instance_double("MockImage") }
         let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
 
         it "uses the image file" do
@@ -68,9 +69,9 @@ describe Hydra::Derivatives::Processors::Image do
       end
 
       context "when specifying a layer" do
-        let(:first_layer)  { double("MockPage") }
-        let(:second_layer) { double("MockPage") }
-        let(:mock_image)   { double("MockImage", layers: [first_layer, second_layer]) }
+        let(:first_layer)  { instance_double("MockPage") }
+        let(:second_layer) { instance_double("MockPage") }
+        let(:mock_image)   { instance_double("MockImage", layers: [first_layer, second_layer]) }
         let(:directives)   { { label: :thumb, size: "200x300>", format: 'png', quality: 75, layer: 1 } }
 
         it "uses the layer" do
@@ -113,6 +114,7 @@ describe Hydra::Derivatives::Processors::Image do
 
     context "when running the complete command", requires_imagemagick: true do
       let(:file_name) { File.join(fixture_path, "test.tif") }
+
       it "converts the image" do
         expect(Hydra::Derivatives::PersistBasicContainedOutputFileService).to receive(:call).with(kind_of(StringIO), directives)
         subject.process

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Hydra::Derivatives::Logger do
   context "with log levels" do
-    let(:levels) { %w(unknown fatal error warn info debug) }
+    let(:levels) { %w[unknown fatal error warn info debug] }
 
     it "responds successfully" do
       levels.each do |level|

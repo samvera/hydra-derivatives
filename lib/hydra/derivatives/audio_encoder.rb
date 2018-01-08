@@ -4,7 +4,7 @@ module Hydra::Derivatives
   class AudioEncoder
     def initialize
       @ffmpeg_output = Open3.capture3('ffmpeg -codecs').to_s
-    rescue
+    rescue StandardError
       Logger.warn('Unable to find ffmpeg')
       @ffmpeg_output = ""
     end

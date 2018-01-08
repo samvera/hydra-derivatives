@@ -17,16 +17,13 @@ module Hydra::Derivatives::Processors
       def kdu_compress_recipe(args, quality, long_dim)
         if args[:recipe].is_a? Symbol
           recipe = [args[:recipe].to_s, quality].join('_').to_sym
-          if Hydra::Derivatives.kdu_compress_recipes.key? recipe
-            return Hydra::Derivatives.kdu_compress_recipes[recipe]
-          else
-            ActiveFedora::Base.logger.warn "No JP2 recipe for :#{args[:recipe]} ('#{recipe}') found in configuration. Using best guess."
-            return calculate_recipe(args, quality, long_dim)
-          end
+          return Hydra::Derivatives.kdu_compress_recipes[recipe] if Hydra::Derivatives.kdu_compress_recipes.key? recipe
+          ActiveFedora::Base.logger.warn "No JP2 recipe for :#{args[:recipe]} ('#{recipe}') found in configuration. Using best guess."
+          calculate_recipe(args, quality, long_dim)
         elsif args[:recipe].is_a? String
-          return args[:recipe]
+          args[:recipe]
         else
-          return calculate_recipe(args, quality, long_dim)
+          calculate_recipe(args, quality, long_dim)
         end
       end
 

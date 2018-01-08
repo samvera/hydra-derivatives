@@ -31,7 +31,7 @@ describe Hydra::Derivatives::AudioDerivatives do
     context "with an object" do
       let(:object)      { "Fake Object" }
       let(:source_name) { :content }
-      let(:file)        { double("the file") }
+      let(:file)        { instance_double("the file") }
 
       before do
         allow(object).to receive(:original_file).and_return(file)

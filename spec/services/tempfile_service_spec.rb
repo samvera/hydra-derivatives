@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives::TempfileService do
+  subject { described_class.new(file) }
+
   let(:class_with_metadata_extraction) do
     Class.new do
       attr_reader :content, :mime_type, :uri
@@ -21,8 +23,7 @@ describe Hydra::Derivatives::TempfileService do
 
   let(:file) { class_with_metadata_extraction.new(initialization_options) }
 
-  subject { described_class.new(file) }
-  context '#tempfile' do
+  describe '#tempfile' do
     it 'has a method called to_tempfile' do
       expect { |b| subject.tempfile(&b) }.to yield_with_args(Tempfile)
     end

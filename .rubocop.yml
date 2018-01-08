@@ -3,42 +3,35 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   DisplayCopNames: true
-  Include:
-    - '**/Rakefile'
   Exclude:
     - 'vendor/**/*'
     - 'spec/internal/bin/*'
     - 'spec/internal/db/schema.rb'
+    - Gemfile
+    - hydra-derivatives.gemspec
+    - Rakefile
+
+Layout/IndentationConsistency:
+  EnforcedStyle: rails
+
+Metrics/AbcSize:
+  Max: 42
+  Exclude:
+    - lib/hydra/derivatives/processors/document.rb
+    - lib/hydra/derivatives/processors/full_text.rb
+    - lib/hydra/derivatives/processors/jpeg2k_image.rb
+    - lib/hydra/derivatives/processors/shell_based_processor.rb
+    - lib/hydra/derivatives/services/persist_basic_contained_output_file_service.rb
+    - lib/hydra/derivatives/services/tempfile_service.rb
+
+Metrics/BlockLength:
+  Max: 320
 
 Metrics/LineLength:
   Enabled: false
 
-Style/CollectionMethods:
-  PreferredMethods:
-    collect: 'map'
-    collect!: 'map!'
-    inject: 'reduce'
-    detect: 'find'
-    find_all: 'select'
-
-Style/ClassAndModuleChildren:
-  Enabled: false
-
-Style/Documentation:
-  Enabled: false
-
-Style/StringLiterals:
-  Enabled: false
-
-Style/SignalException:
-  Enabled: false
-
-Style/IndentationConsistency:
-  EnforcedStyle: rails
-
-Style/PredicateName:
-  Exclude:
-    - spec/services/tempfile_service_spec.rb
+RSpec/ExampleLength:
+  Max: 10
 
 RSpec/ExampleWording:
   CustomTransform:
@@ -52,15 +45,41 @@ RSpec/ExampleWording:
 RSpec/FilePath:
   Enabled: false
 
+RSpec/HookArgument:
+  Exclude:
+    - spec/spec_helper.rb
+
 RSpec/InstanceVariable:
   Enabled: false
 
-RSpec/DescribeClass:
-  Exclude:
-    - spec/units/config_spec.rb
-    - spec/units/transcoding_spec.rb
+RSpec/MessageSpies:
+  Enabled: false
 
-RSpec/AnyInstance:
-  Exclude:
-    - spec/processors/image_spec.rb
-    - spec/units/transcoding_spec.rb
+RSpec/MultipleExpectations:
+  Max: 10
+
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 4
+
+Style/ClassAndModuleChildren:
+  Enabled: false
+
+Style/CollectionMethods:
+  PreferredMethods:
+    collect: 'map'
+    collect!: 'map!'
+    inject: 'reduce'
+    detect: 'find'
+    find_all: 'select'
+
+Style/Documentation:
+  Enabled: false
+
+Style/SignalException:
+  Enabled: false
+
+Style/StringLiterals:
+  Enabled: false
