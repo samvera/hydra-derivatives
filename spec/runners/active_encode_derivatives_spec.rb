@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Hydra::Derivatives::ActiveEncodeDerivatives do
-  context '.create' do
+  describe '.create' do
     before do
       class TestVideo < ActiveFedora::Base
         attr_accessor :remote_file_name
@@ -14,7 +14,7 @@ describe Hydra::Derivatives::ActiveEncodeDerivatives do
     let(:video_record) { TestVideo.new(remote_file_name: file_path) }
     let(:options) { { source: :remote_file_name, outputs: [low_res_video] } }
     let(:low_res_video) { { some_key: 'some options to pass to my encoder service' } }
-    let(:processor) { double('processor') }
+    let(:processor) { instance_double('processor') }
 
     it 'calls the processor with the right arguments' do
       expect(Hydra::Derivatives::Processors::ActiveEncode).to receive(:new).with(file_path, low_res_video, output_file_service: Hydra::Derivatives::PersistExternalFileOutputFileService).and_return(processor)

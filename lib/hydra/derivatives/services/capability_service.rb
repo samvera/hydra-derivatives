@@ -5,7 +5,7 @@ module Hydra::Derivatives
     attr_accessor :ffmpeg_output
     def capture_output
       @ffmpeg_output = Open3.capture3('ffmpeg -codecs').to_s
-    rescue
+    rescue StandardError
       Logger.warn('Unable to find ffmpeg')
       @ffmpeg_output = ""
     end

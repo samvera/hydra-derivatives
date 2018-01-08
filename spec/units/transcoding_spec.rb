@@ -17,56 +17,64 @@ describe "Transcoding" do
           AudioDerivatives.create(self, source: :original_file,
                                         outputs: [
                                           { label: :mp3, format: 'mp3', url: "#{uri}/original_file_mp3" },
-                                          { label: :ogg, format: 'ogg', url: "#{uri}/original_file_ogg" }])
+                                          { label: :ogg, format: 'ogg', url: "#{uri}/original_file_ogg" }
+                                        ])
         when 'video/x-msvideo'
           VideoDerivatives.create(self, source: :original_file,
                                         outputs: [
                                           { label: :mp4,       format: 'mp4',  url: "#{uri}/original_file_mp4" },
                                           { label: :webm,      format: 'webm', url: "#{uri}/original_file_webm" },
-                                          { label: :thumbnail, format: 'jpg',  url: "#{uri}/thumbnail" }])
+                                          { label: :thumbnail, format: 'jpg',  url: "#{uri}/thumbnail" }
+                                        ])
         when 'image/png', 'image/jpg'
           ImageDerivatives.create(self, source: :original_file,
-                                  outputs: [
-                                    { label: :medium, size: "300x300>", url: "#{uri}/original_file_medium" },
-                                    { label: :thumb,  size: "100x100>", url: "#{uri}/original_file_thumb" },
-                                    { label: :access, format: 'jpg',    url: "#{uri}/access" },
-          ])
+                                        outputs: [
+                                          { label: :medium, size: "300x300>", url: "#{uri}/original_file_medium" },
+                                          { label: :thumb,  size: "100x100>", url: "#{uri}/original_file_thumb" },
+                                          { label: :access, format: 'jpg',    url: "#{uri}/access" }
+                                        ])
         when 'application/vnd.ms-powerpoint'
           DocumentDerivatives.create(self, source: :original_file,
                                            outputs: [
                                              { label: :preservation, format: 'pptx', url: "#{uri}/original_file_preservation" },
                                              { label: :access,       format: 'pdf',  url: "#{uri}/original_file_access" },
-                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }])
+                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }
+                                           ])
         when 'text/rtf'
           DocumentDerivatives.create(self, source: :original_file,
                                            outputs: [
                                              { label: :preservation, format: 'odt', url: "#{uri}/original_file_preservation" },
                                              { label: :access,       format: 'pdf', url: "#{uri}/original_file_access" },
-                                             { label: :thumnail,     format: 'jpg', url: "#{uri}/original_file_thumbnail" }])
+                                             { label: :thumnail,     format: 'jpg', url: "#{uri}/original_file_thumbnail" }
+                                           ])
         when 'application/msword'
           DocumentDerivatives.create(self, source: :original_file,
                                            outputs: [
                                              { label: :preservation, format: 'docx', url: "#{uri}/original_file_preservation" },
                                              { label: :access,       format: 'pdf',  url: "#{uri}/original_file_access" },
-                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }])
+                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }
+                                           ])
         when 'application/vnd.ms-excel'
           DocumentDerivatives.create(self, source: :original_file,
                                            outputs: [
                                              { label: :preservation, format: 'xlsx', url: "#{uri}/original_file_preservation" },
                                              { label: :access,       format: 'pdf',  url: "#{uri}/original_file_access" },
-                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }])
+                                             { label: :thumnail,     format: 'jpg',  url: "#{uri}/original_file_thumbnail" }
+                                           ])
         when 'image/tiff'
           Jpeg2kImageDerivatives.create(self, source: :original_file,
                                               outputs: [
                                                 { label: :resized,       format: 'jp2', recipe: :default, processor: 'jpeg2k_image', resize: "600x600>", url: "#{uri}/resized" },
                                                 { label: :config_lookup, format: 'jp2', recipe: :default, processor: 'jpeg2k_image', url: "#{uri}/config_lookup" },
                                                 { label: :string_recipe, format: 'jp2', recipe: '-jp2_space sRGB', processor: 'jpeg2k_image', url: "#{uri}/string_recipe" },
-                                                { label: :diy,           format: 'jp2', processor: 'jpeg2k_image', url: "#{uri}/original_file_diy" }])
+                                                { label: :diy,           format: 'jp2', processor: 'jpeg2k_image', url: "#{uri}/original_file_diy" }
+                                              ])
         when 'image/x-adobe-dng'
           ImageDerivatives.create(self, source: :original_file,
                                         outputs: [
                                           { label: :access, size: "300x300>", format: 'jpg', processor: :raw_image, url: "#{uri}/original_file_access" },
-                                          { label: :thumb,  size: "100x100>", format: 'jpg', processor: :raw_image, url: "#{uri}/original_file_thumb" }])
+                                          { label: :thumb,  size: "100x100>", format: 'jpg', processor: :raw_image, url: "#{uri}/original_file_thumb" }
+                                        ])
         end
       end
     end
@@ -210,7 +218,7 @@ describe "Transcoding" do
       expect(file.attached_files['thumbnail'].mime_type).to eq('image/jpeg')
     end
 
-    context "and the timeout is set" do
+    context "when the timeout is set" do
       before do
         Hydra::Derivatives::Processors::Video::Processor.timeout = 0.2 # 200ms
       end

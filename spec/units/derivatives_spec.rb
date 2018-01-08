@@ -12,18 +12,20 @@ describe Hydra::Derivatives do
   describe "source_file_service" do
     before  { subject.source_file_service = custom_source_file_service }
 
-    context "as a global configuration setting" do
-      let(:custom_source_file_service) { "fake service" }
+    context "with a global configuration setting" do
       subject { CustomFile }
+
+      let(:custom_source_file_service) { "fake service" }
 
       it "utilizes the default source file service" do
         expect(subject.source_file_service).to eq(custom_source_file_service)
       end
     end
 
-    context "as an instance level configuration setting" do
-      let(:custom_source_file_service) { "another fake service" }
+    context "with an instance level configuration setting" do
       subject { CustomFile.new }
+
+      let(:custom_source_file_service) { "another fake service" }
 
       it "accepts a custom source file service as an option" do
         expect(subject.source_file_service).to eq(custom_source_file_service)

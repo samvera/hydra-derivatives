@@ -10,9 +10,9 @@ describe Hydra::Derivatives::RemoteSourceFile do
 
     context 'when you pass in a String file name' do
       let(:input_obj) { file_name }
-      let(:options) { Hash.new }
+      let(:options) { {} }
 
-      it 'it yields the file name' do
+      it 'yields the file name' do
         expect do |blk|
           described_class.call(input_obj, options, &blk)
         end.to yield_with_args(file_name)
@@ -23,7 +23,7 @@ describe Hydra::Derivatives::RemoteSourceFile do
       let(:input_obj) { TestObject.new(source_file_name: file_name) }
       let(:options) { { source: :source_file_name } }
 
-      it 'it yields the file name' do
+      it 'yields the file name' do
         expect do |blk|
           described_class.call(input_obj, options, &blk)
         end.to yield_with_args(file_name)

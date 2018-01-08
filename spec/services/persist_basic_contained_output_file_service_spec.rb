@@ -19,7 +19,8 @@ describe Hydra::Derivatives::PersistBasicContainedOutputFileService do
     let(:object) { BasicContainerObject.create }
     let(:content) { StringIO.new("fake file content") }
     let(:resource) { object.public_send(destination_name.to_sym) }
-    context "and the content is a stream" do
+
+    context "when the content is a stream" do
       it "persists the file to the specified destination on the given object" do
         described_class.call(content, format: 'jpg', url: "#{object.uri}/the_derivative_name")
         expect(resource.content).to start_with("fake file content")
@@ -28,8 +29,9 @@ describe Hydra::Derivatives::PersistBasicContainedOutputFileService do
       end
     end
 
-    context "and content is a string" do
+    context "when the content is a string" do
       let(:content) { "fake file content - ÅÄÖ" }
+
       it "persists the file to the specified destination on the given object" do
         described_class.call(content, format: 'txt', url: "#{object.uri}/the_derivative_name")
         expect(resource.content).to eq("fake file content - ÅÄÖ")

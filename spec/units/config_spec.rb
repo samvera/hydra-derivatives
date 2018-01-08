@@ -31,13 +31,13 @@ describe "the configuration" do
   end
 
   it "lets you set a custom output file service" do
-    output_file_service = double("MyOutputFileService")
+    output_file_service = instance_double("MyOutputFileService")
     subject.output_file_service = output_file_service
     expect(subject.output_file_service).to eq(output_file_service)
   end
 
   it "lets you set a custom source file service" do
-    source_file_service = double("MyRetriveSourceFileService")
+    source_file_service = instance_double("MyRetriveSourceFileService")
     subject.source_file_service = source_file_service
     expect(subject.source_file_service).to eq(source_file_service)
   end

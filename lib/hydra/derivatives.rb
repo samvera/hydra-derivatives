@@ -50,8 +50,8 @@ module Hydra
       @config = Config.new
     end
 
-    CONFIG_METHODS = [:ffmpeg_path, :libreoffice_path, :temp_file_base, :fits_path, :kdu_compress_path,
-                      :kdu_compress_recipes, :enable_ffmpeg, :source_file_service, :output_file_service, :active_encode_poll_time].freeze
+    CONFIG_METHODS = %i[ffmpeg_path libreoffice_path temp_file_base fits_path kdu_compress_path
+                        kdu_compress_recipes enable_ffmpeg source_file_service output_file_service active_encode_poll_time].freeze
     CONFIG_METHODS.each do |method|
       module_eval <<-RUBY
         def self.#{method}

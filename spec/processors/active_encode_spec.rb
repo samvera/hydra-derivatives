@@ -20,14 +20,14 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     let(:external_url) { 'http://www.example.com/external/content' }
     let(:output) { [{ url: external_url }] }
     let(:encode_job_double) do
-      enc = double('encode_job',
-                   state: state,
-                   errors: errors,
-                   output: output,
-                   running?: false,
-                   completed?: completed_status,
-                   failed?: failed_status,
-                   cancelled?: cancelled_status)
+      enc = instance_double('encode_job',
+                            state: state,
+                            errors: errors,
+                            output: output,
+                            running?: false,
+                            completed?: completed_status,
+                            failed?: failed_status,
+                            cancelled?: cancelled_status)
       allow(enc).to receive(:reload).and_return(enc)
       enc
     end
