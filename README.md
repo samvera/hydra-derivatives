@@ -80,6 +80,8 @@ Hydra::Derivatives::Processors::ActiveEncode.timeout = 5.minutes
 
 ```
 
+You can add this to a `config/initializers/` file ([see Scholarsphere as an example](https://github.com/psu-stewardship/scholarsphere/blob/e16586c4bf6f7aed652924acc47dbe4ec774ff00/config/initializers/hydra_derivatives_config.rb#L5)). Another possibility, though unverified, is that you may try adding it to your `config/application.rb` or even vary by environments (e.g. `config/environments/test.rb`).
+
 ### Video Processing configuration
 
 Flags can be set for using different video codes.  Default codecs are shown below
