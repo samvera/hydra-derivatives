@@ -15,6 +15,8 @@ module Hydra
       attr_accessor :mime_type, :original_filename
       alias original_name original_filename
       deprecation_deprecate original_name: 'original_name has been deprecated. Use original_filename instead. This will be removed in hydra-derivatives 4.0'
+      alias original_name= original_filename=
+      deprecation_deprecate :"original_name=" => 'original_name= has been deprecated. Use original_filename= instead. This will be removed in hydra-derivatives 4.0'
 
       def initialize(file, mime_type = nil, original_filename = nil)
         super(file)
