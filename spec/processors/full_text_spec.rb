@@ -18,13 +18,17 @@ describe Hydra::Derivatives::Processors::FullText do
   describe "fetch" do
     subject { processor.send(:fetch) }
 
-    let(:request)       { double }
     let(:response_body) { 'returned by Solr' }
     let(:uri)           { URI('https://example.com:99/solr/update') }
+    let(:req) do
+      Net::HTTP::Post.new(
+        '/solr/update',
+        "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244"
+      )
+    end
 
     before do
       allow(processor).to receive(:uri).and_return(uri)
-      allow(Net::HTTP).to receive(:new).with('example.com', 99).and_return(request)
     end
 
     context "when that is successful" do
@@ -32,7 +36,9 @@ describe Hydra::Derivatives::Processors::FullText do
 
       it "calls the extraction service" do
         expect(processor).to receive(:check_for_ssl)
-        expect(request).to receive(:post).with('https://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
+        expect(req).to receive(:request).and_return(resp)
         expect(subject).to eq response_body
       end
     end
@@ -44,7 +50,9 @@ describe Hydra::Derivatives::Processors::FullText do
 
       it "calls the extraction service" do
         expect(processor).to receive(:check_for_ssl)
-        expect(request).to receive(:post).with('https://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
+        expect(req).to receive(:request).and_return(resp)
         expect(subject).to eq response_utf8
       end
     end
@@ -54,8 +62,37 @@ describe Hydra::Derivatives::Processors::FullText do
 
       it "raises an error" do
         expect(processor).to receive(:check_for_ssl)
-        expect(request).to receive(:post).with('https://example.com:99/solr/update', String, "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(resp)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
+        expect(req).to receive(:request).and_return(resp)
         expect { subject }.to raise_error(RuntimeError, %r{^Solr Extract service was unsuccessful. 'https://example\.com:99/solr/update' returned code 500})
+      end
+    end
+
+    context "with basic_auth" do
+      let(:resp) { double(code: '200', type_params: {}, body: response_body) }
+      let(:uri) { URI('https://user:password@example.com:99/solr/update') }
+
+      it "calls the extraction service with basic auth" do
+        expect(processor).to receive(:check_for_ssl)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
+        expect(req).to receive(:basic_auth).with('user', 'password')
+        expect(req).to receive(:request).and_return(resp)
+        expect(subject).to eq response_body
+      end
+    end
+
+    context "with no basic_auth credentials" do
+      let(:resp) { double(code: '401', type_params: {}, body: response_body) }
+      let(:uri) { URI('https://user:password@example.com:99/solr/update') }
+
+      it "raises a 401 error" do
+        req.basic_auth(nil, nil)
+        expect(processor).to receive(:check_for_ssl)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(req).to receive(:request).and_return(resp)
+        expect { subject }.to raise_error(RuntimeError, %r{^Solr Extract service was unsuccessful. 'https://user:password@example.com:99/solr/update' returned code 401})
       end
     end
   end
