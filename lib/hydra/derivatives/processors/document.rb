@@ -27,9 +27,11 @@ module Hydra::Derivatives::Processors
         end
       end
 
+      # @note Forces png files instead of jpegs for thumbnails. Processing jpgs seems to take much more time than pngs.
+      # @todo It would be good if we could configure this instead of overriding
       def converted_file
         @converted_file ||= if directives.fetch(:format) == "jpg"
-                              convert_to("pdf")
+                              convert_to("png")
                             else
                               convert_to(directives.fetch(:format))
                             end
