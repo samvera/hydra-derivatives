@@ -1,10 +1,35 @@
 # hydra-derivatives
 
+Code:
 [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives)
-[![Build Status](https://travis-ci.org/projecthydra/hydra-derivatives.png?branch=master)](https://travis-ci.org/projecthydra/hydra-derivatives)
-[![Coverage Status](https://coveralls.io/repos/github/projecthydra/hydra-derivatives/badge.svg?branch=master)](https://coveralls.io/github/projecthydra/hydra-derivatives?branch=master)
+[![Build Status](https://travis-ci.org/samvera/hydra-derivatives.png?branch=master)](https://travis-ci.org/samvera/hydra-derivatives)
+[![Coverage Status](https://coveralls.io/repos/github/samvera/hydra-derivatives/badge.svg?branch=master)](https://coveralls.io/github/samvera/hydra-derivatives?branch=master)
+
+Docs:
+[![Contribution Guidelines](http://img.shields.io/badge/CONTRIBUTING-Guidelines-blue.svg)](./CONTRIBUTING.md)
+[![Apache 2.0 License](http://img.shields.io/badge/APACHE2-license-blue.svg)](./LICENSE.txt)
+
+Jump In: [![Slack Status](http://slack.samvera.org/badge.svg)](http://slack.samvera.org/)
+
+# What is hydra-derivatives?
 
 Derivative generation for hydra
+
+## Product Owner & Maintenance
+
+**hydra-derivatives** is a Core Component of the Samvera community. The documentation for
+what this means can be found
+[here](http://samvera.github.io/core_components.html#requirements-for-a-core-component).
+
+### Product Owner
+
+[jenlindner](https://github.com/jenlindner)
+
+# Help
+
+The Samvera community is here to help. Please see our [support guide](./SUPPORT.md).
+
+# Getting Started
 
 If you have an ActiveFedora class like this:
 ```ruby
@@ -187,3 +212,10 @@ Instead, each directive may contain these arguments:
   * `:layers` (Integer) : The number of quality layers. Default: 8
   * `:compression` (Integer) : The left number of the compression ratio `n:1`, e.g. 12 will apply 12:1 compression. Default: 10.
   * `:tile_size` (Integer) : Pixel dimension of the tiles. Default: 1024
+
+# Acknowledgments
+
+This software has been developed by and is brought to you by the Samvera community.  Learn more at the
+[Samvera website](http://samvera.org/).
+
+![Samvera Logo](https://wiki.duraspace.org/download/thumbnails/87459292/samvera-fall-font2-200w.png?version=1&modificationDate=1498550535816&api=v2)
