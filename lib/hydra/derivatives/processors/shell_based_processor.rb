@@ -81,7 +81,7 @@ module Hydra::Derivatives::Processors
                 err_str << data
               end
             rescue EOFError
-              Rails.logger "Caught an eof error in ShellBasedProcessor"
+              Hydra::Derivatives::Logger.debug "Caught an eof error in ShellBasedProcessor"
               # No big deal.
             end
           end
