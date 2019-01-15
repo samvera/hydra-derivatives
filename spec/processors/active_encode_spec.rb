@@ -19,6 +19,7 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
     let(:errors) { [] }
     let(:external_url) { 'http://www.example.com/external/content' }
     let(:output) { [{ url: external_url }] }
+    let(:global_id) { GlobalID.new('gid://ActiveEncode/ActiveEncode::Base/1') }
     let(:encode_job_double) do
       enc = instance_double('encode_job',
                             state: state,
@@ -27,7 +28,8 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
                             running?: false,
                             completed?: completed_status,
                             failed?: failed_status,
-                            cancelled?: cancelled_status)
+                            cancelled?: cancelled_status,
+                            to_global_id: global_id)
       allow(enc).to receive(:reload).and_return(enc)
       enc
     end
@@ -126,6 +128,21 @@ describe Hydra::Derivatives::Processors::ActiveEncode do
       it 'doesnt lose the timeout error, but adds the new error message' do
         msg = "Unable to process ActiveEncode derivative: The command took longer than 0.01 seconds to execute. Encoding will be cancelled. An error occurred while trying to cancel encoding: some error message"
         expect { processor.process }.to raise_error Hydra::Derivatives::TimeoutError, msg
+      end
+    end
+
+    context 'when output file service is called' do
+      let(:completed_status) { true }
+      let(:state) { :completed }
+
+      before do
+        # Don't really encode the file during specs
+        allow(::ActiveEncode::Base).to receive(:create).and_return(encode_job_double)
+      end
+
+      it 'is passed the encode global id' do
+        expect(output_file_service).to receive(:call).with(anything, hash_including(encode_global_id: encode_job_double.to_global_id.to_s))
+        processor.process
       end
     end
   end

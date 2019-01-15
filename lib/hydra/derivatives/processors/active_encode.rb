@@ -22,6 +22,8 @@ module Hydra::Derivatives::Processors
     def process
       @encode_job = encode_class.create(source_path, directives)
       timeout ? wait_for_encode_job_with_timeout : wait_for_encode_job
+      # Pass encode global id to output file service
+      directives[:encode_global_id] = encode_job.to_global_id.to_s
       encode_job.output.each do |output|
         output_file_service.call(output, directives)
       end
