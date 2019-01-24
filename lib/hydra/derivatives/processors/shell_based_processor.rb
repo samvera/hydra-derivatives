@@ -62,9 +62,8 @@ module Hydra::Derivatives::Processors
         err_str = ''
         stdin, stdout, stderr, wait_thr = popen3(command)
         context[:pid] = wait_thr[:pid]
+        files = [stderr, stdout]
         stdin.close
-        stdout.close
-        files = [stderr]
 
         until all_eof?(files)
           ready = IO.select(files, nil, nil, 60)
@@ -82,11 +81,14 @@ module Hydra::Derivatives::Processors
                 err_str << data
               end
             rescue EOFError
-              Rails.logger "Caught an eof error in ShellBasedProcessor"
+              Hydra::Derivatives::Logger.debug "Caught an eof error in ShellBasedProcessor"
               # No big deal.
             end
           end
         end
+
+        stdout.close
+        stderr.close
         exit_status = wait_thr.value
 
         raise "Unable to execute command \"#{command}\". Exit code: #{exit_status}\nError message: #{err_str}" unless exit_status.success?
