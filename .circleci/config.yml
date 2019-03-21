@@ -41,11 +41,9 @@ jobs:
 
       - samvera/install_solr_core
 
-      - samvera/parallel_rspec
+      - samvera/rubocop
 
-      - run:
-          name: Call Rubocop
-          command: bundle exec rubocop
+      - samvera/parallel_rspec
 
 workflows:
   ci:
