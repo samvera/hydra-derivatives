@@ -23,7 +23,7 @@ module Hydra::Derivatives
       if file.respond_to? :mime_type
         file.mime_type
       else
-        "appliction/octet-stream"
+        "application/octet-stream"
       end
     end
   end
