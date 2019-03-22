@@ -1,4 +1,6 @@
 version: 2.1
+orbs:
+  samvera: samvera/circleci-orb@0
 jobs:
   bundle_lint_test:
     parameters:
@@ -7,110 +9,54 @@ jobs:
         default: 2.5.5
       project:
         type: string
-        default: 'hydra-derivatives'
       bundler_version:
         type: string
         default: '2.0.1'
-    docker:
-      - image: circleci/ruby:<< parameters.ruby_version >>-node-browsers-legacy
-      - image: ualbertalib/docker-fcrepo4:4.7
-        environment:
-          CATALINA_OPTS: "-Djava.awt.headless=true -Dfile.encoding=UTF-8 -server -Xms512m -Xmx1024m -XX:NewSize=256m -XX:MaxNewSize=256m -XX:PermSize=256m -XX:MaxPermSize=256m -XX:+DisableExplicitGC"
-      - image: solr:7-alpine
-        command: bin/solr -cloud -noprompt -f -p 8985
-
-    working_directory: ~/project
-
-    environment:
-      BUNDLE_PATH: vendor/bundle
-      BUNDLE_JOBS: 4
-      BUNDLE_RETRY: 3
-      RAILS_ENV: test
-      RACK_ENV: test
-      FCREPO_TEST_PORT: 8080/fcrepo
-      SPEC_OPTS: --profile 10 --format RspecJunitFormatter --out /tmp/test-results/rspec.xml --format progress
-
+    executor:
+      name: 'samvera/ruby_fcrepo_solr'
+      ruby_version: << parameters.ruby_version >>
     steps:
-    - restore_cache:
-        keys:
-        - v1-source-{{ .Branch }}-{{ .Revision }}
+      - samvera/cached_checkout
+      - run:
+          name: Install dependencies
+          command: |
+            sudo apt-get update
+            sudo apt-get install ghostscript ufraw-batch libpng-dev imagemagick ffmpeg libreoffice
+      - run:
+          name: Install Kakadu
+          command: |
+            if [ ! -d "kakadu" ]; then
+              mkdir ~/downloads
+              wget http://kakadusoftware.com/wp-content/uploads/2014/06/KDU77_Demo_Apps_for_Linux-x86-64_150710.zip -O ~/downloads/kakadu.zip
+              unzip ~/downloads/kakadu.zip
+              mv KDU77_Demo_Apps_for_Linux-x86-64_150710 kakadu
+            fi
+            sudo cp kakadu/*.so /usr/lib
+            sudo cp kakadu/* /usr/bin
 
-    - checkout
+      - samvera/bundle_for_gem:
+          ruby_version: << parameters.ruby_version >>
+          bundler_version: << parameters.bundler_version >>
+          project: << parameters.project >>
 
-    - save_cache:
-        key: v1-source-{{ .Branch }}-{{ .Revision }}
-        paths:
-        - ".git"
+      - samvera/install_solr_core
 
-    - run:
-        name: Install dependencies
-        command: |
-          sudo apt-get update
-          sudo apt-get install ghostscript ufraw-batch libpng-dev imagemagick ffmpeg libreoffice
-    - run:
-        name: Install Kakadu
-        command: |
-          if [ ! -d "kakadu" ]; then
-            mkdir ~/downloads
-            wget http://kakadusoftware.com/wp-content/uploads/2014/06/KDU77_Demo_Apps_for_Linux-x86-64_150710.zip -O ~/downloads/kakadu.zip
-            unzip ~/downloads/kakadu.zip
-            mv KDU77_Demo_Apps_for_Linux-x86-64_150710 kakadu
-          fi
-          sudo cp kakadu/*.so /usr/lib
-          sudo cp kakadu/* /usr/bin
+      - samvera/rubocop
 
-    - restore_cache:
-        keys:
-        - v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
+      - samvera/parallel_rspec
 
-    - run:
-        name: Update bundler
-        command: |
-          echo 'export BUNDLER_VERSION=<< parameters.bundler_version >>' >> $BASH_ENV
-          gem install bundler -v << parameters.bundler_version >>
-
-    - run:
-        name: Install dependencies
-        command: bundle check || bundle install
-
-    - save_cache:
-        key: v1-bundle-{{ checksum "Gemfile" }}--{{ checksum "<< parameters.project >>.gemspec" }}-<< parameters.ruby_version >>
-        paths:
-        - ~/project/vendor/bundle
-
-    - run:
-        name: Load config into solr
-        command: |
-          cd solr/config
-          zip -1 -r solr_config.zip ./*
-          curl -H "Content-type:application/octet-stream" --data-binary @solr_config.zip "http://localhost:8985/solr/admin/configs?action=UPLOAD&name=solrconfig"
-          curl -H 'Content-type: application/json' http://localhost:8985/api/collections/ -d '{create: {name: hydra-test, config: solrconfig, numShards: 1}}'
-
-    - run:
-        name: Call Rubocop
-        command: bundle exec rubocop
-
-    - run:
-        name: Run rspec in parallel
-        command: |
-          mkdir /tmp/test-results
-          bundle exec rspec $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
-
-    # collect reports
-    - store_test_results:
-        path: /tmp/test-results
-    - store_artifacts:
-        path: /tmp/test-results
-        destination: test-results
 workflows:
   ci:
     jobs:
       - bundle_lint_test:
           ruby_version: "2.4.5"
           name: "ruby2-4-5"
+          project: 'hydra-derivatives'
       - bundle_lint_test:
           ruby_version: "2.5.5"
           name: "ruby2-5-5"
+          project: 'hydra-derivatives'
       - bundle_lint_test:
           ruby_version: "2.6.2"
           name: "ruby2-6-2"
+          project: 'hydra-derivatives'
