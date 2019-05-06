@@ -2,7 +2,7 @@
 
 Code:
 [![Version](https://badge.fury.io/rb/hydra-derivatives.png)](http://badge.fury.io/rb/hydra-derivatives)
-[![Build Status](https://travis-ci.org/samvera/hydra-derivatives.png?branch=master)](https://travis-ci.org/samvera/hydra-derivatives)
+[![Build Status](https://circleci.com/gh/samvera/hydra-derivatives.svg?style=svg)](https://circleci.com/gh/samvera/hydra-derivatives)
 [![Coverage Status](https://coveralls.io/repos/github/samvera/hydra-derivatives/badge.svg?branch=master)](https://coveralls.io/github/samvera/hydra-derivatives?branch=master)
 
 Docs:
