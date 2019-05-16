@@ -13,7 +13,7 @@ Jump In: [![Slack Status](http://slack.samvera.org/badge.svg)](http://slack.samv
 
 # What is hydra-derivatives?
 
-Derivative generation for hydra
+Derivative generation for Samvera applications.
 
 ## Product Owner & Maintenance
 
