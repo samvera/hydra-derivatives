@@ -38,6 +38,7 @@ jobs:
           ruby_version: << parameters.ruby_version >>
           bundler_version: << parameters.bundler_version >>
           project: << parameters.project >>
+          cache_version: '2'
 
       - samvera/install_solr_core
 
