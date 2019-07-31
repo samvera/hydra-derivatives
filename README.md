@@ -213,6 +213,30 @@ Instead, each directive may contain these arguments:
   * `:compression` (Integer) : The left number of the compression ratio `n:1`, e.g. 12 will apply 12:1 compression. Default: 10.
   * `:tile_size` (Integer) : Pixel dimension of the tiles. Default: 1024
 
+# Development Environment
+
+## Dependencies
+
+* [ImageMagick](https://www.imagemagick.org)
+    * On a mac, do `brew install imagemagick`
+* [LibreOffice](https://www.libreoffice.org/)
+*   * On a mac, do `brew cask install libreoffice`
+* [Kakadu](http://kakadusoftware.com/)
+    * On a mac, extract the file and run the pkg installer therein (don't get distracted by the files called kdu_show)
+* [Ghostscript](https://www.ghostscript.com/)
+    * On a mac, `brew install ghostscript`
+* ufraw
+    * On a mac, `brew install ufraw`
+* libvpx
+    * On a mac, `brew install libvpx`
+* ffmpeg
+    * On a mac, `brew install ffmpeg`
+    * Ensure `libvpx` is installed first
+
+## Running Tests
+
+1. Run tests with `RAILS_ENV=test bundle exec rake ci`
+
 # Acknowledgments
 
 This software has been developed by and is brought to you by the Samvera community.  Learn more at the

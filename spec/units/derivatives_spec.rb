@@ -40,6 +40,12 @@ describe Hydra::Derivatives do
       end
     end
     describe "#{method}=" do
+      around do |example|
+        value = subject.config.send(method)
+        example.call
+        subject.send("#{method}=", value)
+      end
+
       it 'stores config changes' do
         expect { subject.send("#{method}=", "new_value") }.to change { subject.config.send(method) }.from(subject.config.send(method)).to("new_value")
       end

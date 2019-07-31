@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'fcrepo_wrapper', '~> 0.2'
   spec.add_development_dependency 'rake', '~> 10.1'
   spec.add_development_dependency 'rspec', '~> 3.1'
-  spec.add_development_dependency "solr_wrapper", "~> 0.4"
+  spec.add_development_dependency "solr_wrapper", "~> 2.0"
 
   spec.add_dependency 'active-fedora', '>= 11.3.1', '< 13'
   spec.add_dependency 'active_encode', '~>0.1'
