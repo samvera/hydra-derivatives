@@ -20,4 +20,15 @@ describe Hydra::Derivatives::AudioEncoder do
       expect(audio_encoder).to eq('aac')
     end
   end
+
+  context "when ffmpeg is not installed" do
+    it "logs a warning" do
+      allow(ActiveFedora::Base.logger).to receive(:warn)
+      allow(Open3).to receive(:capture3).with('ffmpeg -codecs').and_raise StandardError
+
+      described_class.new
+
+      expect(ActiveFedora::Base.logger).to have_received(:warn).with('Unable to find ffmpeg')
+    end
+  end
 end
