@@ -6,12 +6,11 @@ jobs:
     parameters:
       ruby_version:
         type: string
-        default: 2.5.5
       project:
         type: string
       bundler_version:
         type: string
-        default: '2.0.1'
+        default: 2.0.1
     executor:
       name: 'samvera/ruby_fcrepo_solr'
       ruby_version: << parameters.ruby_version >>
@@ -50,14 +49,14 @@ workflows:
   ci:
     jobs:
       - bundle_lint_test:
-          ruby_version: "2.4.5"
-          name: "ruby2-4-5"
-          project: 'hydra-derivatives'
+          name: ruby2-4-6
+          ruby_version: 2.4.6
+          project: hydra-derivatives
       - bundle_lint_test:
-          ruby_version: "2.5.5"
-          name: "ruby2-5-5"
-          project: 'hydra-derivatives'
+          name: ruby2-5-5
+          ruby_version: 2.5.5
+          project: hydra-derivatives
       - bundle_lint_test:
-          ruby_version: "2.6.2"
-          name: "ruby2-6-2"
-          project: 'hydra-derivatives'
+          name: ruby2-6-3
+          ruby_version: 2.6.3
+          project: hydra-derivatives
