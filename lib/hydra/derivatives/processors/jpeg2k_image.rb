@@ -99,15 +99,9 @@ module Hydra::Derivatives::Processors
       File.unlink(file_path) unless file_path.nil?
     end
 
-    def encode_file(recipe, opts = {})
+    def encode_file(recipe, file_path:)
       output_file = self.class.tmp_file('.jp2')
-      if opts[:file_path]
-        self.class.encode(opts[:file_path], recipe, output_file)
-      else
-        Hydra::Derivatives::TempfileService.create(source_file) do |f|
-          self.class.encode(f.path, recipe, output_file)
-        end
-      end
+      self.class.encode(file_path, recipe, output_file)
       output_file_service.call(File.open(output_file, 'rb'), directives)
       File.unlink(output_file)
     end
