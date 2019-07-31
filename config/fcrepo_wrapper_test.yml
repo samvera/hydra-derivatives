@@ -1,4 +1,4 @@
-port: null
+port: 8986
 verbose: true
 managed: true
 enable_jms: false

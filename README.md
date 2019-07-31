@@ -237,6 +237,13 @@ Instead, each directive may contain these arguments:
 
 1. Run tests with `RAILS_ENV=test bundle exec rake ci`
 
+## Running specific tests
+
+If you don't want to run the whole suite all at once like CI, do the following:
+
+1. Run the test servers with `rake derivatives:test_server`
+2. Run the tests.
+
 # Acknowledgments
 
 This software has been developed by and is brought to you by the Samvera community.  Learn more at the

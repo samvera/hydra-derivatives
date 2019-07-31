@@ -1,4 +1,5 @@
 ENV['environment'] ||= 'test'
+ENV['RAILS_ENV'] = 'test'
 
 require 'simplecov'
 require 'coveralls'
