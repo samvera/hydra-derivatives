@@ -19,6 +19,14 @@ describe Hydra::Derivatives::TempfileService do
     end
   end
 
+  let(:class_with_tempfile) do
+    Class.new do
+      def to_tempfile
+        "stub"
+      end
+    end
+  end
+
   let(:initialization_options) { { content: 'abc', mime_type: 'text/plain' } }
 
   let(:file) { class_with_metadata_extraction.new(initialization_options) }
@@ -26,6 +34,21 @@ describe Hydra::Derivatives::TempfileService do
   describe '#tempfile' do
     it 'has a method called to_tempfile' do
       expect { |b| subject.tempfile(&b) }.to yield_with_args(Tempfile)
+    end
+    it "will call read on passed content if available" do
+      file_with_readable_content = class_with_metadata_extraction.new(content: StringIO.new("test"), mime_type: 'text/plain')
+
+      service = described_class.new(file_with_readable_content)
+
+      service.tempfile do |t|
+        expect(t.read).to eq "test"
+      end
+    end
+    it "delegates down to `to_tempfile` if available" do
+      tempfile_stub = class_with_tempfile.new
+      service = described_class.new(tempfile_stub)
+
+      expect(service.tempfile).to eq "stub"
     end
   end
 end

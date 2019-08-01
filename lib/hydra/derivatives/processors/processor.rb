@@ -19,13 +19,6 @@ module Hydra::Derivatives::Processors
       raise "Processor is an abstract class. Implement `process' on #{self.class.name}"
     end
 
-    # This governs the output key sent to the persist file service
-    # while this is adequate for storing in Fedora, it's not a great name for saving
-    # to the file system.
-    def output_file_id(name)
-      [out_prefix, name].join('_')
-    end
-
     def output_filename_for(_name)
       File.basename(source_path)
     end

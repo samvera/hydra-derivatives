@@ -38,5 +38,22 @@ describe Hydra::Derivatives::Processors::Video::Processor do
         subject.process
       end
     end
+
+    context "when an mkv is requested" do
+      let(:directives) { { label: :thumb, format: 'mkv', url: 'http://localhost:8983/fedora/rest/dev/1234/thumbnail' } }
+
+      it "creates a fedora resource and infers the name" do
+        expect(subject).to receive(:encode_file).with("mkv", Hydra::Derivatives::Processors::Ffmpeg::OUTPUT_OPTIONS => "-s 320x240 -vcodec ffv1 -g 30 -b:v 345k -ac 2 -ab 96k -ar 44100", Hydra::Derivatives::Processors::Ffmpeg::INPUT_OPTIONS => "")
+        subject.process
+      end
+    end
+
+    context "when an unknown format is requested" do
+      let(:directives) { { label: :thumb, format: 'nocnv', url: 'http://localhost:8983/fedora/rest/dev/1234/thumbnail' } }
+
+      it "raises an ArgumentError" do
+        expect { subject.process }.to raise_error ArgumentError, "Unknown format `nocnv'"
+      end
+    end
   end
 end
