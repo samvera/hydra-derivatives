@@ -3,8 +3,8 @@ version = File.read(File.expand_path("../VERSION", __FILE__)).strip
 Gem::Specification.new do |spec|
   spec.name          = "hydra-derivatives"
   spec.version       = version
-  spec.authors       = ["Justin Coyne"]
-  spec.email         = ["justin@curationexperts.com"]
+  spec.authors       = ["Justin Coyne"]n
+  spec.email         = ["jenlindner@gmail.com", "jcoyne85@stanford.edu"]
   spec.description   = "Derivative generation plugin for hydra"
   spec.summary       = "Derivative generation plugin for hydra"
   spec.license       = "APACHE2"
