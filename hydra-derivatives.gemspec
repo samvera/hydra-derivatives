@@ -4,7 +4,7 @@ Gem::Specification.new do |spec|
   spec.name          = "hydra-derivatives"
   spec.version       = version
   spec.authors       = ["Justin Coyne"]
-  spec.email         = ["justin@curationexperts.com"]
+  spec.email         = ["jenlindner@gmail.com", "jcoyne85@stanford.edu"]
   spec.description   = "Derivative generation plugin for hydra"
   spec.summary       = "Derivative generation plugin for hydra"
   spec.license       = "APACHE2"
