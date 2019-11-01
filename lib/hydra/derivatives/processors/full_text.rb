@@ -33,8 +33,8 @@ module Hydra::Derivatives::Processors
       # @return [Net::HttpResponse] the result of calling the extract service
       def http_request
         Net::HTTP.start(uri.host, uri.port) do |http|
+          http.use_ssl = true if check_for_ssl
           req = Net::HTTP::Post.new(uri.request_uri, request_headers)
-          req.use_ssl = true if check_for_ssl
           req.basic_auth uri.user, uri.password unless uri.password.nil?
           req.body = file_content
           http.request req
