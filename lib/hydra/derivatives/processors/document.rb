@@ -23,7 +23,7 @@ module Hydra::Derivatives::Processors
         if directives.fetch(:format) == "jpg"
           Hydra::Derivatives::Processors::Image.new(converted_file, directives).process
         else
-          output_file_service.call(File.open(converted_file, 'rb'), directives)
+          output_file_service.call(File.read(converted_file), directives)
         end
       end
 
