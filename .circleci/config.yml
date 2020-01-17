@@ -60,3 +60,7 @@ workflows:
           name: ruby2-6-3
           ruby_version: 2.6.3
           project: hydra-derivatives
+      - bundle_lint_test:
+          name: ruby2-7-0
+          ruby_version: 2.7.0
+          project: hydra-derivatives
