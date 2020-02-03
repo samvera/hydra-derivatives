@@ -10,9 +10,8 @@ Gem::Specification.new do |spec|
   spec.license       = "APACHE2"
   spec.homepage      = "https://github.com/projecthydra/hydra-derivatives"
 
-  spec.files         = `git ls-files`.split($/)
+  spec.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR).select { |f| File.dirname(f) !~ %r{\A"?spec|test|features\/?} }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
-  spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
   spec.add_development_dependency 'bundler', '~> 2.0'
