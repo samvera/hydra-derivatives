@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hydra::Derivatives::Processors
   # Extract the full text from the content using Solr's extract handler
   class FullText < Processor
@@ -24,6 +26,7 @@ module Hydra::Derivatives::Processors
       def fetch
         resp = http_request
         raise "Solr Extract service was unsuccessful. '#{uri}' returned code #{resp.code} for #{source_path}\n#{resp.body}" unless resp.code == '200'
+
         file_content.rewind if file_content.respond_to?(:rewind)
         resp.body.force_encoding(resp.type_params['charset']) if resp.type_params['charset']
         resp.body
@@ -32,7 +35,7 @@ module Hydra::Derivatives::Processors
       # Send the request to the extract service
       # @return [Net::HttpResponse] the result of calling the extract service
       def http_request
-        Net::HTTP.start(uri.host, uri.port, :use_ssl => check_for_ssl) do |http|
+        Net::HTTP.start(uri.host, uri.port, use_ssl: check_for_ssl) do |http|
           req = Net::HTTP::Post.new(uri.request_uri, request_headers)
           req.basic_auth uri.user, uri.password unless uri.password.nil?
           req.body = file_content
@@ -41,7 +44,7 @@ module Hydra::Derivatives::Processors
       end
 
       def file_content
-        @content ||= File.open(source_path).read
+        @file_content ||= File.open(source_path).read
       end
 
       # @return [Hash] the request headers to send to the Solr extract service

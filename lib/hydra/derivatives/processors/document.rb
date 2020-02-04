@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# An abstract class for asyncronous jobs that convert office documents using soffice
 module Hydra::Derivatives::Processors
   class Document < Processor
     include ShellBasedProcessor
