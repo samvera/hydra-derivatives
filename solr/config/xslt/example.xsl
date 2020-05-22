@@ -124,7 +124,7 @@
       td { vertical-align: top; }
       ul { margin: 0px; margin-left: 1em; padding: 0px; }
       .note { font-size:80%; }
-      .doc { margin-top: 1em; border-top: solid grey 1px; }
+      .doc { margin-top: 1em; border-top: solid gray 1px; }
       .exp { display: none; font-family: monospace; white-space: pre; }
     </style>
   </xsl:template>
