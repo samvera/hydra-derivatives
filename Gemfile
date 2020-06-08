@@ -3,11 +3,13 @@ source 'https://rubygems.org'
 # Please see hydra-derivatives.gemspec for dependency information.
 gemspec
 
+gem 'active-fedora', git: 'https://github.com/jrgriffiniii/active_fedora.git', branch: 'rails6-update'
+gem 'sprockets', '~> 3.7'
+
 group :development, :test do
-  gem 'byebug' unless ENV['TRAVIS']
   gem 'coveralls'
+  gem 'rspec_junit_formatter'
   gem 'rubocop', '~> 0.52.0', require: false
   gem 'rubocop-rspec', require: false
   gem 'simplecov'
-  gem 'rspec_junit_formatter'
 end
