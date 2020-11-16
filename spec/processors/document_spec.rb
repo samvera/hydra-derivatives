@@ -30,7 +30,10 @@ describe Hydra::Derivatives::Processors::Document do
       let(:converted_file) { "path/to/converted.png" }
       let(:mock_content)   { "mocked png content" }
 
-      before { allow(File).to receive(:read).with(converted_file).and_return(mock_content) }
+      before do
+        allow(File).to receive(:open).with(converted_file, 'rb').and_return(mock_content)
+      end
+
       it "creates a thumbnail of the document" do
         expect(output_service).to receive(:call).with(mock_content, directives)
         expect(File).to receive(:unlink).with(converted_file)

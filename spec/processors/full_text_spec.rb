@@ -4,6 +4,11 @@ describe Hydra::Derivatives::Processors::FullText do
   let(:file_path)  { File.join(fixture_path, 'test.docx') }
   let(:directives) { { format: 'txt', url: RDF::URI('http://localhost:8983/fedora/rest/dev/1234/ogg') } }
   let(:processor)  { described_class.new(file_path, directives) }
+  let(:http_options) do
+    {
+      use_ssl: nil
+    }
+  end
 
   describe "#process" do
     it 'extracts fulltext and stores the results' do
@@ -36,7 +41,7 @@ describe Hydra::Derivatives::Processors::FullText do
 
       it "calls the extraction service" do
         expect(processor).to receive(:check_for_ssl)
-        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99, http_options).and_yield(req)
         expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
         expect(req).to receive(:request).and_return(resp)
         expect(subject).to eq response_body
@@ -50,7 +55,7 @@ describe Hydra::Derivatives::Processors::FullText do
 
       it "calls the extraction service" do
         expect(processor).to receive(:check_for_ssl)
-        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99, http_options).and_yield(req)
         expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
         expect(req).to receive(:request).and_return(resp)
         expect(subject).to eq response_utf8
@@ -62,7 +67,7 @@ describe Hydra::Derivatives::Processors::FullText do
 
       it "raises an error" do
         expect(processor).to receive(:check_for_ssl)
-        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99, http_options).and_yield(req)
         expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
         expect(req).to receive(:request).and_return(resp)
         expect { subject }.to raise_error(RuntimeError, %r{^Solr Extract service was unsuccessful. 'https://example\.com:99/solr/update' returned code 500})
@@ -75,7 +80,7 @@ describe Hydra::Derivatives::Processors::FullText do
 
       it "calls the extraction service with basic auth" do
         expect(processor).to receive(:check_for_ssl)
-        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99, http_options).and_yield(req)
         expect(Net::HTTP::Post).to receive(:new).with('/solr/update', "Content-Type" => "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "Content-Length" => "24244").and_return(req)
         expect(req).to receive(:basic_auth).with('user', 'password')
         expect(req).to receive(:request).and_return(resp)
@@ -90,7 +95,7 @@ describe Hydra::Derivatives::Processors::FullText do
       it "raises a 401 error" do
         req.basic_auth(nil, nil)
         expect(processor).to receive(:check_for_ssl)
-        expect(Net::HTTP).to receive(:start).with('example.com', 99).and_yield(req)
+        expect(Net::HTTP).to receive(:start).with('example.com', 99, http_options).and_yield(req)
         expect(req).to receive(:request).and_return(resp)
         expect { subject }.to raise_error(RuntimeError, %r{^Solr Extract service was unsuccessful. 'https://user:password@example.com:99/solr/update' returned code 401})
       end

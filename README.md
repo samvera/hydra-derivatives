@@ -195,6 +195,11 @@ MAGICK_TEMPDIR
 ```
 YMMV as to where setting them will take effect in your app; the application's web server's vhost directives are a location known to work with an Apache web server set up.
 
+ImageMagick by default disables reading and writing of PDFs due to a [vulnerability in ghostscript](https://www.kb.cert.org/vuls/id/332928/). Make sure to install a fixed version of ghostscript and modify ImageMagick's security policy to allow reading and writing PDFs:
+```
+sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
+```
+
 ## JPEG2k Directives
 
 Unlike the other processors, the `Jpeg2kImage` processor does not generally accept arguments that directly (or nearly so) translate to the arguments you would give to the corresponding command line utility.

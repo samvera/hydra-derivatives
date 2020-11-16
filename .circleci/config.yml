@@ -10,7 +10,7 @@ jobs:
         type: string
       bundler_version:
         type: string
-        default: 2.0.1
+        default: 2.1.4
     executor:
       name: 'samvera/ruby_fcrepo_solr'
       ruby_version: << parameters.ruby_version >>
@@ -32,6 +32,9 @@ jobs:
             fi
             sudo cp kakadu/*.so /usr/lib
             sudo cp kakadu/* /usr/bin
+      - run:
+          name: Modify ImageMagick security policy
+          command: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
 
       - samvera/bundle_for_gem:
           ruby_version: << parameters.ruby_version >>
@@ -49,18 +52,18 @@ workflows:
   ci:
     jobs:
       - bundle_lint_test:
-          name: ruby2-4-6
-          ruby_version: 2.4.6
+          name: ruby2-4
+          ruby_version: 2.4.10
           project: hydra-derivatives
       - bundle_lint_test:
-          name: ruby2-5-5
-          ruby_version: 2.5.5
+          name: ruby2-5
+          ruby_version: 2.5.8
           project: hydra-derivatives
       - bundle_lint_test:
-          name: ruby2-6-3
-          ruby_version: 2.6.3
+          name: ruby2-6
+          ruby_version: 2.6.6
           project: hydra-derivatives
       - bundle_lint_test:
-          name: ruby2-7-0
-          ruby_version: 2.7.0
+          name: ruby2-7
+          ruby_version: 2.7.1
           project: hydra-derivatives

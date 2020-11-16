@@ -18,7 +18,7 @@ end
 # - RSpec adds ./lib to the $LOAD_PATH
 require 'hydra/derivatives'
 # Resque.inline = Rails.env.test?
-require 'byebug' unless ENV['TRAVIS']
+require 'pry-byebug' unless ENV['CI']
 
 require 'active_fedora/cleaner'
 ActiveFedora::Base.logger = Logger.new(STDOUT)
