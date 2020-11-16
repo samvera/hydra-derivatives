@@ -32,6 +32,9 @@ jobs:
             fi
             sudo cp kakadu/*.so /usr/lib
             sudo cp kakadu/* /usr/bin
+      - run:
+          name: Modify ImageMagick security policy
+          command: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
 
       - samvera/bundle_for_gem:
           ruby_version: << parameters.ruby_version >>
