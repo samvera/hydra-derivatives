@@ -37,26 +37,26 @@ describe Hydra::Derivatives::Processors::Jpeg2kImage do
 
     it "can get the recipe from a config file" do
       args = { recipe: :myrecipe }
-      r = described_class.kdu_compress_recipe(args, 'grey', 7200)
-      expect(r).to eq(@sample_cfg['jp2_recipes'][:myrecipe_grey])
+      r = described_class.kdu_compress_recipe(args, 'gray', 7200)
+      expect(r).to eq(@sample_cfg['jp2_recipes'][:myrecipe_gray])
     end
 
     it "can take a recipe as a string" do
       args = { recipe: '-my -excellent -recipe' }
-      r = described_class.kdu_compress_recipe(args, 'grey', 7200)
+      r = described_class.kdu_compress_recipe(args, 'gray', 7200)
       expect(r).to eq(args[:recipe])
     end
 
     it "will fall back to a #calculate_recipe if a symbol is passed but no recipe is found" do
       args = { recipe: :x }
-      r = described_class.kdu_compress_recipe(args, 'grey', 7200)
-      expect(r).to eq(described_class.calculate_recipe(args, 'grey', 7200))
+      r = described_class.kdu_compress_recipe(args, 'gray', 7200)
+      expect(r).to eq(described_class.calculate_recipe(args, 'gray', 7200))
     end
 
     it "will fall back to a #calculate_recipe if there is no attempt to provide one" do
       args = {}
-      r = described_class.kdu_compress_recipe(args, 'grey', 7200)
-      expect(r).to eq(described_class.calculate_recipe(args, 'grey', 7200))
+      r = described_class.kdu_compress_recipe(args, 'gray', 7200)
+      expect(r).to eq(described_class.calculate_recipe(args, 'gray', 7200))
     end
   end
 

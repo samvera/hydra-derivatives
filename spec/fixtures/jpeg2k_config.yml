@@ -5,7 +5,7 @@ defaults: &defaults
       -rate 2.4
       -jp2_space sRGB
       Stiles=\{1024,1024\}
-    :myrecipe_grey: >
+    :myrecipe_gray: >
       -rate 2.4
       -jp2_space sLUM
       Stiles=\{1024,1024\}

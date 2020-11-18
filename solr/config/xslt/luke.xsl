@@ -326,7 +326,7 @@
         <style type="text/css">
             <![CDATA[
             td.name {font-style: italic; font-size:80%; }
-            .doc { margin: 0.5em; border: solid grey 1px; }
+            .doc { margin: 0.5em; border: solid gray 1px; }
             .exp { display: none; font-family: monospace; white-space: pre; }
             div.histogram { background: none repeat scroll 0%; -moz-background-clip: -moz-initial; -moz-background-origin: -moz-initial; -moz-background-inline-policy: -moz-initial;}
             table.histogram { width: auto; vertical-align: bottom; }
