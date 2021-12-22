@@ -1,12 +1,10 @@
 version: 2.1
 orbs:
-  samvera: samvera/circleci-orb@0
+  samvera: samvera/circleci-orb@1.0
 jobs:
   bundle_lint_test:
     parameters:
       ruby_version:
-        type: string
-      project:
         type: string
       bundler_version:
         type: string
@@ -14,33 +12,29 @@ jobs:
     executor:
       name: 'samvera/ruby_fcrepo_solr'
       ruby_version: << parameters.ruby_version >>
+      solr_version: 7-slim
     steps:
       - samvera/cached_checkout
       - run:
           name: Install dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install ghostscript ufraw-batch libpng-dev imagemagick ffmpeg libreoffice
+            sudo apt-get install ghostscript libpng-dev imagemagick ffmpeg libreoffice
+      - setup_remote_docker
       - run:
           name: Install Kakadu
           command: |
-            if [ ! -d "kakadu" ]; then
-              mkdir ~/downloads
-              wget http://kakadusoftware.com/wp-content/uploads/2014/06/KDU77_Demo_Apps_for_Linux-x86-64_150710.zip -O ~/downloads/kakadu.zip
-              unzip ~/downloads/kakadu.zip
-              mv KDU77_Demo_Apps_for_Linux-x86-64_150710 kakadu
-            fi
+            docker create --name kakadu josejuansanchez/kakadu:1.0
+            docker cp kakadu:/kakadu kakadu
             sudo cp kakadu/*.so /usr/lib
             sudo cp kakadu/* /usr/bin
       - run:
           name: Modify ImageMagick security policy
           command: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
 
-      - samvera/bundle_for_gem:
+      - samvera/bundle:
           ruby_version: << parameters.ruby_version >>
           bundler_version: << parameters.bundler_version >>
-          project: << parameters.project >>
-          cache_version: '2'
 
       - samvera/install_solr_core
 
@@ -54,16 +48,12 @@ workflows:
       - bundle_lint_test:
           name: ruby2-4
           ruby_version: 2.4.10
-          project: hydra-derivatives
       - bundle_lint_test:
           name: ruby2-5
-          ruby_version: 2.5.8
-          project: hydra-derivatives
+          ruby_version: 2.5.9
       - bundle_lint_test:
           name: ruby2-6
-          ruby_version: 2.6.6
-          project: hydra-derivatives
+          ruby_version: 2.6.9
       - bundle_lint_test:
           name: ruby2-7
-          ruby_version: 2.7.1
-          project: hydra-derivatives
+          ruby_version: 2.7.5
