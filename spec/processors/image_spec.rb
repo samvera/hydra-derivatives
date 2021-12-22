@@ -13,7 +13,12 @@ describe Hydra::Derivatives::Processors::Image do
       let(:second_page) { instance_double("MockPage") }
       let(:mock_image)  { instance_double("MockImageOfPdf", layers: [first_page, second_page]) }
 
-      before { allow(mock_image).to receive(:type).and_return("PDF") }
+      before do
+        allow(mock_image).to receive(:type).and_return("PDF")
+        allow(first_page).to receive(:combine_options) { |&block| block.call(first_page) }
+        allow(second_page).to receive(:combine_options) { |&block| block.call(second_page) }
+        allow(mock_image).to receive(:combine_options) { |&block| block.call(mock_image) }
+      end
 
       context "when default" do
         let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
@@ -57,6 +62,10 @@ describe Hydra::Derivatives::Processors::Image do
         let(:mock_image) { instance_double("MockImage") }
         let(:directives) { { label: :thumb, size: "200x300>", format: 'png', quality: 75 } }
 
+        before do
+          allow(mock_image).to receive(:combine_options) { |&block| block.call(mock_image) }
+        end
+
         it "uses the image file" do
           expect(mock_image).not_to receive(:layers)
           expect(mock_image).to receive(:flatten)
@@ -73,6 +82,12 @@ describe Hydra::Derivatives::Processors::Image do
         let(:second_layer) { instance_double("MockPage") }
         let(:mock_image)   { instance_double("MockImage", layers: [first_layer, second_layer]) }
         let(:directives)   { { label: :thumb, size: "200x300>", format: 'png', quality: 75, layer: 1 } }
+
+        before do
+          allow(first_layer).to receive(:combine_options) { |&block| block.call(first_layer) }
+          allow(second_layer).to receive(:combine_options) { |&block| block.call(second_layer) }
+          allow(mock_image).to receive(:combine_options) { |&block| block.call(mock_image) }
+        end
 
         it "uses the layer" do
           expect(second_layer).to receive(:flatten)
