@@ -165,7 +165,7 @@ Just add `gem 'hydra-derivatives'` to your Gemfile.
 * [GhostScript](https://www.ghostscript.com/)
 * [ImageMagick](http://www.imagemagick.org/)
 * Kakadu's [kdu_compress](http://www.kakadusoftware.com/) (optional)
-* [ufraw](http://ufraw.sourceforge.net/)
+* [ufraw](http://ufraw.sourceforge.net/) or [dcraw](https://dechifro.org/dcraw/)
 
 To enable LibreOffice, FFMpeg, ImageMagick, FITS support, and kdu_compress support, make sure they are on your path. Most people will put that in their .bash_profile or somewhere similar.
 
@@ -232,6 +232,12 @@ Instead, each directive may contain these arguments:
     * On a mac, `brew install ghostscript`
 * ufraw
     * On a mac, `brew install ufraw`
+* dcraw (ufraw alternative)
+    * On a mac, `brew install dcraw`
+    * You will need to modify ImageMagick's delegate for dng files in order to use dcraw.
+	* First find where the deletegates.xml file is located: `identify -list delegate | grep Path`
+	* Edit the delegates.xml file by replacing the dng:decode delegate line with the following:
+          ```<delegate decode="dng:decode" command="&quot;dcraw&quot; -c -q 3 -H 5 -w &quot;%i&quot; | &quot;convert&quot; - &quot;%u.png&quot;"/>```
 * libvpx
     * On a mac, `brew install libvpx`
 * ffmpeg

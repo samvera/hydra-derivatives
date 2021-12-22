@@ -19,7 +19,7 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install ghostscript libpng-dev imagemagick ffmpeg libreoffice
+            sudo apt-get install ghostscript libpng-dev imagemagick ffmpeg libreoffice dcraw
       - setup_remote_docker
       - run:
           name: Install Kakadu
@@ -31,6 +31,9 @@ jobs:
       - run:
           name: Modify ImageMagick security policy
           command: sudo sed -i 's/policy domain="coder" rights="none" pattern="PDF"/policy domain="coder" rights="read|write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
+      - run:
+          name: Modify ImageMagick delegate for raw files
+          command: sudo sed -i 's/decode="dng:decode" command=".*"\/>$/decode="dng:decode" command="\&quot\;dcraw\&quot\; -c -q 3 -H 5 -w \&quot\;\%i\&quot\; \| \&quot\;convert\&quot\; - \&quot\;\%u\.png\&quot\;"\/>/' /etc/ImageMagick-6/delegates.xml
 
       - samvera/bundle:
           ruby_version: << parameters.ruby_version >>
@@ -45,9 +48,6 @@ jobs:
 workflows:
   ci:
     jobs:
-      - bundle_lint_test:
-          name: ruby2-4
-          ruby_version: 2.4.10
       - bundle_lint_test:
           name: ruby2-5
           ruby_version: 2.5.9
