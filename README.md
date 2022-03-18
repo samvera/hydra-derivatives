@@ -9,7 +9,7 @@ Docs:
 [![Contribution Guidelines](http://img.shields.io/badge/CONTRIBUTING-Guidelines-blue.svg)](./CONTRIBUTING.md)
 [![Apache 2.0 License](http://img.shields.io/badge/APACHE2-license-blue.svg)](./LICENSE.txt)
 
-Jump In: [![Slack Status](http://slack.samvera.org/badge.svg)](http://slack.samvera.org/)
+[Join us on slack!](http://slack.samvera.org/)
 
 # What is hydra-derivatives?
 
@@ -225,7 +225,7 @@ Instead, each directive may contain these arguments:
 * [ImageMagick](https://www.imagemagick.org)
     * On a mac, do `brew install imagemagick`
 * [LibreOffice](https://www.libreoffice.org/)
-*   * On a mac, do `brew cask install libreoffice`
+*   * On a mac, do `brew install libreoffice --cask`
 * [Kakadu](http://kakadusoftware.com/)
     * On a mac, extract the file and run the pkg installer therein (don't get distracted by the files called kdu_show)
 * [Ghostscript](https://www.ghostscript.com/)
@@ -260,4 +260,4 @@ If you don't want to run the whole suite all at once like CI, do the following:
 This software has been developed by and is brought to you by the Samvera community.  Learn more at the
 [Samvera website](http://samvera.org/).
 
-![Samvera Logo](https://wiki.duraspace.org/download/thumbnails/87459292/samvera-fall-font2-200w.png?version=1&modificationDate=1498550535816&api=v2)
+![Samvera Logo](https://samvera.org/wp-content/uploads/2017/06/samvera-logo-tm.svg)
