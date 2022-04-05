@@ -8,7 +8,7 @@ jobs:
         type: string
       bundler_version:
         type: string
-        default: 2.1.4
+        default: 2.3.10
     executor:
       name: 'samvera/ruby_fcrepo_solr'
       ruby_version: << parameters.ruby_version >>
@@ -49,11 +49,30 @@ workflows:
   ci:
     jobs:
       - bundle_lint_test:
-          name: ruby2-5
-          ruby_version: 2.5.9
+          name: ruby2-7
+          ruby_version: 2.7.5
       - bundle_lint_test:
           name: ruby2-6
           ruby_version: 2.6.9
       - bundle_lint_test:
+          name: ruby2-5
+          ruby_version: 2.5.9
+
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 0 * * *"
+          filters:
+            branches:
+              only:
+                - main
+    jobs:
+      - bundle_lint_test:
           name: ruby2-7
           ruby_version: 2.7.5
+      - bundle_lint_test:
+          name: ruby2-6
+          ruby_version: 2.6.9
+      - bundle_lint_test:
+          name: ruby2-5
+          ruby_version: 2.5.9
