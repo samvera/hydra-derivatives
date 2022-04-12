@@ -30,13 +30,14 @@ module Hydra
     autoload :AudioEncoder
 
     autoload_under 'services' do
-      autoload :RetrieveSourceFileService
-      autoload :RemoteSourceFile
-      autoload :PersistOutputFileService
+      autoload :MimeTypeService
       autoload :PersistBasicContainedOutputFileService
       autoload :PersistExternalFileOutputFileService
+      autoload :PersistOutputFileService
+      autoload :RemoteSourceFile
+      autoload :RetrieveSourceFileService
       autoload :TempfileService
-      autoload :MimeTypeService
+      autoload :ValkyrieSourceFileService
     end
 
     # Raised if the timout elapses
