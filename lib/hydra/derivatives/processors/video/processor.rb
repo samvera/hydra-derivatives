@@ -7,20 +7,20 @@ module Hydra::Derivatives::Processors
       self.config = Config.new
 
       protected
-
-        def options_for(format)
-          input_options = ""
-          output_options = "-s #{config.size_attributes} #{codecs(format)}"
-
-          if format == "jpg"
-            input_options += " -itsoffset -2"
-            output_options += " -vframes 1 -an -f rawvideo"
-          else
-            output_options += " #{config.video_attributes} #{config.audio_attributes}"
-          end
-
-          { Ffmpeg::OUTPUT_OPTIONS => output_options, Ffmpeg::INPUT_OPTIONS => input_options }
+      def options_for(format)
+        input_options = ""
+        output_options = "-s #{@directives[:size].nil? ? config.size_attributes : @directives[:size]} "
+        output_options += "#{codecs(format)}"
+        if format == "jpg"
+          input_options += " -itsoffset -2"
+          output_options += " -vframes 1 -an -f rawvideo"
+        else
+          output_options += " #{@directives[:bitrate].nil? ? config.video_attributes : "-g 30 -b:v "+@directives[:bitrate]} #{config.audio_attributes}"
         end
+
+        { Ffmpeg::OUTPUT_OPTIONS => output_options, Ffmpeg::INPUT_OPTIONS => input_options }
+      end
+
 
         def codecs(format)
           case format
