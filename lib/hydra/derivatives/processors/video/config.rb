@@ -45,14 +45,14 @@ module Hydra::Derivatives::Processors::Video
       attr_reader :codec
     end
 
+    def default_video_attributes(bitrate = video_bitrate)
+      "-g 30 -b:v #{bitrate}"
+    end
+
     protected
 
       def default_video_bitrate
         '345k'
-      end
-
-      def default_video_attributes
-        "-g 30 -b:v #{video_bitrate}"
       end
 
       def default_size_attributes
