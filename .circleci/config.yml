@@ -76,13 +76,7 @@ workflows:
     jobs:
       - bundle_lint_test:
           name: ruby2-7
-          ruby_version: 2.7.5
-      - bundle_lint_test:
-          name: ruby2-6
-          ruby_version: 2.6.9
-      - bundle_lint_test:
-          name: ruby2-5
-          ruby_version: 2.5.9
+          ruby_version: 2.7.7
 
   nightly:
     triggers:
@@ -95,10 +89,4 @@ workflows:
     jobs:
       - bundle_lint_test:
           name: ruby2-7
-          ruby_version: 2.7.5
-      - bundle_lint_test:
-          name: ruby2-6
-          ruby_version: 2.6.9
-      - bundle_lint_test:
-          name: ruby2-5
-          ruby_version: 2.5.9
+          ruby_version: 2.7.7
