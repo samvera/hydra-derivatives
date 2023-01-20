@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   class ActiveEncodeDerivatives < Runner
     # @param [String, ActiveFedora::Base] object_or_filename source file name (or path), or an object that has a method that will return the file name

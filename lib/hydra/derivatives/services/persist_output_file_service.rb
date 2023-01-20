@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   class PersistOutputFileService
     # Persists the file within the object at destination_name.  Uses basic containment.

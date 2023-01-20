@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mini_magick'
 require 'nokogiri'
 
@@ -90,9 +91,7 @@ module Hydra::Derivatives::Processors
       long_dim = self.class.long_dim(image)
       file_path = self.class.tmp_file('.tif')
       to_srgb = directives.fetch(:to_srgb, true)
-      if directives[:resize] || to_srgb
-        preprocess(image, resize: directives[:resize], to_srgb: to_srgb, src_quality: quality)
-      end
+      preprocess(image, resize: directives[:resize], to_srgb: to_srgb, src_quality: quality) if directives[:resize] || to_srgb
       image.write file_path
       recipe = self.class.kdu_compress_recipe(directives, quality, long_dim)
       encode_file(recipe, file_path: file_path)

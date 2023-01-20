@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ENV['environment'] ||= 'test'
 ENV['RAILS_ENV'] = 'test'
 

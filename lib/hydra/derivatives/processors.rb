@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   module Processors
     extend ActiveSupport::Autoload

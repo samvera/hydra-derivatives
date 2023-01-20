@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 require 'yaml'
 
@@ -28,7 +29,9 @@ describe Hydra::Derivatives::Processors::Jpeg2kImage do
 
   describe "#kdu_compress_recipe" do
     before(:all) do
-      @sample_cfg = YAML.load_file(File.expand_path('../../fixtures/jpeg2k_config.yml', __FILE__))['test']
+      @sample_cfg_path = File.expand_path('../../fixtures/jpeg2k_config.yml', __FILE__)
+      @sample_cfg_yaml = YAML.load_file(@sample_cfg_path, aliases: true)
+      @sample_cfg = @sample_cfg_yaml['test']
       Hydra::Derivatives.kdu_compress_recipes = @sample_cfg['jp2_recipes']
     end
     after(:all) do

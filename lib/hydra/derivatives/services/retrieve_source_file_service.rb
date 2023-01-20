@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   class RetrieveSourceFileService
     # Retrieves the source
