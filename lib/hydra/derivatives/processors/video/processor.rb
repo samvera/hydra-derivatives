@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives::Processors
   module Video
     class Processor < Hydra::Derivatives::Processors::Processor

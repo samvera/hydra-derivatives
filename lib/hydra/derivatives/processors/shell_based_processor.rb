@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # An abstract class for asyncronous jobs that transcode files using FFMpeg
 
 require 'tmpdir'
@@ -59,7 +60,7 @@ module Hydra::Derivatives::Processors
       end
 
       def execute_without_timeout(command, context)
-        err_str = ''
+        error_buffer = ''
         stdin, stdout, stderr, wait_thr = popen3(command)
         context[:pid] = wait_thr[:pid]
         files = [stderr, stdout]
@@ -78,7 +79,9 @@ module Hydra::Derivatives::Processors
 
               case fileno
               when stderr.fileno
-                err_str << data
+                updated_error_buffer = error_buffer.dup
+                updated_error_buffer << data
+                error_buffer = updated_error_buffer
               end
             rescue EOFError
               Hydra::Derivatives::Logger.debug "Caught an eof error in ShellBasedProcessor"
@@ -91,7 +94,7 @@ module Hydra::Derivatives::Processors
         stderr.close
         exit_status = wait_thr.value
 
-        raise "Unable to execute command \"#{command}\". Exit code: #{exit_status}\nError message: #{err_str}" unless exit_status.success?
+        raise "Unable to execute command \"#{command}\". Exit code: #{exit_status}\nError message: #{error_buffer}" unless exit_status.success?
       end
 
       def all_eof?(files)

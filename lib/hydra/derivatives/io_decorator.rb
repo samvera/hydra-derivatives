@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # Naive implementation of IO wrapper class that adds mime_type and original_filename
 # attributes. This is done to match the interface of ActionDispatch::HTTP::UploadedFile
 # so the attributes do not have to be passed as additional arguments, and are attached
@@ -16,7 +17,7 @@ module Hydra
       alias original_name original_filename
       deprecation_deprecate original_name: 'original_name has been deprecated. Use original_filename instead. This will be removed in hydra-derivatives 4.0'
       alias original_name= original_filename=
-      deprecation_deprecate :"original_name=" => 'original_name= has been deprecated. Use original_filename= instead. This will be removed in hydra-derivatives 4.0'
+      deprecation_deprecate "original_name=": 'original_name= has been deprecated. Use original_filename= instead. This will be removed in hydra-derivatives 4.0'
 
       def initialize(file, mime_type = nil, original_filename = nil)
         super(file)

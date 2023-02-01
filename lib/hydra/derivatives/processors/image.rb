@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'mini_magick'
 
 module Hydra::Derivatives::Processors
@@ -61,7 +62,7 @@ module Hydra::Derivatives::Processors
       end
 
       def selected_layers(image)
-        if image.type =~ /pdf/i
+        if /pdf/i.match?(image.type)
           image.layers[directives.fetch(:layer, 0)]
         elsif directives.fetch(:layer, false)
           image.layers[directives.fetch(:layer)]

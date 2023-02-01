@@ -1,4 +1,5 @@
-require: rubocop-rspec
+inherit_gem:
+    bixby: bixby_default.yml
 inherit_from: .rubocop_todo.yml
 
 AllCops:
@@ -12,7 +13,7 @@ AllCops:
     - Rakefile
 
 Layout/IndentationConsistency:
-  EnforcedStyle: rails
+  EnforcedStyle: indented_internal_methods
 
 Metrics/AbcSize:
   Max: 42

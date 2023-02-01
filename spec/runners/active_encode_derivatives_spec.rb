@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe Hydra::Derivatives::ActiveEncodeDerivatives do
@@ -17,7 +18,7 @@ describe Hydra::Derivatives::ActiveEncodeDerivatives do
     let(:processor) { instance_double('processor') }
 
     it 'calls the processor with the right arguments' do
-      expect(Hydra::Derivatives::Processors::ActiveEncode).to receive(:new).with(file_path, low_res_video, output_file_service: Hydra::Derivatives::PersistExternalFileOutputFileService).and_return(processor)
+      expect(Hydra::Derivatives::Processors::ActiveEncode).to receive(:new).with(file_path, low_res_video, { output_file_service: Hydra::Derivatives::PersistExternalFileOutputFileService }).and_return(processor)
       expect(processor).to receive(:process)
       described_class.create(video_record, options)
     end
@@ -29,7 +30,7 @@ describe Hydra::Derivatives::ActiveEncodeDerivatives do
       let(:options) { { encode_class: TestEncode, source: :remote_file_name, outputs: [low_res_video] } }
 
       it 'calls the processor with the right arguments' do
-        expect(Hydra::Derivatives::Processors::ActiveEncode).to receive(:new).with(file_path, low_res_video, output_file_service: Hydra::Derivatives::PersistExternalFileOutputFileService, encode_class: TestEncode).and_return(processor)
+        expect(Hydra::Derivatives::Processors::ActiveEncode).to receive(:new).with(file_path, low_res_video, { output_file_service: Hydra::Derivatives::PersistExternalFileOutputFileService, encode_class: TestEncode }).and_return(processor)
         expect(processor).to receive(:process)
         described_class.create(video_record, options)
       end

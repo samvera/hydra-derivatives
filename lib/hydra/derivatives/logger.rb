@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   class Logger
     class << self
@@ -17,9 +18,9 @@ module Hydra::Derivatives
 
       private
 
-      def logger
-        ActiveFedora::Base.logger || ::Logger.new(STDOUT)
-      end
+        def logger
+          ActiveFedora::Base.logger || ::Logger.new(STDOUT)
+        end
     end
   end
 end

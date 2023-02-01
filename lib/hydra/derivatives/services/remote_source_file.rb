@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # For the case where the source file is a remote file, and we
 # don't want to download the file locally, just return the
 # file name or file path (or whatever we need to pass to the

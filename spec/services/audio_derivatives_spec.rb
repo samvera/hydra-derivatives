@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe Hydra::Derivatives::AudioDerivatives do
@@ -29,7 +30,7 @@ describe Hydra::Derivatives::AudioDerivatives do
     end
 
     context "with an object" do
-      let(:object)      { "Fake Object" }
+      let(:object)      { double }
       let(:source_name) { :content }
       let(:file)        { instance_double("the file") }
 
@@ -51,7 +52,7 @@ describe Hydra::Derivatives::AudioDerivatives do
     subject { described_class }
 
     it "relies on the source_file_service" do
-      expect(subject.source_file_service).to receive(:call).with('foo/bar.aiff', baz: true)
+      expect(subject.source_file_service).to receive(:call).with('foo/bar.aiff', { baz: true })
       subject.source_file('foo/bar.aiff', baz: true)
     end
   end
