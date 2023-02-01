@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   class ImageDerivatives < Runner
     # Adds format: 'png' as the default to each of the directives

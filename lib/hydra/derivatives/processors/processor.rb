@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives::Processors
   # Processors take a single input and produce a single output
   class Processor

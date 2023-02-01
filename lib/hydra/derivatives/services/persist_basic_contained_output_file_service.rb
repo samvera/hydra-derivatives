@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   # This Service is an implementation of the Hydra::Derivatives::PeristOutputFileService
   # It supports basic contained files, which is the behavior associated with Fedora 3 file datastreams that were migrated to Fedora 4

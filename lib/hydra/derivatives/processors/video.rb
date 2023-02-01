@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives::Processors
   module Video
     extend ActiveSupport::Autoload

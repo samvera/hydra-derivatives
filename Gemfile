@@ -6,9 +6,8 @@ gemspec
 gem 'sprockets', '~> 3.7'
 
 group :development, :test do
+  gem 'bixby'
   gem 'coveralls'
   gem 'rspec_junit_formatter'
-  gem 'rubocop', '~> 0.52.0', require: false
-  gem 'rubocop-rspec', require: false
   gem 'simplecov'
 end

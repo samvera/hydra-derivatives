@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives
   class FullTextExtract < ImageDerivatives
     # Adds format: 'txt' as the default to each of the directives

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Hydra::Derivatives::Processors::Video
   class Config
     attr_writer :video_bitrate, :video_attributes, :size_attributes, :audio_attributes

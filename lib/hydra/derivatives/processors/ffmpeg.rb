@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # An abstract class for asyncronous jobs that transcode files using FFMpeg
 module Hydra::Derivatives::Processors
   module Ffmpeg
