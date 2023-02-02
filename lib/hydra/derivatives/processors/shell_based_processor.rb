@@ -83,6 +83,10 @@ module Hydra::Derivatives::Processors
                 updated_error_buffer << data
                 error_buffer = updated_error_buffer
               end
+            rescue IO::WaitReadable
+              Hydra::Derivatives::Logger.warn "Caught an IO::WaitReadable error in ShellBasedProcessor. Retrying..."
+              IO.select([f], nil, nil, 60)
+              retry
             rescue EOFError
               Hydra::Derivatives::Logger.debug "Caught an eof error in ShellBasedProcessor"
               # No big deal.
