@@ -7,7 +7,6 @@ gem 'sprockets', '~> 3.7'
 
 group :development, :test do
   gem 'bixby'
-  gem 'coveralls'
   gem 'rspec_junit_formatter'
   gem 'simplecov'
 end
