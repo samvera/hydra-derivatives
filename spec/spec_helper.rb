@@ -3,12 +3,10 @@ ENV['environment'] ||= 'test'
 ENV['RAILS_ENV'] = 'test'
 
 require 'simplecov'
-require 'coveralls'
 
 SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter.new(
   [
-    SimpleCov::Formatter::HTMLFormatter,
-    Coveralls::SimpleCov::Formatter
+    SimpleCov::Formatter::HTMLFormatter
   ]
 )
 SimpleCov.minimum_coverage 100
