@@ -26,4 +26,20 @@ describe Hydra::Derivatives::Processors::ShellBasedProcessor do
       end
     end
   end
+  
+  
+  context "when a IO::EAGAINWaitReadable error occurs" do
+    before do
+      expect(TestProcessor).to receive(:popen3).and_wrap_original do |m, *args|
+        ret = m.call(*args)
+        expect(ret[2]).to receive(:read_nonblock).and_invoke(->(_) { raise IO::EAGAINWaitReadable }, ->(_) { 'foobar' })
+        allow(ret[2]).to receive(:eof).and_return(true)
+        ret
+      end
+    end
+
+    it "tries to retry" do
+      proc_class.execute("echo foo")
+    end
+  end
 end
