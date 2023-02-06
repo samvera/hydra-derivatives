@@ -26,8 +26,7 @@ describe Hydra::Derivatives::Processors::ShellBasedProcessor do
       end
     end
   end
-  
-  
+
   context "when a IO::EAGAINWaitReadable error occurs" do
     before do
       expect(TestProcessor).to receive(:popen3).and_wrap_original do |m, *args|
