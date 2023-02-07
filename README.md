@@ -17,13 +17,11 @@ Derivative generation for Samvera applications.
 
 ## Product Owner & Maintenance
 
-`hydra-derivatives` was a Core Component of the Samvera Community. Given a decline in available labor required for maintenance, this project no longer has a dedicated Product Owner. The documentation for what this means can be found [here](http://samvera.github.io/core_components.html#requirements-for-a-core-component).
+`hydra-derivatives` is a Core Component of the Samvera Community. The documentation for what this means can be found [here](http://samvera.github.io/core_components.html#requirements-for-a-core-component).
 
 ### Product Owner
 
-**Vacant**
-
-_Until a Product Owner has been identified, we ask that you please direct all requests for support, bug reports, and general questions to the [`#dev` Channel on the Samvera Slack](https://samvera.slack.com/app_redirect?channel=dev)._
+[stkenny](https://github.com/stkenny)
 
 # Help
 
