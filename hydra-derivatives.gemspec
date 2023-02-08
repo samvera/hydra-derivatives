@@ -9,6 +9,7 @@ Gem::Specification.new do |spec|
   spec.summary       = "Derivative generation plugin for hydra"
   spec.license       = "APACHE2"
   spec.homepage      = "https://github.com/projecthydra/hydra-derivatives"
+  spec.metadata      = { "rubygems_mfa_required" => "true" }
 
   spec.files         = `git ls-files`.split($OUTPUT_RECORD_SEPARATOR).select { |f| File.dirname(f) !~ %r{\A"?spec|test|features\/?} }
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
