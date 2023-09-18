@@ -187,4 +187,46 @@ describe Hydra::Derivatives::Processors::Image do
       end
     end
   end
+
+  context 'using default processor (imagemagick)' do
+    before do
+      allow(MiniMagick).to receive(:cli).and_return(:imagemagick)
+    end
+
+    around do |example|
+      cached_image_processor = ENV['IMAGE_PROCESSOR']
+      ENV['IMAGE_PROCESSOR'] = nil
+      example.run
+      ENV['IMAGE_PROCESSOR'] = cached_image_processor
+    end
+
+    context 'when arguments are passed as a hash' do
+      before do
+        allow(subject).to receive(:load_image_transformer).and_return(mock_image)
+      end
+
+      context 'with an image source file' do
+        before { allow(mock_image).to receive(:type).and_return('JPEG') }
+
+        context 'when default' do
+          let(:mock_image) { instance_double('MockImage') }
+          let(:directives) { { label: :thumb, size: '200x300>', format: 'png', quality: 75 } }
+
+          before do
+            allow(mock_image).to receive(:combine_options) { |&block| block.call(mock_image) }
+          end
+
+          it 'uses the image file' do
+            expect(mock_image).not_to receive(:layers)
+            expect(mock_image).to receive(:flatten)
+            expect(mock_image).to receive(:resize).with('200x300>')
+            expect(mock_image).to receive(:format).with('png')
+            expect(mock_image).to receive(:quality).with('75')
+            expect(subject).to receive(:write_image).with(mock_image)
+            subject.process
+          end
+        end
+      end
+    end
+  end
 end

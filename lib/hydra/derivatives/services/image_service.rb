@@ -18,32 +18,5 @@ module Hydra::Derivatives
         default_processor
       end
     end
-
-    def self.cli
-      case processor
-      when :graphicsmagick
-        :graphicsmagick
-      when :imagemagick
-        :imagemagick
-      end
-    end
-
-    def self.external_convert_command
-      case processor
-      when :graphicsmagick
-        'gm convert'
-      when :imagemagick
-        'convert'
-      end
-    end
-
-    def self.external_identify_command
-      case processor
-      when :graphicsmagick
-        'gm identify'
-      when :imagemagick
-        'identify'
-      end
-    end
   end
 end
