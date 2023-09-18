@@ -28,7 +28,7 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install ghostscript libpng-dev imagemagick ffmpeg libreoffice dcraw
+            sudo apt-get install ghostscript libpng-dev imagemagick graphicsmagick ffmpeg libreoffice dcraw
       - restore_cache:
           name: Restore Kakadu Cache
           keys:

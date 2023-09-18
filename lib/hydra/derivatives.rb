@@ -38,6 +38,7 @@ module Hydra
       autoload :PersistExternalFileOutputFileService
       autoload :TempfileService
       autoload :MimeTypeService
+      autoload :ImageService
     end
 
     # Raised if the timout elapses
