@@ -20,12 +20,34 @@ module Hydra::Derivatives::Processors
       # When resizing images, it is necessary to flatten any layers, otherwise the background
       # may be completely black. This happens especially with PDFs. See #110
       def create_resized_image
-        create_image do |xfrm|
+        if Hydra::Derivatives::ImageService.processor == :graphicsmagick
+          create_resized_image_with_graphicsmagick
+        else
+          create_resized_image_with_imagemagick
+        end
+      end
+
+      def create_resized_image_with_graphicsmagick
+        Hydra::Derivatives::Logger.debug('[ImageProcessor] Using GraphicsMagick image resize method')
+        create_image do |temp_file|
           if size
-            xfrm.combine_options do |i|
-              i.flatten
-              i.resize(size)
+            # remove layers and resize using convert instead of mogrify
+            MiniMagick::Tool::Convert.new do |cmd|
+              cmd << temp_file.path # input
+              cmd.flatten
+              cmd.resize(size)
+              cmd << temp_file.path # output
             end
+          end
+        end
+      end
+
+      def create_resized_image_with_imagemagick
+        Hydra::Derivatives::Logger.debug('[ImageProcessor] Using ImageMagick image resize method')
+        create_image do |temp_file|
+          if size
+            temp_file.flatten
+            temp_file.resize(size)
           end
         end
       end
