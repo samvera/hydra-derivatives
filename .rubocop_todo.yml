@@ -45,6 +45,10 @@ RSpec/PredicateMatcher:
   Exclude:
     - spec/**/*.rb
 
+Rails/RakeEnvironment:
+  Exclude:
+    - 'tasks/dev.rake'
+
 RSpec/ReturnFromStub:
   Exclude:
     - spec/processors/jpeg2k_spec.rb

@@ -244,14 +244,23 @@ Instead, each directive may contain these arguments:
 
 ## Running Tests
 
-1. Run tests with `RAILS_ENV=test bundle exec rake ci`
+For ease of development we use Lando to abstract away some complications of
+using Docker containers for development.
 
-## Running specific tests
+1. Install the latest released > 3.0 version of Lando from [here](https://github.com/lando/lando/releases).
+2. `bundle install`(Ruby 2.6+ required)
+3. `bundle exec rake server:start`
+4. `bundle exec rspec spec`
 
-If you don't want to run the whole suite all at once like CI, do the following:
+### Cleaning Data
 
-1. Run the test servers with `rake derivatives:test_server`
-2. Run the tests.
+1. `bundle exec rake server:clean`
+
+### Stopping Servers
+
+1. `bundle exec rake server:stop`
+
+You can also run `lando poweroff` from anywhere.
 
 # Acknowledgments
 

@@ -9,6 +9,7 @@ require 'solr_wrapper/rake_task'
 require 'fcrepo_wrapper'
 require 'active_fedora/rake_support'
 require 'rubocop/rake_task'
+load 'tasks/dev.rake'
 
 namespace :derivatives do
   desc 'Run style checker'
