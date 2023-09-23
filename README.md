@@ -273,12 +273,6 @@ It also builds an image containing all dependencies needed for the tests.
 
 To stop the containers, type <kbd>Ctrl</kbd>+<kbd>c</kbd>. To restart the containers you need only run `docker compose up`.
 
-Copy the Fedora and Solr config files in to place:
-
-```sh
-cp spec/support/config/*.yml config
-```
-
 You can run the full test suite using the following command:
 
 ```sh

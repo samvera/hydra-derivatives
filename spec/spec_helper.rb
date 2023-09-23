@@ -26,6 +26,9 @@ RSpec.configure do |config|
     ActiveFedora::Cleaner.clean!
   end
 end
+if ENV['FCREPO_CONFIG_PATH']
+  ActiveFedora.init(fedora_config_path: ENV['FCREPO_CONFIG_PATH'])
+end
 
 # Workaround for RAW image support until these are pushed upstream to
 # the MIME Types gem
