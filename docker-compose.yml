@@ -1,0 +1,46 @@
+version: '2.2'
+
+volumes:
+  solr:
+  fcrepo:
+
+networks:
+  internal:
+
+services:
+
+  solr:
+    image: solr:8
+    ports:
+      - 8985:8983
+    command: 
+      - bash
+      - "-c"
+      - "precreate-core hydra-test /opt/solr/server/configsets/hydra-test; exec solr -f"
+    volumes:
+      - .:/app
+      - ./solr/config:/opt/solr/server/configsets/hydra-test
+      - solr:/opt/solr/server/solr
+    networks:
+      internal:
+
+  fcrepo:
+    image: ghcr.io/samvera/fcrepo4:4.7.5
+    volumes:
+      - fcrepo:/data:cached
+    ports:
+      - 8986:8080
+    networks:
+      internal:
+
+  test:
+    build: .
+    env_file:
+      - test.env
+    volumes:
+      - .:/app/samvera/hydra-derivatives # Volume mounted
+    networks:
+      internal:
+    depends_on:
+      - fcrepo
+      - solr

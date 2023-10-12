@@ -253,6 +253,32 @@ If you don't want to run the whole suite all at once like CI, do the following:
 1. Run the test servers with `rake derivatives:test_server`
 2. Run the tests.
 
+## Running tests with Docker
+
+First, make sure you have installed [Docker](https://www.docker.com/).
+
+Within your cloned repository, tell Docker to get started installing your development environment:
+
+```sh
+docker compose build
+docker compose up
+```
+
+This starts containers for:
+
+  - Fedora
+  - Solr
+
+It also builds an image containing all dependencies needed for the tests.
+
+To stop the containers, type <kbd>Ctrl</kbd>+<kbd>c</kbd>. To restart the containers you need only run `docker compose up`.
+
+You can run the full test suite using the following command:
+
+```sh
+docker compose run -w /app/samvera/hydra-derivatives test sh -c "bundle exec rspec"
+```
+
 # Acknowledgments
 
 This software has been developed by and is brought to you by the Samvera community.  Learn more at the
