@@ -21,7 +21,7 @@ module Hydra::Derivatives::Processors::Video
 
     def mpeg4
       audio_encoder = Hydra::Derivatives::AudioEncoder.new
-      @mpeg4 ||= CodecConfig.new("-vcodec libx264 -pix_fmt yuv420p -acodec #{audio_encoder.audio_encoder}")
+      @mpeg4 ||= CodecConfig.new("-vcodec libx264 -profile:v high -pix_fmt yuv420p -acodec #{audio_encoder.audio_encoder}")
     end
 
     def webm
