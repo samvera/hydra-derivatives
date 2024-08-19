@@ -27,6 +27,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
+            wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
             sudo apt-get update
             sudo apt-get install ghostscript libpng-dev imagemagick graphicsmagick ffmpeg libreoffice dcraw
       - restore_cache:
