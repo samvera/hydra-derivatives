@@ -39,7 +39,7 @@ jobs:
           command: |
             if [ ! -f ~/downloads/kakadu.zip ]; then
               mkdir -p ~/downloads
-              wget http://kakadusoftware.com/wp-content/uploads/KDU805_Demo_Apps_for_Linux-x86-64_200602.zip -O ~/downloads/kakadu.zip
+              wget http://kakadusoftware.com/wp-content/uploads/KDU841_Demo_Apps_for_Linux-x86-64_231117.zip -O ~/downloads/kakadu.zip
             fi
       - save_cache:
           name: Save Kakadu Cache
@@ -50,7 +50,7 @@ jobs:
           name: Install Kakadu
           command: |
             unzip ~/downloads/kakadu.zip
-            mv KDU805_Demo_Apps_for_Linux-x86-64_200602 kakadu
+            mv KDU841_Demo_Apps_for_Linux-x86-64_231117 kakadu
             sudo cp kakadu/*.so /usr/lib
             sudo cp kakadu/* /usr/bin
             kdu_compress -version
