@@ -95,26 +95,6 @@ workflows:
           name: "ruby3-1_rails6-1"
           ruby_version: 3.1.2
           rails_version: 6.1.6
-      - bundle_lint_test:
-          name: "ruby3-0_rails6-1"
-          ruby_version: 3.0.3
-          rails_version: 6.1.6
-      - bundle_lint_test:
-          name: "ruby3-0_rails6-0"
-          ruby_version: 3.0.3
-          rails_version: 6.0.4.7
-      - bundle_lint_test:
-          name: "ruby2-7_rails6-0"
-          ruby_version: 2.7.7
-          rails_version: 6.0.4.7
-      - bundle_lint_test:
-          name: "ruby2-7_rails5-2"
-          ruby_version: 2.7.7
-          rails_version: 5.2.7
-      - bundle_lint_test:
-          name: "ruby2-7_rails5-1"
-          ruby_version: 2.7.7
-          rails_version: 5.1.7
   nightly:
     triggers:
       - schedule:
@@ -136,23 +116,3 @@ workflows:
           name: "ruby3-1_rails6-1"
           ruby_version: 3.1.2
           rails_version: 6.1.6
-      - bundle_lint_test:
-          name: "ruby3-0_rails6-1"
-          ruby_version: 3.0.3
-          rails_version: 6.1.6
-      - bundle_lint_test:
-          name: "ruby3-0_rails6-0"
-          ruby_version: 3.0.3
-          rails_version: 6.0.4.7
-      - bundle_lint_test:
-          name: "ruby2-7_rails6-0"
-          ruby_version: 2.7.7
-          rails_version: 6.0.4.7
-      - bundle_lint_test:
-          name: "ruby2-7_rails5-2"
-          ruby_version: 2.7.7
-          rails_version: 5.2.7
-      - bundle_lint_test:
-          name: "ruby2-7_rails5-1"
-          ruby_version: 2.7.7
-          rails_version: 5.1.7
