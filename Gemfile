@@ -27,6 +27,7 @@ if ENV['RAILS_VERSION']
   else
     gem 'rails', ENV['RAILS_VERSION']
   end
+end
 
 group :development, :test do
   gem 'bixby'
