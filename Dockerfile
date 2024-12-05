@@ -15,9 +15,9 @@ RUN apt update && apt -y install \
   libyaml-dev
 
 RUN mkdir -p /opt/kakadu/downloads
-RUN wget http://kakadusoftware.com/wp-content/uploads/KDU805_Demo_Apps_for_Linux-x86-64_200602.zip -O /opt/kakadu/downloads/kakadu.zip \
+RUN wget http://kakadusoftware.com/wp-content/uploads/KDU841_Demo_Apps_for_Linux-x86-64_231117.zip -O /opt/kakadu/downloads/kakadu.zip \
     && unzip /opt/kakadu/downloads/kakadu.zip \
-    && mv KDU805_Demo_Apps_for_Linux-x86-64_200602 kakadu \
+    && mv KDU841_Demo_Apps_for_Linux-x86-64_231117 kakadu \
     && cp kakadu/*.so /usr/lib \
     && cp kakadu/* /usr/bin
 
@@ -29,5 +29,5 @@ RUN addgroup --system --gid 1001 app && \
 
 RUN mkdir -p /app/samvera/hydra-derviatives
 WORKDIR /app/samvera/hydra-derivatives
-COPY ./ /app/samvera/hydra-derivatives
-RUN gem install bundler && bundle install --jobs=3 --retry=3 
+COPY . ./
+RUN gem install bundler && bundle install --jobs=3 --retry=3
