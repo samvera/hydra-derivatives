@@ -14,10 +14,11 @@ RUN apt update && apt -y install \
   dcraw \
   libyaml-dev
 
-RUN mkdir -p /opt/kakadu/downloads
-RUN wget http://kakadusoftware.com/wp-content/uploads/KDU805_Demo_Apps_for_Linux-x86-64_200602.zip -O /opt/kakadu/downloads/kakadu.zip \
-    && unzip /opt/kakadu/downloads/kakadu.zip \
-    && mv KDU805_Demo_Apps_for_Linux-x86-64_200602 kakadu \
+ARG KAKADU_ZIP
+RUN mkdir -p /opt/kakadu
+COPY $KAKADU_ZIP.zip /opt/kakadu/downloads/kakadu.zip
+RUN unzip /opt/kakadu/downloads/kakadu.zip \
+    && mv $KAKADU_ZIP kakadu \
     && cp kakadu/*.so /usr/lib \
     && cp kakadu/* /usr/bin
 

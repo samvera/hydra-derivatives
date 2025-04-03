@@ -257,10 +257,18 @@ If you don't want to run the whole suite all at once like CI, do the following:
 
 First, make sure you have installed [Docker](https://www.docker.com/).
 
-Within your cloned repository, tell Docker to get started installing your development environment:
+Download the most recent version of the Linux Kakadu demo from [the downloads page](https://kakadusoftware.com/documentation-downloads/downloads/)
+and place it in your cloned repository. (This requires signing up with an email address.)
+
+Note the name of the zip file without the .zip extension. We will pass this name as an argument when building 
+the docker container. For example, if the name of the zip file is `KDU841_Demo_Apps_for_Linux-x86-64_231117.zip`, 
+we will pass `KDU841_Demo_Apps_for_Linux-x86-64_231117` to `docker compose build`.
+
+Within your cloned repository, tell Docker to get started installing your development environment, replacing 
+`<name of zip file>` with the name of your downloaded file above.
 
 ```sh
-docker compose build
+docker compose build --build-arg KAKADU_ZIP=<name of zip file>
 docker compose up
 ```
 
