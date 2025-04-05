@@ -31,4 +31,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'deprecation'
   spec.add_dependency 'mime-types', '> 2.0', '< 4.0'
   spec.add_dependency 'mini_magick', '>= 3.2', '< 5'
+  spec.add_dependency 'ruby-vips'
 end

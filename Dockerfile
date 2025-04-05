@@ -7,6 +7,9 @@ RUN apt update && apt -y install \
   zip \
   ghostscript \
   libpng-dev \
+  libvips \
+  libvips-dev \
+  libvips-tools \
   graphicsmagick \
   ffmpeg \
   libreoffice \

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require 'mini_magick'
+require 'ruby-vips'
 
 module Hydra::Derivatives::Processors
   class Image < Processor
@@ -22,6 +23,8 @@ module Hydra::Derivatives::Processors
       def create_resized_image
         if Hydra::Derivatives::ImageService.processor == :graphicsmagick
           create_resized_image_with_graphicsmagick
+        elsif Hydra::Derivatives::ImageService.processor == :libvips
+          create_resized_image_with_libvips
         else
           create_resized_image_with_imagemagick
         end
@@ -52,12 +55,36 @@ module Hydra::Derivatives::Processors
         end
       end
 
+      def create_resized_image_with_libvips
+        Hydra::Derivatives::Logger.debug('[ImageProcessor] Using libvips resize method')
+        create_image do |temp_file|
+          if size
+            width, height, option = size.match(/(\d+)x(\d+)(.)?/).captures
+            # Translate imagemagick resize syntax into ruby-vips
+            size_option = case option
+                          when '>'
+                            :down
+                          when '<'
+                            :up
+                          when '!'
+                            :force
+                          end
+            temp_file.thumbnail_image(width.to_i, height: height.to_i, size: size_option)
+          end
+        end
+      end
+
       def create_image
-        xfrm = selected_layers(load_image_transformer)
-        yield(xfrm) if block_given?
-        xfrm.format(directives.fetch(:format))
-        xfrm.quality(quality.to_s) if quality
-        write_image(xfrm)
+        if Hydra::Derivatives::ImageService.processor == :libvips
+          image = block_given? ? yield(load_image_transformer) : load_image_transformer
+          write_image_with_vips(image, directives)
+        else
+          xfrm = selected_layers(load_image_transformer)
+          yield(xfrm) if block_given?
+          xfrm.format(directives.fetch(:format))
+          xfrm.quality(quality.to_s) if quality
+          write_image(xfrm)
+        end
       end
 
       def write_image(xfrm)
@@ -67,10 +94,24 @@ module Hydra::Derivatives::Processors
         output_file_service.call(output_io, directives)
       end
 
+      def write_image_with_vips(image, directives)
+        output_io = StringIO.new
+        format = directives.fetch(:format, "jpg")
+        format_string = ".#{format}#{"[Q=#{quality}]" if quality}"
+        output_io.write(image.write_to_buffer(format_string))
+        output_io.rewind
+        output_file_service.call(output_io, directives)
+      end
+
       # Override this method if you want a different transformer, or need to load the
       # raw image from a different source (e.g. external file)
       def load_image_transformer
-        MiniMagick::Image.open(source_path)
+        if Hydra::Derivatives::ImageService.processor == :libvips
+          # Vips specifies pdf layers at load time
+          selected_vips_layers(source_path)
+        else
+          MiniMagick::Image.open(source_path)
+        end
       end
 
     private
@@ -92,5 +133,14 @@ module Hydra::Derivatives::Processors
           image
         end
       end
+
+      def selected_vips_layers(source_path)
+        if `vipsheader #{Shellwords.escape(source_path)}` =~ /pdfload/i && directives.fetch(:layer, false)
+          Vips::Image.new_from_file(source_path, page: directives.fetch(:layer))
+        else
+          Vips::Image.new_from_file(source_path)
+        end
+      end
+
   end
 end
