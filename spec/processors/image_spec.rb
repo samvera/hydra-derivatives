@@ -205,7 +205,6 @@ describe Hydra::Derivatives::Processors::Image do
     end
 
     context 'with an image source file' do
-
       before do
         allow(Vips::Image).to receive(:new_from_file).with(file_name).and_return(mock_image)
         allow(subject.output_file_service).to receive(:call)
@@ -248,7 +247,6 @@ describe Hydra::Derivatives::Processors::Image do
           end
         end
       end
-
     end
 
     context 'with a pdf source file' do
@@ -294,9 +292,7 @@ describe Hydra::Derivatives::Processors::Image do
           subject.process
         end
       end
-
     end
-
   end
 
   context 'using default processor (imagemagick)' do
