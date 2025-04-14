@@ -55,6 +55,7 @@ module Hydra::Derivatives::Processors
         end
       end
 
+      # rubocop:disable Metrics/MethodLength
       def create_resized_image_with_libvips
         Hydra::Derivatives::Logger.debug('[ImageProcessor] Using libvips resize method')
         create_image do |temp_file|
@@ -73,6 +74,7 @@ module Hydra::Derivatives::Processors
           end
         end
       end
+      # rubocop:enable Metrics/MethodLength
 
       def create_image
         if Hydra::Derivatives::ImageService.processor == :libvips
@@ -141,6 +143,5 @@ module Hydra::Derivatives::Processors
           Vips::Image.new_from_file(source_path)
         end
       end
-
   end
 end
