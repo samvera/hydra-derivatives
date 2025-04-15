@@ -8,6 +8,7 @@ Layout/SpaceBeforeBlockBraces:
 Metrics/ClassLength:
   Exclude:
     - lib/hydra/derivatives/processors/jpeg2k_image.rb
+    - lib/hydra/derivatives/processors/image.rb
 
 Metrics/CyclomaticComplexity:
   Exclude:
