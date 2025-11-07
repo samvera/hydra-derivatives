@@ -173,7 +173,7 @@ describe "Transcoding" do
       expect(file.attached_files['original_file_mp3']).to have_content
       expect(file.attached_files['original_file_mp3'].mime_type).to eq('audio/mpeg')
       expect(file.attached_files['original_file_ogg']).to have_content
-      expect(file.attached_files['original_file_ogg'].mime_type).to eq('audio/ogg')
+      expect(file.attached_files['original_file_ogg'].mime_type).to eq('audio/vorbis')
     end
   end
 
