@@ -155,6 +155,23 @@ describe Hydra::Derivatives::Processors::Image do
           subject.process
         end
       end
+
+      context 'when garbage collection runs after a layer is selected', requires_imagemagick: true do
+        let(:file_name) { File.join(fixture_path, "test.tif") }
+        let(:directives) { { size: '100x100>', format: 'png', layer: 0 } }
+
+        before do
+          allow(subject).to receive(:size).and_wrap_original do |original|
+            GC.start
+            original.call
+          end
+        end
+
+        it 'converts the layer' do
+          expect(Hydra::Derivatives::PersistBasicContainedOutputFileService).to receive(:call).with(kind_of(StringIO), directives)
+          subject.process
+        end
+      end
     end
   end
 

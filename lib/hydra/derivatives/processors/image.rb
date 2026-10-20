@@ -127,6 +127,10 @@ module Hydra::Derivatives::Processors
       end
 
       def selected_layers(image)
+        # A layer points at the source image's tempfile without holding a reference to it, so
+        # keep the source alive until the conversion finishes; otherwise garbage collection can
+        # delete the tempfile before ImageMagick reads it.
+        @source_image = image
         if /pdf/i.match?(image.type)
           image.layers[directives.fetch(:layer, 0)]
         elsif directives.fetch(:layer, false)
